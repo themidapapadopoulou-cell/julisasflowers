@@ -1,13 +1,24 @@
-function openEnvelope(){
+function openEnvelope() {
 
-    const envelope = document.getElementById("envelope")
+    const envelope = document.getElementById("envelope");
+    const letter = document.getElementById("letter");
+    const button = document.querySelector(".openButton");
 
-    envelope.classList.add("open")
+    // hide envelope
+    envelope.style.display = "none";
+
+    // hide open button
+    button.style.display = "none";
+
+    // show letter
+    letter.style.display = "block";
 
 }
 
-function showFlowers(){
+function showFlowers() {
 
-    document.getElementById("garden").style.display="block"
+    const garden = document.getElementById("garden");
+
+    garden.style.display = "block";
 
 }
