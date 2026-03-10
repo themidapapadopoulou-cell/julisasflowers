@@ -1,34 +1,41 @@
+/* page background */
+
 body{
-    background:#ff6fa5;
-    font-family:Arial, sans-serif;
-    margin:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    text-align:center;
+background:#ff6fa5;
+font-family:Arial, sans-serif;
+margin:0;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+text-align:center;
+overflow-x:hidden;
 }
+
+/* container */
 
 .scene{
-    width:100%;
-    padding:20px;
+width:100%;
+padding:20px;
 }
 
-/* envelope base */
+/* envelope */
 
 .envelope{
-    position:relative;
-    width:90%;
-    max-width:360px;
-    height:220px;
-    margin:auto;
-    background:white;
-    border-radius:6px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.25);
-    overflow:hidden;
+position:relative;
+width:90%;
+max-width:360px;
+height:220px;
+margin:auto;
+background:white;
+border-radius:6px;
+box-shadow:0 15px 35px rgba(0,0,0,0.25);
+overflow:hidden;
+border:2px solid #eee;
 }
 
-/* triangle flap */
+/* triangular flap */
+
 .flap{
 position:absolute;
 top:0;
@@ -44,66 +51,101 @@ transform-origin:top;
 transition:transform 1s;
 }
 
-/* envelope text */
+/* text on envelope */
 
 .frontText{
-    position:absolute;
-    top:65%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:26px;
-    color:#ff6fa5;
-    font-weight:bold;
+position:absolute;
+top:65%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:26px;
+color:#ff6fa5;
+font-weight:bold;
 }
 
 /* letter */
 
 .letter{
-    position:absolute;
-    width:85%;
-    left:7.5%;
-    top:100%;
+position:absolute;
+width:85%;
+left:7.5%;
+top:100%;
 
-    background:white;
-    padding:20px;
-    border-radius:10px;
+background:white;
+padding:20px;
 
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+border-radius:10px;
 
-    transition:top 1.2s;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+
+transition:top 1.2s;
 }
 
-/* animation */
+/* text inside letter */
+
+p{
+font-size:16px;
+line-height:1.6;
+margin-bottom:15px;
+}
+
+/* open animation */
 
 .envelope.open .flap{
-    transform:rotateX(180deg);
+transform:rotateX(180deg);
 }
 
 .envelope.open .letter{
-    top:-260px;
+top:-260px;
 }
 
 /* open button */
 
 .openButton{
-    margin-top:30px;
-    padding:15px 35px;
-    font-size:18px;
-    background:white;
-    color:#ff6fa5;
-    border:none;
-    border-radius:30px;
-    cursor:pointer;
+margin-top:30px;
+padding:15px 35px;
+font-size:18px;
+
+background:white;
+color:#ff6fa5;
+
+border:none;
+border-radius:30px;
+
+cursor:pointer;
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.2s ease;
 }
 
-/* flowers */
+.openButton:active{
+transform:scale(0.96);
+}
+
+/* flower button */
+
+button{
+margin-top:20px;
+padding:14px 28px;
+font-size:16px;
+
+background:#ff6fa5;
+color:white;
+
+border:none;
+border-radius:25px;
+
+cursor:pointer;
+}
+
+/* bouquet area */
 
 #garden{
-    display:none;
-    margin-top:30px;
+display:none;
+margin-top:25px;
 }
 
 .bouquet{
-    width:100%;
-    max-width:250px;
+width:100%;
+max-width:250px;
 }
