@@ -1,64 +1,540 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000000;
+            font-family: 'Jost', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            opacity: 0;
+            animation: pageFade .8s ease forwards;
+        }
+        @keyframes pageFade { to { opacity: 1; } }
+
+        .scene { width: 100%; max-width: 600px; padding: 40px 24px; }
+
+        /* ── envelope ── */
+        .envelope {
+            position: relative;
+            width: 340px; height: 220px;
+            margin: auto; background: #ffffff;
+            border-radius: 6px; border: 1px solid #e0e0e0;
+            box-shadow:
+                    0 0 40px rgba(240, 80, 160, 0.15),
+                    0 25px 60px rgba(0,0,0,.6);
+        }
+        .envelope::after {
+            content: ""; position: absolute;
+            bottom: -14px; left: 50%; transform: translateX(-50%);
+            width: 70%; height: 14px;
+            background: rgba(240,80,160,.2); filter: blur(12px); border-radius: 50%;
+        }
+        .flap {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 120px;
+            background: #f5f5f5;
+            clip-path: polygon(0 0,100% 0,50% 100%);
+            transform-origin: top;
+            transition: transform .6s ease;
+        }
+        .flap.open { transform: rotateX(180deg); }
+        .frontText {
+            position: absolute; top: 65%; left: 50%;
+            transform: translate(-50%,-50%);
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 22px; letter-spacing: .06em;
+            color: #c0407a;
+            text-shadow: 0 0 14px rgba(240,80,160,.35);
+        }
+
+        /* ── open button ── */
+        .openButton {
+            margin-top: 28px; padding: 12px 32px;
+            font-family: 'Jost', sans-serif;
+            font-size: 13px; font-weight: 400; letter-spacing: .16em; text-transform: uppercase;
+            background: transparent;
+            color: #f070b8;
+            border: 1px solid #c03878;
+            border-radius: 4px; cursor: pointer;
+            transition: all .25s;
+            box-shadow: 0 0 18px rgba(240,80,160,.2);
+        }
+        .openButton:hover {
+            background: rgba(240,80,160,.1);
+            box-shadow: 0 0 32px rgba(240,80,160,.45);
+            transform: translateY(-1px);
+        }
+
+        /* ── letter ── */
+        .letter {
+            display: none; max-width: 520px; margin: auto;
+            background: #ffffff; padding: 50px;
+            border-radius: 6px; border: 1px solid #e8e8e8;
+            box-shadow:
+                    0 0 50px rgba(240,80,160,.12),
+                    0 40px 80px rgba(0,0,0,.6);
+        }
+        p {
+            font-size: 15px; line-height: 1.85;
+            letter-spacing: .15px; color: #1a1a1a;
+            margin-bottom: 22px; text-align: left;
+        }
+
+        /* ── flower button ── */
+        .flowerButton {
+            margin-top: 28px; padding: 12px 30px;
+            font-family: 'Jost', sans-serif;
+            font-size: 13px; font-weight: 400; letter-spacing: .16em; text-transform: uppercase;
+            background: transparent;
+            color: #f070b8;
+            border: 1px solid #c03878;
+            border-radius: 4px; cursor: pointer;
+            transition: all .25s;
+            animation: softPulse 2.4s infinite;
+        }
+        .flowerButton:hover {
+            background: rgba(240,80,160,.08);
+            box-shadow: 0 0 32px rgba(240,80,160,.4);
+            transform: translateY(-1px);
+        }
+        @keyframes softPulse {
+            0%,100% { box-shadow: 0 0 0 0   rgba(240,80,160,.5); }
+            60%     { box-shadow: 0 0 0 14px rgba(240,80,160,0); }
+        }
+
+        /* ── garden ── */
+        #garden {
+            opacity: 0;
+            transform: translateY(14px) scale(.93);
+            margin-top: 44px;
+            transition: opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.3,1);
+        }
+        .garden-card {
+            background: #000000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #2a0820;
+            box-shadow: 0 0 40px rgba(200,40,120,.15);
+        }
+        .bouquet-wrap {
+            position: relative;
+            display: block;
+        }
+        .bouquet-svg {
+            width: 100%;
+            display: block;
+            overflow: visible;
+            animation: floatBouquet 5s ease-in-out infinite;
+        }
+        @keyframes floatBouquet {
+            0%,100% { transform: translateY(0) rotate(-.3deg); }
+            50%     { transform: translateY(-7px) rotate(.3deg); }
+        }
+        #particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            border-radius: 12px;
+        }
+        .stem {
+            stroke-dasharray: 320; stroke-dashoffset: 320;
+            transition: stroke-dashoffset 1.1s cubic-bezier(.4,0,.15,1);
+        }
+    </style>
 </head>
-
 <body>
-
 <div class="scene">
 
-    <!-- Envelope -->
     <div id="envelope" class="envelope">
-        <div class="flap"></div>
+        <div id="flap" class="flap"></div>
         <div class="frontText">Für dich</div>
     </div>
-
-    <!-- Open button -->
     <button class="openButton" onclick="openEnvelope()">Öffnen</button>
 
-    <!-- Letter -->
     <div id="letter" class="letter">
-
-        <p>
-            Ich weiß zwar nicht, wann man in Albanien Muttertag feiert, aber heute ist hier in Deutschland Muttertag.
-        </p>
-
-        <p>
-            Alles Gute zu deinem ersten Muttertag.
-        </p>
-
-        <p>
-            Ich habe hier ein paar Blumen für dich dagelassen.
-        </p>
-
-        <p>
-            Ich würde dir gerne echte Blumen schenken. Leider kann ich das nicht, aber was ich machen kann, ist dir ein paar digitale zu schenken.
-        </p>
-
-        <p>
-            Ich hoffe dir und deinem Kleinen geht es gut.
-        </p>
-
-        <p>
-            Ich denke an dich.
-        </p>
-
-        <button onclick="showFlowers()">Deine Blumen warten auf dich </button>
+        <p>ich weiß zwar nicht, wann man in albanien muttertag feiert, aber heute ist hier in deutschland muttertag.</p>
+        <p>zu deinem allerersten muttertag wollte ich dir alles gute wünschen.</p>
+        <p>hier habe ich ein paar blumen für dich dagelassen.</p>
+        <p>eigentlich würde ich dir gerne echte blumen schenken. da ich aber nicht weiß, ob das okay für dich wäre, habe ich dir erst einmal ein paar digitale programmiert.</p>
+        <p>die website gehört jetzt für ein jahr dir.</p>
+        <p>ich bin mir ziemlich sicher, dass du eine wunderbare mutter bist so wie du auch eine besondere frau bist.</p>
+        <p>bestimmt ist nicht jeder tag leicht. aber ich kann mir auch vorstellen, dass es etwas ganz besonderes ist, ein kleines mini-du zu haben.</p>
+        <p>und wenn du dich manchmal allein fühlst, sollst du wissen, dass du nicht ganz allein sein musst. meine schulter zum anlehnen ist da - und solang es mich gibt, wird das auch so bleiben. vielleicht möchtest du sie irgendwann annehmen.</p>
+        <p>ich hoffe, dir und deinem kleinen geht es gut. und ganz ehrlich: ich hoffe wirklich sehr, dass er deine augen hat. die welt braucht mehr so schöne wie deine. und vielleicht habe ich irgendwann einmal das glück, sie zu sehen.</p>
+        <p>vielleicht gefallen dir die blumen ja trotzdem, auch wenn sie nicht echt sind. aber hey! diese blumen bleiben für immer und du musst dich nicht mal um sie kümmern. gar nicht so schlecht, oder?</p>
+        <p>wer weiß – wenn ich irgendwann deine erlaubnis bekomme, schicke ich dir vielleicht auch mal echte.</p>
+        <p>wie wäre es mit einem kleinen deal:
+            wenn die antwort „ja“ ist, verrätst du mir den namen deines kleinen und sein geburtsdatum. (ich will ja schließlich ein bisschen was über den lieblingsmenschen von jemandem wissen, der mir wichtig ist. und wenn du mir auch ein bisschen von dir erzählen möchtest, höre ich dir sehr gerne zu.)
+            wenn die antwort „nein“ ist, bleibe ich einfach bei den digitalen blumen 🌷</p>
+        <p>fühl dich gedrückt. </p>
+        <p>ich denk an dich.</p>
+        <button class="flowerButton" onclick="showFlowers()">✦ Deine Blumen warten auf dich</button>
 
         <div id="garden">
-            <img src="bouquet.png" class="bouquet">
+            <div class="garden-card">
+                <div class="bouquet-wrap">
+                    <svg class="bouquet-svg" viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="glow-strong" x="-80%" y="-80%" width="260%" height="260%">
+                                <feGaussianBlur stdDeviation="6"  result="b1"/>
+                                <feGaussianBlur stdDeviation="14" result="b2"/>
+                                <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                            <filter id="glow-med" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3.5" result="b1"/>
+                                <feGaussianBlur stdDeviation="8"   result="b2"/>
+                                <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                            <filter id="glow-soft" x="-35%" y="-35%" width="170%" height="170%">
+                                <feGaussianBlur stdDeviation="2.5" result="b"/>
+                                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                            <filter id="leaf-glow" x="-30%" y="-30%" width="160%" height="160%">
+                                <feGaussianBlur stdDeviation="2" result="b"/>
+                                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+
+                            <radialGradient id="pet1" cx="50%" cy="40%" r="60%">
+                                <stop offset="0%"   stop-color="#ffd8ee"/>
+                                <stop offset="45%"  stop-color="#f070b0"/>
+                                <stop offset="100%" stop-color="#900050"/>
+                            </radialGradient>
+                            <radialGradient id="pet2" cx="50%" cy="38%" r="58%">
+                                <stop offset="0%"   stop-color="#ffe8f4"/>
+                                <stop offset="50%"  stop-color="#f888c8"/>
+                                <stop offset="100%" stop-color="#a81060"/>
+                            </radialGradient>
+                            <radialGradient id="pet3" cx="50%" cy="36%" r="62%">
+                                <stop offset="0%"   stop-color="#ffeaf6"/>
+                                <stop offset="55%"  stop-color="#e060a0"/>
+                                <stop offset="100%" stop-color="#780040"/>
+                            </radialGradient>
+
+                            <linearGradient id="leafG" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%"   stop-color="#c0205a"/>
+                                <stop offset="100%" stop-color="#600028"/>
+                            </linearGradient>
+                            <linearGradient id="leafG2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%"   stop-color="#901840"/>
+                                <stop offset="100%" stop-color="#480020"/>
+                            </linearGradient>
+
+                            <linearGradient id="grassG" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%"   stop-color="#280010"/>
+                                <stop offset="55%"  stop-color="#c02060"/>
+                                <stop offset="100%" stop-color="#e84090" stop-opacity=".35"/>
+                            </linearGradient>
+                            <linearGradient id="grassG2" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%"   stop-color="#180008"/>
+                                <stop offset="55%"  stop-color="#880038"/>
+                                <stop offset="100%" stop-color="#b02868" stop-opacity=".28"/>
+                            </linearGradient>
+
+                            <radialGradient id="groundG" cx="50%" cy="70%" r="52%">
+                                <stop offset="0%"   stop-color="#c02860" stop-opacity=".3"/>
+                                <stop offset="100%" stop-color="#000000"  stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+
+                        <ellipse cx="240" cy="355" rx="210" ry="55" fill="url(#groundG)"/>
+
+                        <!-- back grass -->
+                        <path d="M 44 375 Q 24 305 14 235"  stroke="url(#grassG2)" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".65"/>
+                        <path d="M 54 375 Q 36 295 52 208"  stroke="url(#grassG)"  stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".8"/>
+                        <path d="M 64 375 Q 56 318 80 248"  stroke="url(#grassG2)" stroke-width="1"   fill="none" stroke-linecap="round" opacity=".55"/>
+                        <path d="M 34 375 Q 12 328  2 268"  stroke="url(#grassG2)" stroke-width="1"   fill="none" stroke-linecap="round" opacity=".45"/>
+                        <path d="M 74 375 Q 74 326 96 264"  stroke="url(#grassG)"  stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".6"/>
+                        <path d="M 108 375 Q 86 318 70 238" stroke="url(#grassG)"  stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+                        <path d="M 120 375 Q 106 328 116 258" stroke="url(#grassG2)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>
+
+                        <path d="M 356 375 Q 370 318 360 243" stroke="url(#grassG)"  stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+                        <path d="M 368 375 Q 388 328 398 253" stroke="url(#grassG2)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>
+                        <path d="M 378 375 Q 396 338 416 283" stroke="url(#grassG)"  stroke-width="1"   fill="none" stroke-linecap="round" opacity=".5"/>
+                        <path d="M 416 375 Q 438 308 450 236" stroke="url(#grassG2)" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".65"/>
+                        <path d="M 426 375 Q 440 298 426 210" stroke="url(#grassG)"  stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".8"/>
+                        <path d="M 436 375 Q 450 318 472 246" stroke="url(#grassG2)" stroke-width="1"   fill="none" stroke-linecap="round" opacity=".55"/>
+                        <path d="M 446 375 Q 466 338 474 273" stroke="url(#grassG)"  stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".6"/>
+
+                        <!-- stems -->
+                        <path id="s1" class="stem" d="M 240 362 Q 232 278 240 112" stroke="#e040a0" stroke-width="2.2" fill="none" stroke-linecap="round" filter="url(#glow-soft)"/>
+                        <path id="s2" class="stem" d="M 222 362 Q 200 285 168 145" stroke="#d03090" stroke-width="2"   fill="none" stroke-linecap="round" filter="url(#glow-soft)"/>
+                        <path id="s3" class="stem" d="M 258 362 Q 278 285 312 148" stroke="#d03090" stroke-width="2"   fill="none" stroke-linecap="round" filter="url(#glow-soft)"/>
+                        <path id="s4" class="stem" d="M 205 362 Q 168 308 110 190" stroke="#b02070" stroke-width="1.7" fill="none" stroke-linecap="round" filter="url(#glow-soft)"/>
+                        <path id="s5" class="stem" d="M 275 362 Q 312 308 370 192" stroke="#b02070" stroke-width="1.7" fill="none" stroke-linecap="round" filter="url(#glow-soft)"/>
+
+                        <!-- leaves -->
+                        <g id="l1a" opacity="0">
+                            <path d="M 237 258 C 210 246 190 226 200 208 C 210 194 232 212 237 258Z" fill="url(#leafG)" filter="url(#leaf-glow)"/>
+                            <path d="M 237 258 C 210 248 196 232 202 212" stroke="#f060a0" stroke-width=".7" fill="none" opacity=".45"/>
+                        </g>
+                        <g id="l1b" opacity="0">
+                            <path d="M 243 228 C 270 216 292 198 280 180 C 268 166 247 186 243 228Z" fill="url(#leafG2)" filter="url(#leaf-glow)"/>
+                            <path d="M 243 228 C 268 218 288 202 278 184" stroke="#f060a0" stroke-width=".7" fill="none" opacity=".45"/>
+                        </g>
+                        <g id="l2a" opacity="0">
+                            <path d="M 192 276 C 168 262 156 240 168 226 C 178 214 198 232 192 276Z" fill="url(#leafG)" filter="url(#leaf-glow)"/>
+                        </g>
+                        <g id="l2b" opacity="0">
+                            <path d="M 184 246 C 160 234 146 214 160 200 C 170 188 190 206 184 246Z" fill="url(#leafG2)" filter="url(#leaf-glow)"/>
+                        </g>
+                        <g id="l3a" opacity="0">
+                            <path d="M 288 276 C 312 262 324 240 312 226 C 302 214 282 232 288 276Z" fill="url(#leafG)" filter="url(#leaf-glow)"/>
+                        </g>
+                        <g id="l3b" opacity="0">
+                            <path d="M 296 246 C 320 234 334 214 320 200 C 310 188 290 206 296 246Z" fill="url(#leafG2)" filter="url(#leaf-glow)"/>
+                        </g>
+
+                        <!-- F1: centre tall (240,112) -->
+                        <g transform="translate(240,112)">
+                            <g id="f1" transform="scale(0)">
+                                <path d="M0,0 C-12,-34 -34,-46 -24,-64 C-14,-78 10,-70 0,-44Z" fill="url(#pet1)" transform="rotate(-72)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-12,-34 -34,-46 -24,-64 C-14,-78 10,-70 0,-44Z" fill="url(#pet1)" transform="rotate(-36)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-12,-34 -34,-46 -24,-64 C-14,-78 10,-70 0,-44Z" fill="url(#pet1)" transform="rotate(0)"    filter="url(#glow-med)"/>
+                                <path d="M0,0 C-12,-34 -34,-46 -24,-64 C-14,-78 10,-70 0,-44Z" fill="url(#pet1)" transform="rotate(36)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-12,-34 -34,-46 -24,-64 C-14,-78 10,-70 0,-44Z" fill="url(#pet1)" transform="rotate(72)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-22 -22,-32 -16,-46 C-8,-56 8,-48 0,-28Z"    fill="url(#pet2)" transform="rotate(-54)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-8,-22 -22,-32 -16,-46 C-8,-56 8,-48 0,-28Z"    fill="url(#pet2)" transform="rotate(-18)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-8,-22 -22,-32 -16,-46 C-8,-56 8,-48 0,-28Z"    fill="url(#pet2)" transform="rotate(18)"   filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-8,-22 -22,-32 -16,-46 C-8,-56 8,-48 0,-28Z"    fill="url(#pet2)" transform="rotate(54)"   filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-8,-22 -22,-32 -16,-46 C-8,-56 8,-48 0,-28Z"    fill="url(#pet2)" transform="rotate(90)"   filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-5,-14 -12,-20 -9,-30 C-4,-38 6,-34 0,-18Z"     fill="url(#pet3)" transform="rotate(-36)"/>
+                                <path d="M0,0 C-5,-14 -12,-20 -9,-30 C-4,-38 6,-34 0,-18Z"     fill="url(#pet3)" transform="rotate(0)"/>
+                                <path d="M0,0 C-5,-14 -12,-20 -9,-30 C-4,-38 6,-34 0,-18Z"     fill="url(#pet3)" transform="rotate(36)"/>
+                                <path d="M0,0 C-5,-14 -12,-20 -9,-30 C-4,-38 6,-34 0,-18Z"     fill="url(#pet3)" transform="rotate(72)"/>
+                                <path d="M0,0 C-5,-14 -12,-20 -9,-30 C-4,-38 6,-34 0,-18Z"     fill="url(#pet3)" transform="rotate(108)"/>
+                                <circle r="12" fill="#ffd0ea" filter="url(#glow-strong)" opacity=".9"/>
+                                <circle r="7"  fill="#fff0f8"/>
+                                <circle r="3"  fill="#f8c0e0"/>
+                            </g></g>
+
+                        <!-- F2: left-centre (168,145) -->
+                        <g transform="translate(168,145)">
+                            <g id="f2" transform="scale(0)">
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(0)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(51)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(102)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(153)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(204)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(255)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(306)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(25)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(76)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(127)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(178)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(229)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(280)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(331)" filter="url(#glow-soft)"/>
+                                <circle r="10" fill="#ffd4ec" filter="url(#glow-strong)" opacity=".85"/>
+                                <circle r="6"  fill="#fff4fa"/>
+                                <circle r="2.5" fill="#f0b0d8"/>
+                            </g></g>
+
+                        <!-- F3: right-centre (312,148) -->
+                        <g transform="translate(312,148)">
+                            <g id="f3" transform="scale(0)">
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(0)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(51)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(102)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(153)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(204)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(255)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-10,-30 -28,-42 -20,-58 C-12,-70 8,-62 0,-40Z" fill="url(#pet1)" transform="rotate(306)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(25)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(76)"  filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(127)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(178)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(229)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(280)" filter="url(#glow-soft)"/>
+                                <path d="M0,0 C-6,-18 -16,-28 -12,-40 C-6,-50 6,-44 0,-26Z"   fill="url(#pet2)" transform="rotate(331)" filter="url(#glow-soft)"/>
+                                <circle r="10" fill="#ffd4ec" filter="url(#glow-strong)" opacity=".85"/>
+                                <circle r="6"  fill="#fff4fa"/>
+                                <circle r="2.5" fill="#f0b0d8"/>
+                            </g></g>
+
+                        <!-- F4: far-left (110,190) -->
+                        <g transform="translate(110,190)">
+                            <g id="f4" transform="scale(0)">
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(0)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(60)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(120)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(180)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(240)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(300)" filter="url(#glow-med)"/>
+                                <circle r="9" fill="#ffd8f0" filter="url(#glow-strong)" opacity=".8"/>
+                                <circle r="5" fill="#fff8fc"/>
+                            </g></g>
+
+                        <!-- F5: far-right (370,192) -->
+                        <g transform="translate(370,192)">
+                            <g id="f5" transform="scale(0)">
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(0)"   filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(60)"  filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(120)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(180)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(240)" filter="url(#glow-med)"/>
+                                <path d="M0,0 C-8,-26 -22,-36 -16,-50 C-9,-62 7,-55 0,-34Z" fill="url(#pet2)" transform="rotate(300)" filter="url(#glow-med)"/>
+                                <circle r="9" fill="#ffd8f0" filter="url(#glow-strong)" opacity=".8"/>
+                                <circle r="5" fill="#fff8fc"/>
+                            </g></g>
+
+                        <!-- front grass -->
+                        <path d="M 150 375 Q 132 328 142 268" stroke="url(#grassG)"  stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+                        <path d="M 164 375 Q 150 342 162 290" stroke="url(#grassG2)" stroke-width="1"   fill="none" stroke-linecap="round" opacity=".5"/>
+                        <path d="M 320 375 Q 336 328 328 268" stroke="url(#grassG)"  stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+                        <path d="M 334 375 Q 352 342 344 288" stroke="url(#grassG2)" stroke-width="1"   fill="none" stroke-linecap="round" opacity=".5"/>
+                        <path d="M 226 375 Q 213 352 218 310" stroke="url(#grassG)"  stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".45"/>
+                        <path d="M 254 375 Q 267 352 264 310" stroke="url(#grassG)"  stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".45"/>
+                    </svg>
+                    <canvas id="particles"></canvas>
+                </div>
+            </div>
         </div>
-
     </div>
-
 </div>
 
-<script src="script.js"></script>
+<script>
+    function openEnvelope() {
+        const flap     = document.getElementById("flap");
+        const envelope = document.getElementById("envelope");
+        const letter   = document.getElementById("letter");
+        const button   = document.querySelector(".openButton");
+        button.style.display = "none";
+        flap.classList.add("open");
+        setTimeout(() => {
+            envelope.style.display = "none";
+            setTimeout(() => { letter.style.display = "block"; }, 200);
+        }, 650);
+    }
 
+    function animateScale(el, duration) {
+        const start = performance.now();
+        function step(now) {
+            const t  = Math.min((now - start) / duration, 1);
+            const c1 = 1.70158, c3 = c1 + 1;
+            const e  = 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+            el.setAttribute("transform", "scale(" + Math.max(0, e) + ")");
+            if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function fadeIn(el, duration, delay) {
+        setTimeout(() => {
+            const start = performance.now();
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                el.setAttribute("opacity", t.toFixed(3));
+                if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }, delay);
+    }
+
+    const sparks = [];
+    let particleActive = false;
+
+    function initParticles() {
+        const canvas = document.getElementById("particles");
+        const wrap   = canvas.parentElement;
+        canvas.width  = wrap.offsetWidth;
+        canvas.height = wrap.offsetHeight;
+        canvas.style.position = "absolute";
+        canvas.style.top  = "0";
+        canvas.style.left = "0";
+        canvas.style.width  = "100%";
+        canvas.style.height = "100%";
+        particleActive = true;
+        for (let i = 0; i < 60; i++) spawnSpark(canvas.width, canvas.height, true);
+        animateParticles(canvas);
+    }
+
+    function spawnSpark(w, h, initial) {
+        sparks.push({
+            x: Math.random() * w,
+            y: initial ? Math.random() * h : h * (.2 + Math.random() * .75),
+            r: .4 + Math.random() * 2,
+            life: initial ? Math.random() : 0,
+            maxLife: .5 + Math.random() * .9,
+            speed: .003 + Math.random() * .006,
+            drift: (Math.random() - .5) * .35,
+            rise: -.15 - Math.random() * .45,
+            warm: Math.random() > .45,
+        });
+    }
+
+    function animateParticles(canvas) {
+        if (!particleActive) return;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = sparks.length - 1; i >= 0; i--) {
+            const s = sparks[i];
+            s.life += s.speed;
+            s.x    += s.drift;
+            s.y    += s.rise;
+            if (s.life > s.maxLife) {
+                sparks.splice(i, 1);
+                spawnSpark(canvas.width, canvas.height, false);
+                continue;
+            }
+            const prog = s.life / s.maxLife;
+            const op   = prog < .3 ? prog / .3 : prog > .7 ? (1 - prog) / .3 : 1;
+            const col  = s.warm
+                ? `rgba(255,${150 + Math.floor(Math.random()*80)},${200 + Math.floor(Math.random()*50)},`
+                : `rgba(255,255,${210 + Math.floor(Math.random()*45)},`;
+            const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.5);
+            grd.addColorStop(0,   col + (op * .85).toFixed(2) + ")");
+            grd.addColorStop(.4,  col + (op * .35).toFixed(2) + ")");
+            grd.addColorStop(1,   col + "0)");
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r * 4.5, 0, Math.PI * 2);
+            ctx.fillStyle = grd;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = col + op.toFixed(2) + ")";
+            ctx.fill();
+        }
+        requestAnimationFrame(() => animateParticles(canvas));
+    }
+
+    function showFlowers() {
+        const garden = document.getElementById("garden");
+        setTimeout(() => {
+            garden.style.opacity   = "1";
+            garden.style.transform = "scale(1) translateY(0)";
+            const stemDelays = [0, 200, 400, 600, 800];
+            for (let i = 1; i <= 5; i++) {
+                setTimeout(() => {
+                    const s = document.getElementById("s" + i);
+                    if (s) s.style.strokeDashoffset = "0";
+                }, stemDelays[i - 1]);
+                setTimeout(() => {
+                    const f = document.getElementById("f" + i);
+                    if (f) animateScale(f, 680);
+                }, stemDelays[i - 1] + 900);
+            }
+            [["l1a","l1b"],["l2a","l2b"],["l3a","l3b"]].forEach((pair, idx) => {
+                pair.forEach((id, j) => {
+                    const el = document.getElementById(id);
+                    if (el) fadeIn(el, 600, stemDelays[idx] + 600 + j * 200);
+                });
+            });
+            setTimeout(initParticles, 500);
+        }, 300);
+    }
+</script>
 </body>
 </html>
