@@ -17,9 +17,9 @@
         // ── STEP 4: Go to Account > API Keys and copy your Public Key
         // ── Then replace the three placeholders below:
 
-        const EMAILJS_PUBLIC_KEY  = "YOUR_PUBLIC_KEY";   // e.g. "user_aBcDeFgH..."
-        const EMAILJS_SERVICE_ID  = "YOUR_SERVICE_ID";   // e.g. "service_abc123"
-        const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";  // e.g. "template_xyz789"
+        const EMAILJS_PUBLIC_KEY  = "IwodbYM-sExQBdjAU";   // e.g. "user_aBcDeFgH..."
+        const EMAILJS_SERVICE_ID  = "service_eqtb6te";   // e.g. "service_abc123"
+        const EMAILJS_TEMPLATE_ID = "julisa clicked on button";  // e.g. "template_xyz789"
 
         emailjs.init(EMAILJS_PUBLIC_KEY);
     </script>
