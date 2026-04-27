@@ -210,12 +210,19 @@ document.addEventListener("DOMContentLoaded", () => {
         <div id="letterSlide" class="letter-slide">
             <div id="letter" class="letter">
 
-                <p>Ich weiß zwar nicht, wann man in Albanien Muttertag feiert, aber heute ist hier in Deutschland Muttertag.</p>
-                <p>Alles Gute zu deinem ersten Muttertag.</p>
-                <p>Ich habe hier ein paar Blumen für dich dagelassen.</p>
-                <p>Ich würde dir gerne echte Blumen schenken. Leider kann ich das nicht, aber was ich machen kann, ist dir ein paar digitale zu schenken.</p>
-                <p>Ich hoffe dir und deinem Kleinen geht es gut.</p>
-                <p>Ich denke an dich.</p>
+                <p>eigentlich würde ich dir gerne echte blumen schenken. da ich aber nicht weiß, ob das okay für dich wäre, habe ich dir erst einmal ein paar digitale programmiert. und damit sie auch ein bisschen bleiben, gehört die website jetzt für ein jahr dir.</p>
+
+<p>ich bin mir sicher, dass du eine wunderbare mutter bist </p>
+<p>bestimmt ist nicht jeder tag leicht. aber ich kann mir vorstellen, dass es etwas ganz besonderes ist, ein kleines mini-du zu haben.</p>
+<p>ich hoffe, dir und deinem kleinen geht es gut. vielleicht hat er ja deine augen die ich immer besonders gern gesehen habe.</p>
+<p>er ist bestimmt ziemlich süß, bei so einer mama wie dir kann es ja eigentlich auch nicht anders sein.</p>
+<p>hoffentlich gefallen dir die blumen ja trotzdem, auch wenn sie nicht echt sind. aber hey diese blumen bleiben für immer und du musst dich nicht einmal um sie kümmern. gar nicht so schlecht, oder?</p>
+
+<p> wenn du irgendwann mal lust auf frische blumen hast, sag bescheid. dann stehen sie schneller vor deiner tür, als du denkst🌸
+
+<p>und falls du irgendwann etwas neues hier sehen möchtest, sag einfach bescheid, ich kann jederzeit was hinzufügen.</p>
+<p>fühl dich gedrückt. </p>
+<p>ich denk an dich.</p>
 
                 <button class="flowerButton" onclick="showFlowers()">✦ Deine Blumen warten auf dich</button>
 
@@ -415,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div><!-- end garden -->
 
                 <button class="secretButton" onclick="secretClick()">
-                    vielleicht willst du doch echte? trau dich 🌷
+                    vielleicht willst du doch echte? trau dich.
                 </button>
 
             </div><!-- end letter -->
@@ -425,11 +432,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="popup-overlay" id="popup">
             <div class="popup-card">
                 <button class="popup-close" onclick="closePopup()">✕</button>
-                <p>wusste ich's doch 😄</p>
+                <p>wusste ich's doch! </p>
                 <p>das leben ist zu kurz für nur digitale blumen 🌷</p>
-                <p>eine frau wie du verdient mehr als nur digitale –<br>echte stehen dir sowieso am besten</p>
-                <p>wir kriegen das schon irgendwie hin 😄</p>
-                <p>mir fällt bestimmt was ein,<br>wie sie ihren weg zu dir finden 🌷</p>
+                <p>eine frau wie du verdient mehr als nur digitale <br>echte stehen dir sowieso am besten</p>
+                <p>wir kriegen das schon irgendwie hin :)</p>
+                <p>mir fällt bestimmt was ein,<br>wie sie ihren weg zu dir finden </p>
             </div>
         </div>
 
