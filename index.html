@@ -5,7 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-    <link rel="stylesheet" href="style.css">
+    <!-- EmailJS – sends you a notification when she clicks the secret button -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        // ── STEP 1: Sign up free at https://www.emailjs.com
+        // ── STEP 2: Create a service (Gmail) and note the Service ID
+        // ── STEP 3: Create an email template with these variables:
+        //            Subject: "Julisa hat den Knopf gedrückt 🌷"
+        //            Body:    "Sie will echte Blumen! {{message}}"
+        //            Note the Template ID
+        // ── STEP 4: Go to Account > API Keys and copy your Public Key
+        // ── Then replace the three placeholders below:
+
+        const EMAILJS_PUBLIC_KEY  = "IwodbYM-sExQBdjAU";
+        const EMAILJS_SERVICE_ID  = "service_eqtb6te";
+        const EMAILJS_TEMPLATE_ID = "template_me25m67";
+
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -21,9 +38,12 @@
         <div id="letterSlide" class="letter-slide">
             <div id="letter" class="letter">
 
-            
-
-
+                <p>Ich weiß zwar nicht, wann man in Albanien Muttertag feiert, aber heute ist hier in Deutschland Muttertag.</p>
+                <p>Alles Gute zu deinem ersten Muttertag.</p>
+                <p>Ich habe hier ein paar Blumen für dich dagelassen.</p>
+                <p>Ich würde dir gerne echte Blumen schenken. Leider kann ich das nicht, aber was ich machen kann, ist dir ein paar digitale zu schenken.</p>
+                <p>Ich hoffe dir und deinem Kleinen geht es gut.</p>
+                <p>Ich denke an dich.</p>
 
                 <button class="flowerButton" onclick="showFlowers()">✦ Deine Blumen warten auf dich</button>
 
@@ -220,10 +240,14 @@
                             <canvas id="particles"></canvas>
                         </div>
                     </div>
-                </div>
+                </div><!-- end garden -->
 
-            </div>
-        </div>
+                <button class="secretButton" onclick="secretClick()">
+                    vielleicht willst du doch echte? trau dich 🌷
+                </button>
+
+            </div><!-- end letter -->
+        </div><!-- end letterSlide -->
 
         <div id="envelope" class="envelope">
             <div id="flap" class="flap"></div>
@@ -256,6 +280,18 @@
 
     <button class="openButton" id="openBtn" onclick="openEnvelope()">Öffnen</button>
 
+</div>
+
+<!-- popup (outside scene so it never interferes with layout) -->
+<div class="popup-overlay" id="popup">
+    <div class="popup-card">
+        <button class="popup-close" onclick="closePopup()">✕</button>
+        <p>wusste ich's doch 😄</p>
+        <p>das leben ist zu kurz für nur digitale blumen 🌷</p>
+        <p>eine frau wie du verdient mehr als nur digitale –<br>echte stehen dir sowieso am besten</p>
+        <p>wir kriegen das schon irgendwie hin 😄</p>
+        <p>mir fällt bestimmt was ein,<br>wie sie ihren weg zu dir finden 🌷</p>
+    </div>
 </div>
 
 <script src="script.js"></script>
