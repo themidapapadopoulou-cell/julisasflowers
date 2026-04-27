@@ -1,40 +1,212 @@
-<!DOCTYPE html>
-<html lang="de">
+/* ══════════════════════════════════
+   ENVELOPE OPEN
+══════════════════════════════════ */
+function openEnvelope() {
+    const flap        = document.getElementById("flap");
+    const envelope    = document.getElementById("envelope");
+    const letterSlide = document.getElementById("letterSlide");
+    const scene       = document.getElementById("envelopeScene");
+    const btn         = document.getElementById("openBtn");
+    const stamp       = document.getElementById("stamp");
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <!-- EmailJS – sends you a notification when she clicks the secret button -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>
-        // ── STEP 1: Sign up free at https://www.emailjs.com
-        // ── STEP 2: Create a service (Gmail) and note the Service ID
-        // ── STEP 3: Create an email template with these variables:
-        //            Subject: "Julisa hat den Knopf gedrückt 🌷"
-        //            Body:    "Sie will echte Blumen! {{message}}"
-        //            Note the Template ID
-        // ── STEP 4: Go to Account > API Keys and copy your Public Key
-        // ── Then replace the three placeholders below:
+    btn.style.display = "none";
 
-        const EMAILJS_PUBLIC_KEY  = "IwodbYM-sExQBdjAU";   // e.g. "user_aBcDeFgH..."
-        const EMAILJS_SERVICE_ID  = "service_eqtb6te";   // e.g. "service_abc123"
-        const EMAILJS_TEMPLATE_ID = "julisa clicked on button";  // e.g. "template_xyz789"
+    // open flap + fade stamp
+    flap.classList.add("open");
+    setTimeout(() => { if (stamp) stamp.style.opacity = "0"; }, 300);
 
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-</head>
+    // letter peeks
+    setTimeout(() => { letterSlide.classList.add("peek"); }, 650);
 
-<body>
+    // letter slides out fully + petals
+    setTimeout(() => {
+        scene.classList.add("opened");
+        letterSlide.classList.remove("peek");
+        letterSlide.classList.add("out");
+        burstPetals();
+    }, 1050);
 
-<!-- petal burst canvas (fixed, full-screen overlay) -->
-<canvas id="petalCanvas"></canvas>
+    // envelope fades away
+    setTimeout(() => { envelope.classList.add("hide"); }, 1300);
+}
 
-<div class="scene">
+/* ══════════════════════════════════
+   PETAL BURST
+══════════════════════════════════ */
+const petalColors = ["#ff9ec8","#ffb8d8","#ffd0e8","#ff6eaa","#ffaad0","#ffe0f0","#e8508a","#ffc0dc","#ff88bb"];
+let petals = [];
+let petalAnimating = false;
 
-    <div class="envelope-scene" id="envelopeScene">
+function burstPetals() {
+    const canvas = document.getElementById("petalCanvas");
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const cx = window.innerWidth  * 0.5;
+    const cy = window.innerHeight * 0.38;
+    spawnPetals(canvas, cx, cy, 40);
+    setTimeout(() => spawnPetals(canvas, cx, cy, 30), 200);
+    setTimeout(() => spawnPetals(canvas, cx, cy, 20), 450);
+    if (!petalAnimating) { petalAnimating = true; animatePetals(canvas); }
+}
 
+function spawnPetals(canvas, cx, cy, count) {
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2.5 + Math.random() * 5.5;
+        petals.push({
+            x: cx + (Math.random()-.5)*60, y: cy + (Math.random()-.5)*30,
+            vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed - 3.5,
+            rot: Math.random()*Math.PI*2, rotV: (Math.random()-.5)*.18,
+            w: 7+Math.random()*10, h: 4+Math.random()*6,
+            color: petalColors[Math.floor(Math.random()*petalColors.length)],
+            alpha: 1, life: 0, maxLife: 90+Math.random()*80,
+            gravity: .07+Math.random()*.06,
+            wobble: Math.random()*Math.PI*2, wobbleSpeed: .04+Math.random()*.04,
+        });
+    }
+}
+
+function animatePetals(canvas) {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for (let i = petals.length-1; i >= 0; i--) {
+        const p = petals[i];
+        p.life++; p.wobble += p.wobbleSpeed;
+        p.vx += Math.sin(p.wobble)*.06; p.vy += p.gravity;
+        p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+        const prog = p.life/p.maxLife;
+        p.alpha = prog < .3 ? prog/.3 : prog > .7 ? (1-prog)/.3 : 1;
+        if (p.life >= p.maxLife) { petals.splice(i,1); continue; }
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.beginPath();
+        ctx.ellipse(0,0,p.w/2,p.h/2,0,0,Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color; ctx.shadowBlur = 6;
+        ctx.fill(); ctx.restore();
+    }
+    if (petals.length > 0) requestAnimationFrame(() => animatePetals(canvas));
+    else { petalAnimating = false; ctx.clearRect(0,0,canvas.width,canvas.height); }
+}
+
+/* ══════════════════════════════════
+   FLOWER ANIMATIONS
+══════════════════════════════════ */
+function animateScale(el, duration) {
+    const start = performance.now();
+    function step(now) {
+        const t = Math.min((now-start)/duration, 1);
+        const c1 = 1.70158, c3 = c1+1;
+        const e = 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2);
+        el.setAttribute("transform","scale("+Math.max(0,e)+")");
+        if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+function fadeInEl(el, duration, delay) {
+    setTimeout(() => {
+        const start = performance.now();
+        function step(now) {
+            const t = Math.min((now-start)/duration, 1);
+            el.setAttribute("opacity", t.toFixed(3));
+            if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }, delay);
+}
+
+/* ══════════════════════════════════
+   SPARKLE PARTICLES
+══════════════════════════════════ */
+const sparks = [];
+let sparksActive = false;
+
+function initParticles() {
+    const canvas = document.getElementById("particles");
+    const wrap = canvas.parentElement;
+    canvas.width = wrap.offsetWidth; canvas.height = wrap.offsetHeight;
+    sparksActive = true;
+    for (let i = 0; i < 60; i++) spawnSpark(canvas.width, canvas.height, true);
+    animateParticles(canvas);
+}
+
+function spawnSpark(w, h, initial) {
+    sparks.push({
+        x: Math.random()*w, y: initial ? Math.random()*h : h*(.2+Math.random()*.75),
+        r: .4+Math.random()*2, life: initial ? Math.random() : 0,
+        maxLife: .5+Math.random()*.9, speed: .003+Math.random()*.006,
+        drift: (Math.random()-.5)*.35, rise: -.15-Math.random()*.45,
+        warm: Math.random() > .45,
+    });
+}
+
+function animateParticles(canvas) {
+    if (!sparksActive) return;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for (let i = sparks.length-1; i >= 0; i--) {
+        const s = sparks[i];
+        s.life += s.speed; s.x += s.drift; s.y += s.rise;
+        if (s.life > s.maxLife) { sparks.splice(i,1); spawnSpark(canvas.width,canvas.height,false); continue; }
+        const prog = s.life/s.maxLife;
+        const op = prog<.3 ? prog/.3 : prog>.7 ? (1-prog)/.3 : 1;
+        const col = s.warm
+            ? `rgba(255,${150+Math.floor(Math.random()*80)},${200+Math.floor(Math.random()*50)},`
+            : `rgba(255,255,${210+Math.floor(Math.random()*45)},`;
+        const grd = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4.5);
+        grd.addColorStop(0,  col+(op*.85).toFixed(2)+")");
+        grd.addColorStop(.4, col+(op*.35).toFixed(2)+")");
+        grd.addColorStop(1,  col+"0)");
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r*4.5,0,Math.PI*2);
+        ctx.fillStyle = grd; ctx.fill();
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle = col+op.toFixed(2)+")"; ctx.fill();
+    }
+    requestAnimationFrame(() => animateParticles(canvas));
+}
+
+/* ══════════════════════════════════
+   SHOW FLOWERS
+══════════════════════════════════ */
+function showFlowers() {
+    const garden = document.getElementById("garden");
+    setTimeout(() => {
+        garden.style.opacity = "1";
+        garden.style.transform = "scale(1) translateY(0)";
+        const delays = [0,200,400,600,800];
+        for (let i = 1; i <= 5; i++) {
+            setTimeout(() => { const s = document.getElementById("s"+i); if(s) s.style.strokeDashoffset="0"; }, delays[i-1]);
+            setTimeout(() => { const f = document.getElementById("f"+i); if(f) animateScale(f,680); }, delays[i-1]+900);
+        }
+        [["l1a","l1b"],["l2a","l2b"],["l3a","l3b"]].forEach((pair,idx) => {
+            pair.forEach((id,j) => { const el=document.getElementById(id); if(el) fadeInEl(el,600,delays[idx]+600+j*200); });
+        });
+        setTimeout(initParticles, 500);
+    }, 300);
+}
+
+/* ══════════════════════════════════
+   SECRET BUTTON + POPUP
+══════════════════════════════════ */
+function secretClick() {
+    document.getElementById("popup").classList.add("show");
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: "themida.papadopoulou@gmail.com",
+        message:  "Julisa hat auf den Knopf gedrückt – sie will echte Blumen! 🌷",
+    }).catch(() => {});
+}
+
+function closePopup() {
+    document.getElementById("popup").classList.remove("show");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("popup").addEventListener("click", function(e) {
+        if (e.target === this) closePopup();
+    });
+});
         <div id="letterSlide" class="letter-slide">
             <div id="letter" class="letter">
 
