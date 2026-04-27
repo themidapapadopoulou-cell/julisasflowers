@@ -1,6 +1,33 @@
 /* ══════════════════════════════════════════
-   PETAL BURST
+   SECRET BUTTON
    ══════════════════════════════════════════ */
+
+function secretClick() {
+    // show the popup
+    document.getElementById("popup").classList.add("show");
+
+    // send email notification via EmailJS
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: "themida.papadopoulou@gmail.com",
+        message:  "Julisa hat auf den Knopf gedrückt – sie will echte Blumen! 🌷",
+    }).catch(() => {
+        // silent fail – popup still works even if email fails
+    });
+}
+
+function closePopup() {
+    document.getElementById("popup").classList.remove("show");
+}
+
+// also close popup if clicking the dark overlay background
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("popup").addEventListener("click", function(e) {
+        if (e.target === this) closePopup();
+    });
+});
+
+
+
 
 const petalColors = [
     "#ff9ec8", "#ffb8d8", "#ffd0e8",
