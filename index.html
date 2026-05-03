@@ -365,7 +365,7 @@
             dass du nicht ausversehen oder nur aus neugier geklickt hast.</p>
         <p>und wenn du sie nicht willst, ist das okay. ich respektiere das. </p>
         <p>ich werde das machen, womit du dich am wohlsten fühlst.</p>
-        <button class="confirmButton" onclick="confirmFlowers()"> JA🌷</button>
+        <button class="confirmButton" onclick="confirmFlowers()">wenn ich dir wirklich echte schenken darf klick hier.</button>
     </div>
 </div>
 
@@ -513,7 +513,7 @@
         var btn = document.querySelector(".confirmButton");
         if (btn.classList.contains("clicked")) return;
         btn.classList.add("clicked");
-        btn.innerHTML = "wenn ich dir wirklich echte schenken darf klick hier.<br><small style='font-size:11px;letter-spacing:.08em;opacity:.75;text-transform:none;font-style:italic;'>freu mich, dass ich dir echte schenken darf. auch wenn ich deine lieblingsblumen nicht kenne, geh ich nach meinem gefühl und such welche aus, die ich denke zu dir passen. irgendwie finde ich schon einen weg dass sie in deinen händen landen. lass dich überraschen.</small>";
+        btn.innerHTML = "freu mich, dass ich dir echte schenken darf"<br><small style='font-size:11px;letter-spacing:.08em;opacity:.75;text-transform:none;font-style:italic;'>auch wenn ich deine lieblingsblumen nicht kenne, geh ich nach meinem gefühl und such welche aus, die ich denke zu dir passen. irgendwie finde ich schon einen weg dass sie in deinen händen landen. lass dich überraschen.</small>";
         try { emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: "themida.papadopoulou@gmail.com", message: "JA! Julisa möchte echte Blumen – sie hat den Bestätigungsknopf gedrückt! 🌷🌷🌷" }); } catch(e) {}
     }
 
