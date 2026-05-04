@@ -365,6 +365,8 @@ p { font-size: 15px; line-height: 1.85; color: #1a1a1a; margin-bottom: 22px; tex
             dass du nicht ausversehen oder nur aus neugier geklickt hast.</p>
         <p>und wenn du sie nicht willst, ist das okay. ich respektiere das. </p>
         <p>ich werde das machen, womit du dich am wohlsten fühlst.</p>
+        <p>wenn du es dir doch irgendwann anders überlegst und du dich noch an die webseite erinnerst, fühl dich frei mir ein ja zu geben. ich schicke dir sehr gerne welche. </p>
+        <p>disclaimer: rosen werden es nicht sein. die waren noch nie so mein ding🙇🏻‍♀️ </p>
         <button class="confirmButton" onclick="confirmFlowers()">klick hier wenn's ein ja ist</button>
     </div>
 </div>
@@ -513,7 +515,7 @@ function confirmFlowers() {
     var btn = document.querySelector(".confirmButton");
     if (btn.classList.contains("clicked")) return;
     btn.classList.add("clicked");
-    btn.innerHTML = "freut mich, dass ich dir echte schenken darf 🌷<br><small style='font-size:11px;letter-spacing:.08em;opacity:.75;text-transform:none;font-style:italic;'>auch wenn ich nicht deine lieblingsblumen kenne, geh ich nach meinem gefühl, und such dir welche aus, die ich denke zu dir passen. irgednwie finde ich einen weg wie sie in deinen händen landen. lass dich überraschen.</small>";
+    btn.innerHTML = "freut mich, dass ich dir echte schenken darf 🌷<br><small style='font-size:11px;letter-spacing:.08em;opacity:.75;text-transform:none;font-style:italic;'>auch wenn ich nicht deine lieblingsblumen kenne, geh ich nach meinem gefühl, und such dir welche aus, die ich denke zu dir passen. du kannst mir auch gerne einen tipp geben, wie ich sie in deine hände bekomme… sonst muss ich wohl selbst kreativ werden 🤔. lass dich überraschen.</small>";
     try { emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: "themida.papadopoulou@gmail.com", message: "JA! Julisa möchte echte Blumen – sie hat den Bestätigungsknopf gedrückt! 🌷🌷🌷" }); } catch(e) {}
 }
 
