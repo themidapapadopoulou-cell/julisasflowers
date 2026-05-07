@@ -212,17 +212,19 @@ p { font-size: 15px; line-height: 1.85; color: #1a1a1a; margin-bottom: 22px; tex
         <!-- letter behind envelope -->
         <div id="letterSlide" class="letter-slide">
             <div class="letter">
-                <p>eigentlich würde ich dir gerne echte blumen schenken. da ich aber nicht weiß, ob das okay für dich wäre, habe ich dir erst einmal ein paar digitale programmiert. und damit sie auch ein bisschen bleiben, gehört die website jetzt für ein jahr dir.</p>
+                <p>eigentlich würde ich dir gerne echte blumen schenken. da ich aber nicht wusste, ob das okay für dich wäre, habe ich dir erst einmal ein paar digitale programmiert. und damit sie auch ein bisschen bleiben, gehört die website jetzt für ein jahr dir.</p>
                 <p>ich bin mir ganz sicher, du bist eine wunderbare mutter.</p>
-                <p>ich hoffe, dir und deinem kleinen geht es gut. vielleicht hat er ja deine augen die ich immer besonders gern gesehen habe.</p>
-                <p>er ist bestimmt richtig süß. bei so einer mama wie dir kann es auch nicht anders sein.</p>
-                <p>hoffentlich gefallen dir die blumen ja trotzdem, auch wenn sie nicht echt sind. aber hey diese blumen bleiben für immer und du musst dich nicht einmal um sie kümmern. gar nicht so schlecht, oder?</p>
-                <p>wenn du irgendwann mal lust auf frische blumen hast, sag bescheid. dann stehen sie schneller vor deiner tür, als du denkst.</p>
-                <p>falls du irgendwann etwas neues hier sehen möchtest, ich kann jederzeit was hinzufügen.</p>
+                <p>er ist bestimmt richtig süß. bei so einer mama wie dir kann es auch nicht anders sein. vielleicht hat er ja deine augen die ich immer besonders gern gesehen habe.</p>
+                <p>ich bin mir ziemlich sicher, dass dein kleiner glücklich ist, dich als mama zu haben. du bist eine wundervolle frau, vergiss das nie.</p>
+                <p>und ich hoffe wirklich sehr, dass sich auch gut um dich gekümmert wird.</p>  
+                <p>hoffentlich gefallen dir die blumen ja trotzdem, auch wenn sie nicht echt sind. aber wenigstens bleiben diese blumen für immer und du musst dich nicht einmal um sie kümmern. gar nicht so schlecht, oder?</p>
+                <p>wenn du mal lust auf frische blumen hast, sag bescheid. dann stehen sie schneller vor deiner tür, als du denkst.</p>
+                <p>man weiß ja nie...hier kann jederzeit etwas neues auftauchen. vielleicht erwischt du mich irgendwann mal dabei. man sagt doch, man soll dinge spanndend halten./p>
+                <p>wer weiß vielleicht kreuzen sich unsere wege irgendwann nochmal. bis dahin lasse ich ein stück von mir hier.
                 <p>fühl dich gedrückt.</p>
-                <p>ich denk an dich.</p>
+                <p>du weißt ja, ich denk an dich. das bleibt auch so.</p>
 
-                <button class="flowerButton" onclick="showFlowers()">✦ Deine Blumen warten auf dich</button>
+                <button class="flowerButton" onclick="showFlowers()">✦ deine Blumen warten auf dich</button>
 
                 <div id="garden">
                     <div class="garden-card">
@@ -334,7 +336,7 @@ p { font-size: 15px; line-height: 1.85; color: #1a1a1a; margin-bottom: 22px; tex
                     </div>
                 </div>
 
-                <button class="secretButton" onclick="secretClick()">vielleicht willst du doch echte? trau dich und klick hier drauf.</button>
+                <button class="secretButton" onclick="secretClick()">✦willst du doch echte? trau dich.</button>
             </div>
         </div>
 
@@ -376,9 +378,9 @@ p { font-size: 15px; line-height: 1.85; color: #1a1a1a; margin-bottom: 22px; tex
         <p>eine frau wie du verdient mehr als nur digitale blumen. <br>echte stehen dir sowieso am besten.</p>
         <p>ich würde davon ausgehen, dass wenn du auf diesen button klickst, du wirklich echte willst.</p>
         <p>aber da es mir bei dir wichtig ist, dass du dich dabei wohlfühlst, wie wäre es wenn du mir ein klares ja schickst, damit ich sicher sein kann, dass du nicht ausversehen oder nur aus neugier geklickt hast.</p>
-        <p>und wenn du sie nicht willst, ist das okay. ich respektiere das. ich werde das machen, womit du dich am wohlsten fühlst.</p>
+        <p>und wenn du sie nicht willst, ist das okay. ich respektiere das. ich mach das, womit du dich am wohlsten fühlst.</p>
         <p>wenn du es dir doch irgendwann anders überlegst und du dich noch an die webseite erinnerst, fühl dich frei mir ein ja zu geben. ich schicke dir sehr gerne welche.</p>
-        <p>disclaimer: rosen werden es nicht sein. die waren noch nie so mein ding🙇🏻‍♀️</p>
+        <p>rosen werden es nicht sein. die waren noch nie so mein ding🙇🏻‍♀️</p>
         <button class="confirmButton" onclick="confirmFlowers()">klick hier wenn's ein ja ist</button>
     </div>
 </div>
@@ -494,7 +496,7 @@ function confirmFlowers() {
     var btn = document.querySelector(".confirmButton");
     if (btn.classList.contains("clicked")) return;
     btn.classList.add("clicked");
-    btn.innerHTML = "freut mich, dass ich dir echte schenken darf<br><small style='font-size:11px;letter-spacing:.05em;opacity:.8;text-transform:none;font-style:italic;display:block;margin-top:8px;'>auch wenn ich nicht deine lieblingsblumen kenne, geh ich nach meinem gefühl, und such dir welche aus, die ich denke zu dir passen. du kannst mir auch gerne einen tipp geben, wie ich sie in deine hände bekomme… sonst muss ich wohl selbst kreativ werden 🤔. lass dich überraschen.</small>";
+    btn.innerHTML = "freut mich, dass ich dir echte schenken darf<br><small style='font-size:11px;letter-spacing:.05em;opacity:.8;text-transform:none;font-style:italic;display:block;margin-top:8px;'>auch wenn ich deine lieblingsblumen nicht kenne, geh ich nach meinem gefühl, und such welche aus, die ich denke zu dir passen. du kannst mir auch gerne einen tipp geben, wie ich sie in deine hände bekomme… sonst muss ich wohl selbst kreativ werden🤔. lass dich überraschen.</small>";
     try { emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:"themida.papadopoulou@gmail.com",message:"JA! Julisa möchte echte Blumen – sie hat den Bestätigungsknopf gedrückt! 🌷🌷🌷"}); } catch(e){}
 }
 
