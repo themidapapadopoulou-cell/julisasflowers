@@ -117,7 +117,7 @@ body::after {
     width: 100%;
     max-width: 340px;
 
-    min-height: 220px;
+    height: 220px;
 
     overflow: hidden;
 }
@@ -252,7 +252,8 @@ body::after {
     top: 0;
     left: 50%;
 
-    width: 100%;
+    width: 92vw;
+    max-width: 540px;
 
     transform:
         translateX(-50%)
@@ -287,7 +288,6 @@ body::after {
     pointer-events: auto;
 }
 
-/* letter card */
 .letter {
     width: 100%;
 
