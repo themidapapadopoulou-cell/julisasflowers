@@ -703,7 +703,7 @@
         var btn = document.querySelector(".confirmButton");
         if (btn.classList.contains("clicked")) return;
         btn.classList.add("clicked");
-        btn.innerHTML = "<small style='font-size:11px;letter-spacing:.05em;opacity:.8;font-style:italic;display:block;margin-top:8px;'>du darfst mir gerne einen tipp geben, wie ich sie in deine hände bekomme. sonst muss ich wohl selbst kreativ werden🤔.</small>";
+        btn.innerHTML = "<small style='font-size:11px;letter-spacing:.05em;opacity:.8;font-style:italic;display:block;margin-top:8px;'>nice! freut mich, dass ich dir echte schenken darf. du darfst mir gerne einen tipp geben, wie ich sie in deine hände bekomme. sonst muss ich wohl selbst kreativ werden🤔.</small>";
         try { emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: "themida.papadopoulou@gmail.com", message: "JA! Julisa möchte echte Blumen – sie hat den Bestätigungsknopf gedrückt! 🌷🌷🌷" }); } catch(e) {}
     }
 
