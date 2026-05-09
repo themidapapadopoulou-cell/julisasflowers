@@ -195,7 +195,7 @@
         .letter {
             width: 100%;
             background: #fff;
-            padding: 44px 40px;
+            padding: 30px 28px;
             border-radius: 6px;
             border: 1px solid #e8e8e8;
             box-shadow: 0 0 50px rgba(240,80,160,.12), 0 40px 80px rgba(0,0,0,.6);
@@ -203,14 +203,14 @@
         }
 
         p {
-            font-size: 15px;
-            line-height: 1.85;
+            font-size: 14px;
+            line-height: 1.7;
             color: #1a1a1a;
-            margin-bottom: 22px;
+            margin-bottom: 13px;
             text-align: left;
         }
 
-        /* ── open button — minimal, no glow ── */
+        /* ── open button ── */
         .openButton {
             margin-top: 30px;
             padding: 11px 36px;
@@ -219,18 +219,25 @@
             font-size: 12px;
             letter-spacing: .3em;
             text-transform: uppercase;
-            background: transparent;
-            color: rgba(255,255,255,.45);
-            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(240,80,140,.04);
+            color: rgba(255,200,220,.55);
+            border: 0.5px solid rgba(240,100,150,.25);
             border-radius: 2px;
             cursor: pointer;
-            transition: color .25s, border-color .25s;
+            outline: none;
+            transition: color .3s, border-color .3s, background .3s;
+            animation: openBtnPulse 3s ease-in-out infinite;
         }
         .openButton::before { content: none; }
         .openButton::after  { content: none; }
         .openButton:hover {
-            color: rgba(255,255,255,.75);
-            border-color: rgba(255,255,255,.38);
+            color: rgba(255,220,235,.8);
+            border-color: rgba(240,100,150,.45);
+            background: rgba(240,80,140,.08);
+        }
+        @keyframes openBtnPulse {
+            0%,100% { box-shadow: 0 0 8px rgba(240,80,140,.12), 0 0 0 0 rgba(240,80,140,0); }
+            50%     { box-shadow: 0 0 18px rgba(240,80,140,.28), 0 0 0 0 rgba(240,80,140,0); }
         }
 
         /* ── flower + secret buttons ── */
