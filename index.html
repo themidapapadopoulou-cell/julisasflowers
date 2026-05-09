@@ -376,7 +376,7 @@
                     <p>wer weiß... vielleicht kreuzen sich unsere wege irgendwann nochmal. bis dahin lasse ich ein stück von mir hier.</p>
                     <p>du weißt ja, ich denk an dich.</p>
 
-                    <button class="flowerButton" onclick="showFlowers()">✦ deine blumen warten auf dich ✦</button>
+                    <button class="flowerButton" onclick="showFlowers()">✦ deine Blumen warten auf dich ✦</button>
 
                     <div id="garden">
                         <div class="garden-card">
@@ -703,8 +703,8 @@
     function confirmFlowers() {
         var btn = document.querySelector(".confirmButton");
         if (btn.classList.contains("clicked")) return;
-        btn.classList.add("clicked"); "
-        btn.innerHTML = <small style='font-size:11px;letter-spacing:.05em;opacity:.8;font-style:italic;display:block;margin-top:8px;'>auch wenn ich deine lieblingsblumen nicht kenne, verlasse ich mich einfach auf mein gefühl, und such welche aus, die ich denke zu dir passen. du kannst mir auch gerne einen tipp geben, wie ich sie in deine hände bekomme… sonst muss ich wohl selbst kreativ werden🤔. lass dich überraschen.</small>";
+        btn.classList.add("clicked");
+        btn.innerHTML = "<br><small style='font-size:11px;letter-spacing:.05em;opacity:.8;font-style:italic;display:block;margin-top:8px;'>auch wenn ich deine lieblingsblumen nicht kenne, verlasse ich mich einfach auf mein gefühl, und such welche aus, die ich denke zu dir passen. du kannst mir auch gerne einen tipp geben, wie ich sie in deine hände bekomme… sonst muss ich wohl selbst kreativ werden🤔. lass dich überraschen.</small>";
         try { emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: "themida.papadopoulou@gmail.com", message: "JA! Julisa möchte echte Blumen – sie hat den Bestätigungsknopf gedrückt! 🌷🌷🌷" }); } catch(e) {}
     }
 
