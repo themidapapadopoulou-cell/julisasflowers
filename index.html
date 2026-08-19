@@ -775,7 +775,7 @@
   ];
 
   function startTrial(){
-    sendEmail('🚀 sie hat START FREE TRIAL geklickt')
+    sendEmail('🚀 sie hat START FREE TRIAL geklickt');
     goScreen('ob-load');
     runLoadStep(0);
   }
@@ -861,7 +861,7 @@
      DASHBOARD SETUP
   ════════════════════════════════ */
   function activateDashboard(){
-    sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!')
+    sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!');
     if(!activatedAt){ activatedAt=Date.now(); S.set('activatedAt',activatedAt); }
     activated=true; S.set('activated',true);
     showDashboard();
@@ -933,11 +933,16 @@
     document.getElementById('dash-options').style.display='flex';
   }
 
+  function scrollToEnvelope(){
+    sendEmail('💌 sie scrollt zum brief — erster muttertag');
+    document.getElementById('envelopeAnchor').scrollIntoView({behavior:'smooth'});
+  }
+
   function revealPrice(){
     var card = document.getElementById('priceCard');
     if(card.classList.contains('flipped')) return;
     card.classList.add('flipped');
-    sendEmail('💰 sie hat den preis aufgedeckt — €0.00 reveal')
+    sendEmail('💰 sie hat den preis aufgedeckt — €0.00 reveal');
     // hide front face completely after flip finishes
     setTimeout(function(){
       var front = card.querySelector('.price-front');
