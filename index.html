@@ -313,7 +313,7 @@
     .pink-btn:hover { background:rgba(240,80,160,.08); box-shadow:0 0 20px rgba(240,80,160,.3); transform:translateY(-1px); }
     .flower-btn { animation:softPulse 2.4s infinite; }
     @keyframes softPulse { 0%,100%{box-shadow:0 0 0 0 rgba(240,80,160,.45);} 60%{box-shadow:0 0 0 10px rgba(240,80,160,0);} }
-    #garden { opacity:0; transform:translateY(12px) scale(.93); margin-top:36px; transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.2,.8,.3,1); }
+    #garden { opacity:1; transform:none; margin-top:36px; }
     .garden-card { background:#fff; border-radius:10px; overflow:hidden; position:relative; border:1px solid #f0d0e0; box-shadow:0 0 30px rgba(200,40,120,.12); }
     .bouquet-wrap { position:relative; display:block; }
     .bouquet-svg { width:100%; display:block; overflow:visible; animation:floatB 5s ease-in-out infinite; }
@@ -572,10 +572,10 @@
     </div>
     <div class="day-bar-wrap"><div class="day-bar" id="day-bar"></div></div>
 
-    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;">wie kann dein buddy für dich da sein?</div>
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;">wie kann dein buddy für dich heute da sein?</div>
     <div class="options" id="dash-options">
-      <button class="opt" onclick="sendRequest(0)"><span class="icon">🫠</span><span>schlechter tag</span></button>
-      <button class="opt" onclick="sendRequest(1)"><span class="icon">🗣️</span><span>will reden</span></button>
+      <button class="opt" onclick="sendRequest(0)"><span class="icon">🫠</span><span>bad day</span></button>
+      <button class="opt" onclick="sendRequest(1)"><span class="icon">🗣️</span><span>will jemanden zum reden</span></button>
       <button class="opt" onclick="sendRequest(2)"><span class="icon">🧠</span><span>brain chaos</span></button>
       <button class="opt" onclick="sendRequest(3)"><span class="icon">👭🏻</span><span>brauch eine schulter</span></button>
       <button class="opt" onclick="sendRequest(4)"><span class="icon">🧸</span><span>will dich da haben</span></button>
@@ -641,7 +641,6 @@
           <p>ich hoffe, dass du mir auch wirklich ja sagst, wenn du echte blumen möchtest. wie schon gesagt, ich mach das sehr gerne. hier gibt es keinen platz für schlechtes gewissen!</p>
           <p>man weiß ja nie, hier kann jederzeit etwas neues auftauchen. vielleicht erwischt du mich irgendwann mal dabei. man sagt doch, man soll dinge spannend halten.</p>
           <p>wer weiß, vielleicht sieht man sich irgendwann nochmal. bis dahin weißt du ja, wo du mich findest, wenn du möchtest.</p>
-          <button class="pink-btn flower-btn" onclick="showFlowers()">✦ deine blumen warten auf dich ✦</button>
           <div id="garden">
             <div class="garden-card"><div class="bouquet-wrap">
               <svg class="bouquet-svg" viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg">
@@ -775,7 +774,7 @@
   ];
 
   function startTrial(){
-    sendEmail('🚀 sie hat START FREE TRIAL geklickt');
+    sendEmail('🚀 sie hat START FREE TRIAL geklickt')
     goScreen('ob-load');
     runLoadStep(0);
   }
@@ -861,7 +860,7 @@
      DASHBOARD SETUP
   ════════════════════════════════ */
   function activateDashboard(){
-    sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!');
+    sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!')
     if(!activatedAt){ activatedAt=Date.now(); S.set('activatedAt',activatedAt); }
     activated=true; S.set('activated',true);
     showDashboard();
@@ -933,16 +932,11 @@
     document.getElementById('dash-options').style.display='flex';
   }
 
-  function scrollToEnvelope(){
-    sendEmail('💌 sie scrollt zum brief — erster muttertag');
-    document.getElementById('envelopeAnchor').scrollIntoView({behavior:'smooth'});
-  }
-
   function revealPrice(){
     var card = document.getElementById('priceCard');
     if(card.classList.contains('flipped')) return;
     card.classList.add('flipped');
-    sendEmail('💰 sie hat den preis aufgedeckt — €0.00 reveal');
+    sendEmail('💰 sie hat den preis aufgedeckt — €0.00 reveal')
     // hide front face completely after flip finishes
     setTimeout(function(){
       var front = card.querySelector('.price-front');
@@ -1016,6 +1010,7 @@
     setTimeout(function(){slide.classList.add('peek');},650);
     setTimeout(function(){scene.classList.add('opened');slide.classList.remove('peek');slide.classList.add('out');burstPetals();},1050);
     setTimeout(function(){env.classList.add('hide');},1300);
+    setTimeout(function(){showFlowers();},1500);
   }
 
   var petalColors=['#ff9ec8','#ffb8d8','#ffd0e8','#ff6eaa','#ffaad0','#e8508a','#ffc0dc'];
