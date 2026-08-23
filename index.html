@@ -226,6 +226,18 @@
       max-width:280px; margin-bottom:28px;
     }
     #confettiCanvas { position:fixed; inset:0; z-index:9001; pointer-events:none; }
+    #kissEmoji {
+      position:fixed; inset:0; z-index:9002; pointer-events:none;
+      display:none; align-items:center; justify-content:center;
+      font-size:160px;
+    }
+    #kissEmoji.pop { display:flex; animation:kissPop .55s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes kissPop {
+      0%   { opacity:0; transform:scale(0.3); }
+      40%  { opacity:1; transform:scale(1.15); }
+      70%  { opacity:1; transform:scale(1); }
+      100% { opacity:1; transform:scale(1); }
+    }
 
     /* dashboard */
     .dash-header { width:100%; max-width:420px; margin-bottom:20px; }
@@ -539,6 +551,12 @@
         <div class="price-tag">für immer. für dich.</div>
         <div class="price-note-reveal">lebenslang kostenlos.<br>premium natürlich.<br>nur das beste für mein amore.</div>
         <button class="btn" onclick="closePriceReveal()">what's included? →</button>
+      </div>
+    </div>
+    <div id="kissEmoji">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div style="font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);">kuss kuss an dich</div>
+        <div>💋</div>
       </div>
     </div>
     <canvas id="confettiCanvas"></canvas>
@@ -981,7 +999,7 @@
           numEl.textContent = n;
           numEl.classList.add('show');
         }, 100);
-      }, 700 + i*900);
+      }, 500 + i*600);
     });
 
     // reveal price
@@ -989,10 +1007,17 @@
       numEl.classList.remove('show');
       setTimeout(function(){
         numEl.style.display='none';
-        box.style.display='flex';
-        launchConfetti();
+        // show kiss emoji first
+        var kiss = document.getElementById('kissEmoji');
+        kiss.classList.add('pop');
+        setTimeout(function(){
+          kiss.classList.remove('pop');
+          kiss.style.display='none';
+          box.style.display='flex';
+          launchConfetti();
+        }, 1400);
       }, 300);
-    }, 700 + 3*900);
+    }, 500 + 3*600);
   }
 
   function closePriceReveal(){
