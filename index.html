@@ -272,8 +272,13 @@
       background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
       border-radius:50%; width:36px; height:36px;
       display:flex; align-items:center; justify-content:center;
-      cursor:pointer; font-size:16px; transition:background .2s;
+      cursor:pointer; font-size:16px;
+      animation:secretPulse 2.5s ease-in-out infinite;
       -webkit-tap-highlight-color:transparent;
+    }
+    @keyframes secretPulse {
+      0%,100% { box-shadow:0 0 0 0 rgba(232,80,122,0); }
+      50%      { box-shadow:0 0 0 4px rgba(232,80,122,0.12); }
     }
     .secret:hover { background:rgba(255,255,255,.09); }
     .secret-toast {
@@ -1150,7 +1155,6 @@
   function addSpark(w,h,init){sparks.push({x:Math.random()*w,y:init?Math.random()*h:h*(.2+Math.random()*.75),r:.4+Math.random()*2,life:init?Math.random():0,maxLife:.5+Math.random()*.9,speed:.003+Math.random()*.006,drift:(Math.random()-.5)*.35,rise:-.15-Math.random()*.45,warm:Math.random()>.45});}
   function tickSparks(c){if(!sparksOn)return;var ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);for(var i=sparks.length-1;i>=0;i--){var s=sparks[i];s.life+=s.speed;s.x+=s.drift;s.y+=s.rise;if(s.life>s.maxLife){sparks.splice(i,1);addSpark(c.width,c.height,false);continue;}var pr=s.life/s.maxLife,op=pr<.3?pr/.3:pr>.7?(1-pr)/.3:1;var col=s.warm?'rgba(255,'+(150+Math.floor(Math.random()*80))+',' +(200+Math.floor(Math.random()*50))+',' :'rgba(255,255,'+(210+Math.floor(Math.random()*45))+',';var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4.5);g.addColorStop(0,col+(op*.85).toFixed(2)+')');g.addColorStop(.4,col+(op*.35).toFixed(2)+')');g.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(s.x,s.y,s.r*4.5,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=col+op.toFixed(2)+')';ctx.fill();}requestAnimationFrame(function(){tickSparks(c);});}
   function showFlowers(){
-    sendEmail('🌸 sie hat ihre blumen geöffnet ✦ deine blumen warten auf dich ✦')
     var garden=document.getElementById('garden');setTimeout(function(){garden.style.opacity='1';garden.style.transform='scale(1) translateY(0)';var d=[0,200,400,600,800];for(var i=1;i<=5;i++){(function(i){setTimeout(function(){var s=document.getElementById('s'+i);if(s)s.style.strokeDashoffset='0';},d[i-1]);setTimeout(function(){var f=document.getElementById('f'+i);if(f)animateScale(f,680);},d[i-1]+900);})(i);}[['l1a','l1b'],['l2a','l2b'],['l3a','l3b']].forEach(function(pair,idx){pair.forEach(function(id,j){var el=document.getElementById(id);if(el)fadeInEl(el,600,d[idx]+600+j*200);});});setTimeout(initParticles,500);},300);}
   function secretClick(){document.getElementById('popup').classList.add('show');sendEmail('Julisa hat auf den Knopf gedrückt 🌷')}
   function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('JA! Julisa möchte echte Blumen 🌷🌷🌷')}
