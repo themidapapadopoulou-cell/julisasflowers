@@ -198,10 +198,10 @@
     #priceOverlay {
       position:fixed; inset:0; z-index:9000;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      background:rgba(7,5,7,0); pointer-events:none;
-      transition:background .4s ease;
+      background:rgba(0,0,0,0); pointer-events:none;
+      transition:background .3s ease;
     }
-    #priceOverlay.show { background:rgba(7,5,7,.94); pointer-events:auto; }
+    #priceOverlay.show { background:rgb(0,0,0); pointer-events:auto; }
     #countdownNum {
       font-family:var(--mono); font-size:130px; font-weight:700; color:var(--cream);
       opacity:0; transform:scale(1.5); transition:opacity .2s ease, transform .2s ease;
@@ -503,7 +503,7 @@
       </div>
     </div>
     <div class="canvas-hint" id="testHint">← ziehen oder tippen</div>
-    <div style="width:100%;max-width:420px;margin-bottom:16px;position:relative;">
+    <div style="width:100%;max-width:420px;margin-bottom:16px;position:relative;display:none;" id="buddyNote">
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;border-top-left-radius:2px;padding:14px 16px;font-family:var(--sans);font-size:12px;color:var(--grey);line-height:1.75;font-style:italic;">
         menschen zu programmieren ist definitely not my strength... tut mir leid, dass sie so aussehen 🤦🏻‍♀️ je mehr ich probiert hab, desto schlechter sahen die aus. aber ganz ehrlich, was aussehen angeht virtuell oder in real life, kommt sowieso keiner an dich ran.
       </div>
@@ -576,7 +576,7 @@
       <div class="benefit-row"><span class="check">✓</span><span>schlechte jokes - du wirst trotzdem lachen. hoffentlich.</span></div>
       <div class="benefit-row"><span class="check">✓</span><span>random nonsense. dein buddy hat vielleicht adhs.</span></div>
       <div class="benefit-row"><span class="check">✓</span><span>geographical flexibility. entfernung? nicht unser problem.</span></div>
-      <div class="benefit-row"><span class="check">✓</span><span>vertrauen - 90% erhalten. 10% pending. upgrade aud 100% in bearbeitung.</span></div>
+      <div class="benefit-row"><span class="check">✓</span><span>vertrauen - 90% erhalten. 10% pending. upgrade auf 100% in bearbeitung.</span></div>
     </div>
     <button class="btn" onclick="goScreen('ob-terms')">terms & conditions →</button>
   </div>
@@ -592,7 +592,7 @@
       <div class="term"><span class="tn">03.</span><span>distance not considered a valid excuse.</span></div>
       <div class="term"><span class="tn">04.</span><span>die nutzerin darf den buddy vermissen. auch wenn das vermutlich eher unwahrscheinlich ist. man darf ja träumen. </span></div>
       <div class="term"><span class="tn">05.</span><span>emergency shoulder access always allowed.</span></div>
-      <div class="term"><span class="tn">06.</span><span>buddy kann & wird dich gelegentlich daran erinnern, wie toll er dich findet. leider unvermeidbar. wiedersprechen ist zwecklos.</span></div>
+      <div class="term"><span class="tn">06.</span><span>buddy kann & wird dich gelegentlich daran erinnern, wie toll er dich findet. leider unvermeidbar. widersprechen ist zwecklos.</span></div>
       <div class="term"><span class="tn">07.</span><span>premium mitgliedschaft läuft lebenslang. inconvenient, i know.<br><span style="color:var(--cream);"> kündigung technically possible. good luck though. erfolgsquote: 1%.</span></span></div>
     </div>
     <button class="btn" onclick="activateDashboard()">i agree. activate my buddy →</button>
@@ -865,7 +865,7 @@
       julisaSvgEl.style.transform = 'rotate(-20deg)';
       julisa.style.cursor = 'default';
       hint.textContent = 'test result: successful ✓';
-      setTimeout(function(){ resultBox.style.display='block'; nextBtn.style.display='inline-block'; }, 600);
+      setTimeout(function(){ resultBox.style.display='block'; nextBtn.style.display='inline-block'; var note=document.getElementById('buddyNote'); if(note){note.style.display='block'; note.style.animation='scrIn .5s cubic-bezier(.22,1,.36,1) forwards';} }, 600);
     }
 
     julisa.addEventListener('mousedown', function(e){
