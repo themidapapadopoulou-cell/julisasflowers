@@ -556,22 +556,6 @@
     </div>
 
     <!-- countdown overlay -->
-    <div id="priceOverlay">
-      <div id="countdownNum"></div>
-      <div id="priceRevealBox">
-        <div class="big-price">€0.00</div>
-        <div class="price-tag">für immer. für dich.</div>
-        <div class="price-note-reveal">lebenslang kostenlos.<br>premium natürlich.<br>nur das beste für mein amore.</div>
-        <button class="btn" onclick="closePriceReveal()">what's included? →</button>
-      </div>
-    </div>
-    <div id="kissEmoji">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-        <div style="font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);">kuss kuss an dich</div>
-        <div>💋</div>
-      </div>
-    </div>
-    <canvas id="confettiCanvas"></canvas>
     <button class="btn" id="price-next-btn" onclick="goScreen('ob-benefits')" style="display:none;">what's included? →</button>
   </div>
 
@@ -650,17 +634,17 @@
         <div style="display:flex;gap:14px;">
           <button onclick="openModal('benefits')" style="background:none;border:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);cursor:pointer;transition:color .2s;padding:0;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='var(--grey)'">📋 what's included</button>
           <button onclick="openModal('terms')" style="background:none;border:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);cursor:pointer;transition:color .2s;padding:0;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='var(--grey)'">📄 terms & conditions</button>
+          <button onclick="replayReveal()" style="background:none;border:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);cursor:pointer;transition:color .2s;padding:0;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='var(--grey)'">💰 renewal price</button>
         </div>
       </div>
       <div class="field"><span>shoulder compatibility</span><span class="g">98%</span></div>
       <div class="field"><span>emotional support potential</span><span class="g">promising</span></div>
       <div class="field"><span>chaos compatibility</span><span class="p">concerningly high</span></div>
-      <div class="field"><span>distance</span><span class="g">far from impossible</span></div>
+      <div class="field"><span>distance</span><span class="g">far from impossible.</span></div>
       <div class="field"><span>actual testing</span><span class="g">finally happening</span></div>
       <div class="field"><span>official status</span><span class="g">vorläufig approved</span></div>
       <div class="field"><span>shoulder requests</span><span id="stat-requests">0</span></div>
       <div class="field"><span>shoulders deployed</span><span id="stat-deployed" class="g">0</span></div>
-      <div class="field"><span>renewal price</span><span class="g">€0.00</span></div>
       <div class="field"><span>chaos incidents</span><span id="stat-chaos" class="p">0</span></div>
     </div>
 
@@ -1023,6 +1007,28 @@
     document.getElementById('dash-options').style.display='flex';
   }
 
+  function replayReveal(){
+    sendEmail('💰 sie schaut sich den preis nochmal an 🤨');
+    var overlay = document.getElementById('priceOverlay');
+    var numEl   = document.getElementById('countdownNum');
+    var box     = document.getElementById('priceRevealBox');
+    var kiss    = document.getElementById('kissEmoji');
+    // reset state
+    numEl.style.display='none';
+    box.style.display='none';
+    kiss.style.display='none'; kiss.classList.remove('pop');
+    overlay.classList.add('show');
+    // straight to kiss
+    setTimeout(function(){
+      kiss.classList.add('pop'); kiss.style.display='flex';
+      setTimeout(function(){
+        kiss.classList.remove('pop'); kiss.style.display='none';
+        box.style.display='flex';
+        launchConfetti();
+      },1400);
+    },300);
+  }
+
   function openModal(type){
     document.getElementById('modal-'+type).classList.add('show');
     if(type==='benefits') sendEmail('📋 sie schaut sich an was included ist');
@@ -1084,8 +1090,13 @@
 
   function closePriceReveal(){
     document.getElementById('priceOverlay').classList.remove('show');
-    document.getElementById('price-next-btn').style.display='inline-block';
-    goScreen('ob-benefits');
+    document.getElementById('priceRevealBox').style.display='none';
+    // only navigate if we're in onboarding flow
+    var nextBtn = document.getElementById('price-next-btn');
+    if(nextBtn && document.getElementById('ob-trial-active').classList.contains('on')){
+      nextBtn.style.display='inline-block';
+      goScreen('ob-benefits');
+    }
   }
 
   /* ── confetti ── */
@@ -1218,5 +1229,23 @@
   function closePopup(){document.getElementById('popup').classList.remove('show');}
   document.getElementById('popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
 </script>
+
+<!-- price reveal overlay — lives at body level so it works from dashboard too -->
+<div id="priceOverlay">
+  <div id="countdownNum"></div>
+  <div id="priceRevealBox">
+    <div class="big-price">€0.00</div>
+    <div class="price-tag">für immer. für dich.</div>
+    <div class="price-note-reveal">lebenslang kostenlos.<br>premium natürlich.<br>nur das beste für mein amore.</div>
+    <button class="btn" onclick="closePriceReveal()">schließen ✕</button>
+  </div>
+</div>
+<div id="kissEmoji">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);">kuss kuss an dich</div>
+    <div>💋</div>
+  </div>
+</div>
+<canvas id="confettiCanvas"></canvas>
 </body>
 </html>
