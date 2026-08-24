@@ -645,7 +645,13 @@
 
     <!-- stats -->
     <div class="card" style="max-width:420px;">
-      <div class="card-label">buddy statistics</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-label" style="margin-bottom:0;">buddy statistics</div>
+        <div style="display:flex;gap:14px;">
+          <button onclick="openModal('benefits')" style="background:none;border:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);cursor:pointer;transition:color .2s;padding:0;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='var(--grey)'">📋 what's included</button>
+          <button onclick="openModal('terms')" style="background:none;border:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);cursor:pointer;transition:color .2s;padding:0;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='var(--grey)'">📄 terms & conditions</button>
+        </div>
+      </div>
       <div class="field"><span>shoulder compatibility</span><span class="g">98%</span></div>
       <div class="field"><span>emotional support potential</span><span class="g">promising</span></div>
       <div class="field"><span>chaos compatibility</span><span class="p">concerningly high</span></div>
@@ -659,6 +665,41 @@
     </div>
 
     <button class="scroll-nudge" onclick="scrollToEnvelope()">▾ &nbsp; erster muttertag </button>
+
+    <!-- benefits modal -->
+    <div id="modal-benefits" class="popup-overlay" onclick="if(event.target===this)closeModal('benefits')">
+      <div class="popup-card" style="background:#0e0a12;border:1px solid rgba(255,255,255,.08);">
+        <button class="popup-close" onclick="closeModal('benefits')" style="color:var(--grey);">✕</button>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin-bottom:16px;">what's included</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div class="benefit-row"><span class="check">✓</span><span>unlimited emotional support. von mir gibt's davon mehr als genug.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>schulter zum anlehnen. buddy hat seine schultern dafür trainiert. might wanna try them out. die halten einiges aus.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>an deiner seite sein, bei bedarf. und manchmal auch ungefragt.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>überdurchschnittlich viele komplimente. buddy kann sich leider nicht zurückhalten. sorry not sorry.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>schlechte jokes - du wirst trotzdem lachen. hoffentlich.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>random nonsense. dein buddy hat vielleicht adhs.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>geographical flexibility. entfernung? nicht unser problem.</span></div>
+          <div class="benefit-row"><span class="check">✓</span><span>vertrauen - 90% erhalten. 10% pending. upgrade auf 100% in bearbeitung.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- terms modal -->
+    <div id="modal-terms" class="popup-overlay" onclick="if(event.target===this)closeModal('terms')">
+      <div class="popup-card" style="background:#0e0a12;border:1px solid rgba(255,255,255,.08);">
+        <button class="popup-close" onclick="closeModal('terms')" style="color:var(--grey);">✕</button>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin-bottom:16px;">terms & conditions</div>
+        <div class="terms-list">
+          <div class="term"><span class="tn">01.</span><span>lehn dich an mich an.</span></div>
+          <div class="term"><span class="tn">02.</span><span>schulter ist jederzeit verfügbar. theoretisch sogar in echt.</span></div>
+          <div class="term"><span class="tn">03.</span><span>distance not considered a valid excuse.</span></div>
+          <div class="term"><span class="tn">04.</span><span>die nutzerin darf den buddy vermissen. auch wenn das vermutlich eher unwahrscheinlich ist. man darf ja träumen.</span></div>
+          <div class="term"><span class="tn">05.</span><span>emergency shoulder access always allowed.</span></div>
+          <div class="term"><span class="tn">06.</span><span>buddy kann & wird dich gelegentlich daran erinnern, wie toll er dich findet. leider unvermeidbar. widersprechen ist zwecklos.</span></div>
+          <div class="term"><span class="tn">07.</span><span>premium mitgliedschaft läuft lebenslang. inconvenient, i know.<br><span style="color:var(--cream);"> kündigung technically possible. good luck though. erfolgsquote: 1%.</span></span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </section>
@@ -980,6 +1021,15 @@
   function resetDash(){
     document.getElementById('request-confirm').style.display='none';
     document.getElementById('dash-options').style.display='flex';
+  }
+
+  function openModal(type){
+    document.getElementById('modal-'+type).classList.add('show');
+    if(type==='benefits') sendEmail('📋 sie schaut sich an was included ist');
+    if(type==='terms') sendEmail('📄 sie liest die terms & conditions nochmal');
+  }
+  function closeModal(type){
+    document.getElementById('modal-'+type).classList.remove('show');
   }
 
   var priceRevealed = false;
