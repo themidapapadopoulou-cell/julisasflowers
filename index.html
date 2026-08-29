@@ -241,6 +241,24 @@
 
     /* dashboard */
     .dash-header { width:100%; max-width:420px; margin-bottom:20px; }
+    .daily-bubble {
+      width:92%; max-width:400px; margin-bottom:24px; margin-left:4%;
+      background:rgba(232,80,122,.07); border:1px solid rgba(232,80,122,.18);
+      border-radius:40px 40px 40px 8px;
+      padding:18px 22px; position:relative;
+    }
+    .daily-bubble::after {
+      content:''; position:absolute; bottom:-18px; left:22px;
+      width:12px; height:12px; border-radius:50%;
+      background:rgba(232,80,122,.12); border:1px solid rgba(232,80,122,.18);
+    }
+    .daily-bubble::before {
+      content:''; position:absolute; bottom:-30px; left:14px;
+      width:7px; height:7px; border-radius:50%;
+      background:rgba(232,80,122,.08); border:1px solid rgba(232,80,122,.15);
+    }
+    .daily-bubble .bubble-label { font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--pink); margin-bottom:8px; }
+    .daily-bubble .bubble-text { font-family:var(--sans); font-size:13px; font-weight:300; color:var(--cream); line-height:1.7; font-style:italic; }
     .dash-title { font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--pink); margin-bottom:6px; }
     .dash-day { font-family:var(--mono); font-size:13px; color:var(--grey); }
 
@@ -606,6 +624,8 @@
     </div>
     <div class="day-bar-wrap"><div class="day-bar" id="day-bar"></div></div>
 
+    <div class="daily-bubble"><div class="bubble-label">your buddy's thought of today</div><div class="bubble-text" id="bubbleText"></div></div>
+
     <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;">wie kann dein buddy für dich da sein?</div>
     <div class="options" id="dash-options">
       <button class="opt" onclick="sendRequest(0)"><span class="icon">🫠</span><span>bad day</span></button>
@@ -968,6 +988,11 @@
     document.getElementById('stat-requests').textContent=requests;
     document.getElementById('stat-deployed').textContent=requests;
     document.getElementById('stat-chaos').textContent=chaosInc;
+
+    /* daily message */
+    var msgs=["breaking news: you're still pretty. shocking, i know.","still thinking about you. unfortunately for me, probably not stopping anytime soon.","your eyes are still my favourite. yes, i'm aware i've said that before. no, i don't care.","my biggest weakness remains: you. tragic.","i miss you a little extra today. hope you're doing okay.","i'll always be on your side. even when you're wrong. especially then.","wherever you are today, i hope you're doing alright.","you have a very special place in my heart. annoyingly permanent, too.","i'll always have a soft spot for you. probably more than a soft spot, actually.","you make my heart ridiculously soft. i blame you.","i hope you're being gentle with yourself today.","i like you. embarrassingly consistently.","i'll always be happy to see your name pop up.","i'd like to hear from you again. whenever you feel like it.","you're still very much my type. unfortunately for my dignity."];
+    var d=new Date(); var seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+    var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
     goScreen('dashboard');
   }
