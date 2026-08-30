@@ -646,7 +646,7 @@
 
 
     <!-- stars row with arrows between -->
-    <div style="width:100%;max-width:420px;display:flex;align-items:center;justify-content:center;gap:10px;margin:18px 0 8px;">
+    <div style="width:100%;max-width:420px;display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 6px;">
       <svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
         <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
       </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0s;">
@@ -685,8 +685,6 @@
       </div>
       <button class="back-btn" onclick="resetDash()">← choose again</button>
     </div>
-
-    <div class="divider"></div>
 
     <div style="width:100%;max-width:420px;display:flex;gap:12px;align-items:flex-start;">
 
@@ -891,8 +889,8 @@
   window.addEventListener('DOMContentLoaded', function(){
     initAmbient();
     initEmailJS();
-    if(activated){ showDashboard(); }
-    // else landing screen is already shown
+    // always go straight to dashboard
+    showDashboard();
   });
 
   /* ════════════════════════════════
