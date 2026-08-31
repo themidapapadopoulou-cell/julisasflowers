@@ -396,7 +396,10 @@
       .opt { font-size:13px; padding:11px 13px; }
       .popup-card { padding:28px 16px; }
     }
-  </style>
+  
+    #heartCanvas { opacity:1; transition:opacity 1.2s ease; }
+    #heartCanvas.fade { opacity:0; }
+</style>
 </head>
 <body>
 <canvas id="ambientCanvas"></canvas>
@@ -889,9 +892,88 @@
   window.addEventListener('DOMContentLoaded', function(){
     initAmbient();
     initEmailJS();
-    // always go straight to dashboard
     showDashboard();
+    drawHeartIntro();
   });
+
+  function drawHeartIntro(){
+    var c = document.getElementById('heartCanvas');
+    var ctx = c.getContext('2d');
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    var cx = c.width/2, cy = c.height/2 + 20;
+    var scale = Math.min(c.width, c.height) * 0.018;
+    var colors = ['#ff4488','#ff6eb0','#ff90c0','#e8507a','#ffb0d0','#ff69b4','#ff1493','#f472a8','#c084fc','#a78bfa','#fb923c','#fbbf24'];
+    var total = 120;
+    var drawn = 0;
+    var lines = [];
+
+    /* precompute heart points */
+    for(var i=0;i<total;i++){
+      var angle = i*(Math.PI*2)/total;
+      var x = 16*Math.pow(Math.sin(angle),3)*scale;
+      var y = -(13*Math.cos(angle)-5*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*scale;
+      lines.push({x:cx+x, y:cy+y, color:colors[Math.floor(Math.random()*colors.length)]});
+    }
+
+    /* draw lines faster - 4 per frame */
+    function drawNext(){
+      if(drawn >= total){
+        /* draw star endpoints */
+        for(var j=0;j<lines.length;j++){
+          drawStar(ctx, lines[j].x, lines[j].y, 5, lines[j].color);
+        }
+        /* fade out after 1.8s */
+        setTimeout(function(){
+          c.classList.add('fade');
+          setTimeout(function(){ c.style.display='none'; }, 1200);
+        }, 1800);
+        return;
+      }
+      for(var k=0;k<2&&drawn<total;k++){
+        var l = lines[drawn];
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(l.x, l.y);
+        ctx.strokeStyle = l.color;
+        ctx.lineWidth = 0.8;
+        ctx.globalAlpha = 0.7;
+        ctx.stroke();
+        drawn++;
+      }
+      requestAnimationFrame(drawNext);
+    }
+    drawNext();
+  }
+
+  function drawStar(ctx, x, y, size, color){
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    for(var a=0;a<8;a++){
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(size, 0);
+      ctx.moveTo(0,0);
+      ctx.rotate(Math.PI/4);
+    }
+    /* draw 8-point star */
+    ctx.beginPath();
+    for(var i=0;i<8;i++){
+      var ang = i*Math.PI/4;
+      var len = i%2===0 ? size : size*.45;
+      if(i===0) ctx.moveTo(Math.cos(ang)*len, Math.sin(ang)*len);
+      else ctx.lineTo(Math.cos(ang)*len, Math.sin(ang)*len);
+    }
+    ctx.closePath();
+    ctx.fill();
+    /* glow */
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.restore();
+  }
 
   /* ════════════════════════════════
      SCREEN NAVIGATION
@@ -1458,5 +1540,8 @@
   </div>
 </div>
 <canvas id="confettiCanvas"></canvas>
+
+<!-- heart intro overlay -->
+<canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#000;pointer-events:none;"></canvas>
 </body>
 </html>
