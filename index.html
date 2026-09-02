@@ -716,7 +716,7 @@
     <div style="width:100%;max-width:420px;margin-top:14px;">
       <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:20px 18px;">
       <div class="card-label" style="margin-bottom:12px;">send your buddy a note</div>
-      <textarea id="noteText" placeholder="tell me what’s on your mind, schick mir ein hi, oder sag mir, wie sehr du mich magst 😘 keine sorge, ich weiß selbst, dass die letzte option unrealistisch ist. either way, buddy is patiently waiting to hear from you, traumfrau." style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:14px 16px;font-family:var(--sans);font-size:13px;font-weight:300;color:var(--cream);line-height:1.7;resize:none;outline:none;transition:border-color .2s;height:90px;"></textarea>
+      <textarea id="noteText" placeholder="tell me what's on your mind, schick mir ein hi, oder sag mir, wie sehr du mich magst 😘 keine sorge, ich weiß selbst, dass die letzte option unrealistisch ist. either way, buddy is patiently waiting to hear from you, traumfrau." style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:14px 16px;font-family:var(--sans);font-size:13px;font-weight:300;color:var(--cream);line-height:1.7;resize:none;outline:none;transition:border-color .2s;height:150px;"></textarea>
       <button onclick="sendNote()" style="margin-top:10px;padding:11px 28px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:transparent;color:var(--pink);border:1px solid rgba(232,80,122,.35);border-radius:3px;cursor:pointer;transition:all .2s;width:100%;">schicken →</button>
       <div id="noteConfirm" style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--green);margin-top:10px;text-align:center;display:none;">✓ dein buddy hat's bekommen.</div>
       </div>
@@ -1087,13 +1087,13 @@
   ════════════════════════════════ */
   function activateDashboard(){
     sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!')
-    if(!activatedAt){ activatedAt=Date.now(); S.set('activatedAt',activatedAt); }
+    activatedAt=1787486400000; S.set('activatedAt',activatedAt);
     activated=true; S.set('activated',true);
     showDashboard();
   }
 
   function showDashboard(){
-    if(!activatedAt){ activatedAt=Date.now(); S.set('activatedAt',activatedAt); }
+    activatedAt=1787486400000; S.set('activatedAt',activatedAt);
     var dayMs=24*60*60*1000;
     var dayNum=Math.max(1,Math.floor((Date.now()-activatedAt)/dayMs)+1);
     var pct=Math.min(100,(dayNum/30)*100);
