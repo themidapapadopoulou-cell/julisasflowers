@@ -399,6 +399,19 @@
   
     #heartCanvas { opacity:1; transition:opacity 1.2s ease; }
     #heartCanvas.fade { opacity:0; }
+
+    #scrollHint {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      z-index:100; display:flex; flex-direction:column; align-items:center; gap:4px;
+      pointer-events:none; transition:opacity .5s ease;
+    }
+    #scrollHint.hidden { opacity:0; }
+    #scrollHint span {
+      font-family:var(--mono); font-size:9px; letter-spacing:.14em;
+      text-transform:uppercase; color:rgba(232,80,122,.5);
+    }
+    #scrollHint svg { animation:scrollBounce 1.4s ease-in-out infinite; }
+    @keyframes scrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
 </style>
 </head>
 <body>
@@ -860,10 +873,7 @@
   <div class="popup-card">
     <button class="popup-close" onclick="closePopup()">✕</button>
     <p>eine frau wie du verdient mehr als nur digitale blumen. echte stehen dir sowieso am besten.</p>
-    <p>aber weil es mir bei dir wichtig ist, dass du dich damit wohlfühlst, wie wäre es wenn du mir ein klares ja schickst, damit ich sicher sein kann, dass du nicht nur aus neugier hier gelandet bist.</p>
-    <p>und wenn du sie nicht willst, ist das auch okay. ich mach das, womit du dich am wohlsten fühlst.</p>
     <p>rosen werden es aber wahrscheinlich nicht. ich finde die zu basic. du bist alles andere als das.</p>
-    <button class="confirm-btn-popup" onclick="confirmFlowers()">klick hier wenn's ein ja ist</button>
   </div>
 </div>
 <canvas id="petalCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;display:block;"></canvas>
@@ -908,37 +918,90 @@
     var drawn = 0;
     var lines = [];
 
-    /* precompute heart points */
-    for(var i=0;i<total;i++){
-      var angle = i*(Math.PI*2)/total;
-      var x = 16*Math.pow(Math.sin(angle),3)*scale;
-      var y = -(13*Math.cos(angle)-5*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*scale;
-      lines.push({x:cx+x, y:cy+y, color:colors[Math.floor(Math.random()*colors.length)]});
+    /* small hearts scattered around */
+    var smallDefs = [
+      {cx: c.width*.15, cy: c.height*.22, sc: scale*.32},
+      {cx: c.width*.85, cy: c.height*.2,  sc: scale*.25},
+      {cx: c.width*.1,  cy: c.height*.68, sc: scale*.2},
+      {cx: c.width*.9,  cy: c.height*.65, sc: scale*.28},
+      {cx: c.width*.5,  cy: c.height*.08, sc: scale*.18},
+    ];
+    var smallSets = smallDefs.map(function(sh){
+      var arr=[];
+      for(var i=0;i<60;i++){
+        var a=i*(Math.PI*2)/60;
+        var x=16*Math.pow(Math.sin(a),3)*sh.sc;
+        var y=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*sh.sc;
+        arr.push({x:sh.cx+x,y:sh.cy+y,color:colors[Math.floor(Math.random()*colors.length)]});
+      }
+      return {lines:arr,cx:sh.cx,cy:sh.cy,sc:sh.sc};
+    });
+
+    function drawSmall(sc2){
+      smallSets.forEach(function(sh){
+        ctx.save();
+        if(sc2){ctx.translate(sh.cx,sh.cy);ctx.scale(sc2,sc2);ctx.translate(-sh.cx,-sh.cy);}
+        sh.lines.forEach(function(l){
+          ctx.beginPath();ctx.moveTo(sh.cx,sh.cy);ctx.lineTo(l.x,l.y);
+          ctx.strokeStyle=l.color;ctx.lineWidth=0.4;ctx.globalAlpha=0.45;ctx.stroke();
+        });
+        sh.lines.forEach(function(l){drawStar(ctx,l.x,l.y,2.5,l.color);});
+        ctx.restore();
+      });
     }
 
-    /* draw lines faster - 4 per frame */
+    /* precompute big heart points */
+    for(var i=0;i<total;i++){
+      var angle=i*(Math.PI*2)/total;
+      var x=16*Math.pow(Math.sin(angle),3)*scale;
+      var y=-(13*Math.cos(angle)-5*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*scale;
+      lines.push({x:cx+x,y:cy+y,color:colors[Math.floor(Math.random()*colors.length)]});
+    }
+
     function drawNext(){
-      if(drawn >= total){
-        /* draw star endpoints */
+      if(drawn>=total){
+        /* draw everything complete */
+        ctx.clearRect(0,0,c.width,c.height);
+        drawSmall(1);
         for(var j=0;j<lines.length;j++){
-          drawStar(ctx, lines[j].x, lines[j].y, 5, lines[j].color);
+          ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(lines[j].x,lines[j].y);
+          ctx.strokeStyle=lines[j].color;ctx.lineWidth=0.8;ctx.globalAlpha=0.85;ctx.stroke();
+          drawStar(ctx,lines[j].x,lines[j].y,5,lines[j].color);
         }
-        /* fade out after 1.8s */
-        setTimeout(function(){
-          c.classList.add('fade');
-          setTimeout(function(){ c.style.display='none'; }, 1200);
-        }, 1800);
+        /* heartbeat flutter */
+        var startTime=null,flutterDuration=2000;
+        function flutter(ts){
+          if(!startTime) startTime=ts;
+          var elapsed=ts-startTime;
+          if(elapsed>=flutterDuration){
+            c.classList.add('fade');
+            setTimeout(function(){c.style.display='none';},1200);
+            return;
+          }
+          var t=elapsed/flutterDuration;
+          var sc=1+0.06*(Math.pow(Math.sin(t*Math.PI*2.5),2)*Math.exp(-t*2));
+          ctx.clearRect(0,0,c.width,c.height);
+          /* small hearts pulse slightly less */
+          drawSmall(1+0.03*(Math.pow(Math.sin(t*Math.PI*2.5),2)*Math.exp(-t*2)));
+          /* big heart */
+          ctx.save();
+          ctx.translate(cx,cy);ctx.scale(sc,sc);ctx.translate(-cx,-cy);
+          ctx.globalAlpha=0.85;
+          for(var j=0;j<lines.length;j++){
+            ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(lines[j].x,lines[j].y);
+            ctx.strokeStyle=lines[j].color;ctx.lineWidth=0.8;ctx.stroke();
+            drawStar(ctx,lines[j].x,lines[j].y,5,lines[j].color);
+          }
+          ctx.restore();
+          requestAnimationFrame(flutter);
+        }
+        requestAnimationFrame(flutter);
         return;
       }
       for(var k=0;k<2&&drawn<total;k++){
-        var l = lines[drawn];
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(l.x, l.y);
-        ctx.strokeStyle = l.color;
-        ctx.lineWidth = 0.8;
-        ctx.globalAlpha = 0.7;
-        ctx.stroke();
+        var l=lines[drawn];
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(l.x,l.y);
+        ctx.strokeStyle=l.color;ctx.lineWidth=0.8;ctx.globalAlpha=0.7;ctx.stroke();
         drawn++;
       }
       requestAnimationFrame(drawNext);
@@ -1110,8 +1173,8 @@
       var msg='';
       if(dayNum<=1)       msg='still technically in the trial period.';
       else if(dayNum<=9)  msg='you\'ve been using this service for '+dayNum+' days.';
-      else if(dayNum<=19) msg='you\'ve been using this service for a suspiciously long time.';
-      else if(dayNum<=27) msg='things are getting serious.';
+      else if(dayNum<=19) msg='you know you get the good stuff for free afterwards, right.';
+      else if(dayNum<=27) msg='you know you get the good stuff for free afterwards, right.';
       else if(dayNum===29)msg='renewal approaching… just kidding. you know the price.';
       document.getElementById('dash-day-msg').textContent=msg;
     }
@@ -1521,6 +1584,13 @@
   function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('JA! Julisa möchte echte Blumen 🌷🌷🌷')}
   function closePopup(){document.getElementById('popup').classList.remove('show');}
   document.getElementById('popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
+
+  window.addEventListener('scroll', function(){
+    var hint = document.getElementById('scrollHint');
+    if(!hint) return;
+    if(window.scrollY > 60) hint.classList.add('hidden');
+    else hint.classList.remove('hidden');
+  });
 </script>
 
 <!-- price reveal overlay — lives at body level so it works from dashboard too -->
@@ -1543,5 +1613,11 @@
 
 <!-- heart intro overlay -->
 <canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#000;pointer-events:none;"></canvas>
+
+<div id="scrollHint">
+  <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+    <path d="M8 1 L8 15 M3 11 L8 17 L13 11" stroke="#e8507a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+  </svg>
+</div>
 </body>
 </html>
