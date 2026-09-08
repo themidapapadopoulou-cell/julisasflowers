@@ -911,102 +911,108 @@
     var ctx = c.getContext('2d');
     c.width = window.innerWidth;
     c.height = window.innerHeight;
-    var cx = c.width/2, cy = c.height/2 + 20;
-    var scale = Math.min(c.width, c.height) * 0.018;
-    var colors = ['#ff4488','#ff6eb0','#ff90c0','#e8507a','#ffb0d0','#ff69b4','#ff1493','#f472a8','#c084fc','#a78bfa','#fb923c','#fbbf24'];
-    var total = 120;
-    var drawn = 0;
-    var lines = [];
+    var W=c.width, H=c.height;
+    var cx=W/2, cy=H/2+20;
+    var scale=Math.min(W,H)*0.02;
+    var colors=['#ff4488','#ff6eb0','#ff90c0','#e8507a','#ffb0d0','#ff69b4','#ff1493','#f472a8','#c084fc','#a78bfa','#fb923c','#fbbf24'];
 
-    /* small hearts scattered around */
-    var smallDefs = [
-      {cx: c.width*.15, cy: c.height*.22, sc: scale*.32},
-      {cx: c.width*.85, cy: c.height*.2,  sc: scale*.25},
-      {cx: c.width*.1,  cy: c.height*.68, sc: scale*.2},
-      {cx: c.width*.9,  cy: c.height*.65, sc: scale*.28},
-      {cx: c.width*.5,  cy: c.height*.08, sc: scale*.18},
-    ];
-    var smallSets = smallDefs.map(function(sh){
+    function makeLines(hcx,hcy,sc){
       var arr=[];
-      for(var i=0;i<60;i++){
-        var a=i*(Math.PI*2)/60;
-        var x=16*Math.pow(Math.sin(a),3)*sh.sc;
-        var y=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*sh.sc;
-        arr.push({x:sh.cx+x,y:sh.cy+y,color:colors[Math.floor(Math.random()*colors.length)]});
+      for(var i=0;i<120;i++){
+        var a=i*(Math.PI*2)/120;
+        var x=16*Math.pow(Math.sin(a),3)*sc;
+        var y=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*sc;
+        arr.push({x:hcx+x,y:hcy+y,color:colors[Math.floor(Math.random()*colors.length)]});
       }
-      return {lines:arr,cx:sh.cx,cy:sh.cy,sc:sh.sc};
+      return arr;
+    }
+
+    var heartDefs=[
+      {cx:cx,    cy:cy,      sc:scale,     delay:0,   speed:2, lw:1,   ss:5},
+      {cx:W*.11, cy:H*.17,  sc:scale*.28, delay:500, speed:4, lw:0.5, ss:2.5},
+      {cx:W*.89, cy:H*.14,  sc:scale*.22, delay:800, speed:4, lw:0.5, ss:2},
+      {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:4, lw:0.4, ss:2},
+      {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:4, lw:0.5, ss:2.5},
+      {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:4, lw:0.4, ss:2},
+      {cx:W*.2,  cy:H*.91,  sc:scale*.17, delay:1000,speed:4, lw:0.4, ss:2},
+      {cx:W*.8,  cy:H*.91,  sc:scale*.2,  delay:300, speed:4, lw:0.4, ss:2},
+    ];
+
+    heartDefs.forEach(function(h){
+      h.lines=makeLines(h.cx,h.cy,h.sc);
+      h.drawn=0; h.total=120; h.active=false; h.done=false;
+      setTimeout(function(hh){return function(){hh.active=true;}}(h), h.delay);
     });
 
-    function drawSmall(sc2){
-      smallSets.forEach(function(sh){
-        ctx.save();
-        if(sc2){ctx.translate(sh.cx,sh.cy);ctx.scale(sc2,sc2);ctx.translate(-sh.cx,-sh.cy);}
-        sh.lines.forEach(function(l){
-          ctx.beginPath();ctx.moveTo(sh.cx,sh.cy);ctx.lineTo(l.x,l.y);
-          ctx.strokeStyle=l.color;ctx.lineWidth=0.4;ctx.globalAlpha=0.45;ctx.stroke();
+    var allDone=false, flutterStart=null;
+
+    function tick(ts){
+      ctx.clearRect(0,0,W,H);
+
+      if(!allDone){
+        var allActive=true, allFinished=true;
+
+        heartDefs.forEach(function(h){
+          if(!h.active){ allActive=false; return; }
+
+          if(h.drawn<h.total){
+            allFinished=false;
+            for(var k=0;k<h.speed&&h.drawn<h.total;k++) h.drawn++;
+
+            ctx.globalAlpha=0.78;
+            for(var j=0;j<h.drawn;j++){
+              var l=h.lines[j];
+              ctx.beginPath();ctx.moveTo(h.cx,h.cy);ctx.lineTo(l.x,l.y);
+              ctx.strokeStyle=l.color;ctx.lineWidth=h.lw;ctx.stroke();
+            }
+
+            var tip=h.lines[h.drawn-1];
+            var g=ctx.createRadialGradient(tip.x,tip.y,0,tip.x,tip.y,h.sc*6);
+            g.addColorStop(0,'rgba(255,200,230,0.18)');
+            g.addColorStop(1,'rgba(255,200,230,0)');
+            ctx.fillStyle=g; ctx.globalAlpha=1;
+            ctx.beginPath();ctx.arc(tip.x,tip.y,h.sc*6,0,Math.PI*2);ctx.fill();
+
+          } else {
+            h.done=true;
+            ctx.globalAlpha=0.78;
+            h.lines.forEach(function(l){
+              ctx.beginPath();ctx.moveTo(h.cx,h.cy);ctx.lineTo(l.x,l.y);
+              ctx.strokeStyle=l.color;ctx.lineWidth=h.lw;ctx.stroke();
+            });
+            h.lines.forEach(function(l){drawStar(ctx,l.x,l.y,h.ss,l.color);});
+          }
         });
-        sh.lines.forEach(function(l){drawStar(ctx,l.x,l.y,2.5,l.color);});
-        ctx.restore();
-      });
-    }
 
-    /* precompute big heart points */
-    for(var i=0;i<total;i++){
-      var angle=i*(Math.PI*2)/total;
-      var x=16*Math.pow(Math.sin(angle),3)*scale;
-      var y=-(13*Math.cos(angle)-5*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*scale;
-      lines.push({x:cx+x,y:cy+y,color:colors[Math.floor(Math.random()*colors.length)]});
-    }
+        if(allActive && allFinished){ allDone=true; flutterStart=ts; }
 
-    function drawNext(){
-      if(drawn>=total){
-        /* draw everything complete */
-        ctx.clearRect(0,0,c.width,c.height);
-        drawSmall(1);
-        for(var j=0;j<lines.length;j++){
-          ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(lines[j].x,lines[j].y);
-          ctx.strokeStyle=lines[j].color;ctx.lineWidth=0.8;ctx.globalAlpha=0.85;ctx.stroke();
-          drawStar(ctx,lines[j].x,lines[j].y,5,lines[j].color);
-        }
-        /* heartbeat flutter */
-        var startTime=null,flutterDuration=2000;
-        function flutter(ts){
-          if(!startTime) startTime=ts;
-          var elapsed=ts-startTime;
-          if(elapsed>=flutterDuration){
-            c.classList.add('fade');
-            setTimeout(function(){c.style.display='none';},1200);
-            return;
-          }
-          var t=elapsed/flutterDuration;
-          var sc=1+0.06*(Math.pow(Math.sin(t*Math.PI*2.5),2)*Math.exp(-t*2));
-          ctx.clearRect(0,0,c.width,c.height);
-          /* small hearts pulse slightly less */
-          drawSmall(1+0.03*(Math.pow(Math.sin(t*Math.PI*2.5),2)*Math.exp(-t*2)));
-          /* big heart */
+      } else {
+        var elapsed=ts-flutterStart, dur=1400;
+        var t=Math.min(1,elapsed/dur);
+        var alpha=1-t;
+
+        heartDefs.forEach(function(h){
           ctx.save();
-          ctx.translate(cx,cy);ctx.scale(sc,sc);ctx.translate(-cx,-cy);
-          ctx.globalAlpha=0.85;
-          for(var j=0;j<lines.length;j++){
-            ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(lines[j].x,lines[j].y);
-            ctx.strokeStyle=lines[j].color;ctx.lineWidth=0.8;ctx.stroke();
-            drawStar(ctx,lines[j].x,lines[j].y,5,lines[j].color);
-          }
+          ctx.globalAlpha=alpha*0.85;
+          h.lines.forEach(function(l){
+            ctx.beginPath();ctx.moveTo(h.cx,h.cy);ctx.lineTo(l.x,l.y);
+            ctx.strokeStyle=l.color;ctx.lineWidth=h.lw;ctx.stroke();
+          });
+          h.lines.forEach(function(l){drawStar(ctx,l.x,l.y,h.ss,l.color,alpha);});
           ctx.restore();
-          requestAnimationFrame(flutter);
+        });
+
+        if(t>=1){
+          ctx.clearRect(0,0,W,H);
+          c.classList.add('fade');
+          setTimeout(function(){c.style.display='none';},1200);
+          return;
         }
-        requestAnimationFrame(flutter);
-        return;
       }
-      for(var k=0;k<2&&drawn<total;k++){
-        var l=lines[drawn];
-        ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(l.x,l.y);
-        ctx.strokeStyle=l.color;ctx.lineWidth=0.8;ctx.globalAlpha=0.7;ctx.stroke();
-        drawn++;
-      }
-      requestAnimationFrame(drawNext);
+
+      requestAnimationFrame(tick);
     }
-    drawNext();
+    requestAnimationFrame(tick);
   }
 
   function drawStar(ctx, x, y, size, color){
