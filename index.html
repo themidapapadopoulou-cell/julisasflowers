@@ -928,14 +928,14 @@
     }
 
     var heartDefs=[
-      {cx:cx,    cy:cy,      sc:scale,     delay:0,   speed:2, lw:1,   ss:5},
-      {cx:W*.11, cy:H*.17,  sc:scale*.28, delay:500, speed:4, lw:0.5, ss:2.5},
-      {cx:W*.89, cy:H*.14,  sc:scale*.22, delay:800, speed:4, lw:0.5, ss:2},
-      {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:4, lw:0.4, ss:2},
-      {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:4, lw:0.5, ss:2.5},
-      {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:4, lw:0.4, ss:2},
-      {cx:W*.2,  cy:H*.91,  sc:scale*.17, delay:1000,speed:4, lw:0.4, ss:2},
-      {cx:W*.8,  cy:H*.91,  sc:scale*.2,  delay:300, speed:4, lw:0.4, ss:2},
+      {cx:cx,    cy:cy,      sc:scale,     delay:0,   speed:1, lw:1,   ss:5},
+      {cx:W*.11, cy:H*.17,  sc:scale*.28, delay:500, speed:3, lw:0.5, ss:2.5},
+      {cx:W*.89, cy:H*.14,  sc:scale*.22, delay:800, speed:3, lw:0.5, ss:2},
+      {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:3, lw:0.4, ss:2},
+      {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:3, lw:0.5, ss:2.5},
+      {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:3, lw:0.4, ss:2},
+      {cx:W*.2,  cy:H*.91,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
+      {cx:W*.8,  cy:H*.91,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
     ];
 
     heartDefs.forEach(function(h){
@@ -987,7 +987,7 @@
         if(allActive && allFinished){ allDone=true; flutterStart=ts; }
 
       } else {
-        var elapsed=ts-flutterStart, dur=1400;
+        var elapsed=ts-flutterStart, dur=2000;
         var t=Math.min(1,elapsed/dur);
         var alpha=1-t;
 
