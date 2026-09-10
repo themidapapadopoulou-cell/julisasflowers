@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>julisa's shoulder-lending buddy</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@
 
     /* secret easter egg */
     .secret {
-      position:fixed; bottom:20px; right:20px; z-index:50;
+      position:fixed; bottom:max(20px,env(safe-area-inset-bottom,20px)); right:20px; z-index:50;
       background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
       border-radius:50%; width:36px; height:36px;
       display:flex; align-items:center; justify-content:center;
@@ -396,8 +396,8 @@
       .opt { font-size:13px; padding:11px 13px; }
       .popup-card { padding:28px 16px; }
     }
-  
-    #heartCanvas { opacity:1; transition:opacity 1.2s ease; background:var(--bg); }
+
+    #heartCanvas { opacity:1; transition:opacity 1.2s ease; background:#070507; }
     #heartCanvas.fade { opacity:0; }
 
     #scrollHint {
@@ -412,7 +412,81 @@
     }
     #scrollHint svg { animation:scrollBounce 1.4s ease-in-out infinite; }
     @keyframes scrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
-</style>
+
+
+    /* ════════════════════════════════
+       PREMIUM UNLOCK OVERLAY
+    ════════════════════════════════ */
+    #puOverlay {
+      position:fixed; inset:0; z-index:8500; background:#070507;
+      display:none; flex-direction:column; align-items:center; justify-content:center;
+      padding:32px 24px; text-align:center; overflow-y:auto;
+    }
+    #puOverlay.show { display:flex; }
+    #puStage { width:100%; max-width:420px; }
+
+    /* text elements */
+    .pu { opacity:0; transform:translateY(6px); transition:opacity .5s ease,transform .5s ease; }
+    .pu.on { opacity:1; transform:none; }
+    .pu-label { font-family:var(--mono); font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--grey); margin-bottom:6px; }
+    .pu-big { font-family:var(--mono); font-size:clamp(20px,5vw,32px); font-weight:700; color:var(--cream); letter-spacing:.08em; margin-bottom:8px; }
+    .pu-sub { font-family:var(--mono); font-size:11px; color:var(--grey); letter-spacing:.12em; margin-bottom:6px; }
+    .pu-pink { color:var(--pink); }
+    .pu-green { color:var(--green); }
+    .pu-red { color:#ff4444; }
+    .pu-divider { width:36px; height:1px; background:rgba(255,255,255,.1); margin:18px auto; }
+
+    /* progress bar */
+    .pu-bar-wrap { width:100%; max-width:280px; height:2px; background:rgba(255,255,255,.07); border-radius:2px; margin:10px auto; overflow:hidden; }
+    .pu-bar { height:100%; width:0%; border-radius:2px; transition:width 1.8s cubic-bezier(.4,0,.2,1); }
+    .pu-bar.pink { background:var(--pink); }
+    .pu-bar.green { background:var(--green); }
+
+    /* field row */
+    .pu-field { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:5px auto; padding:0 4px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; }
+    .pu-field .k { color:var(--grey); }
+    .pu-field .v { color:var(--cream); }
+
+    /* glitch */
+    .pu-glitch { animation:puGlitch .35s ease infinite; }
+    @keyframes puGlitch {
+      0%,100%{opacity:1;transform:translateX(0);}
+      30%{opacity:.6;transform:translateX(-3px);}
+      60%{opacity:.8;transform:translateX(2px);}
+    }
+
+    /* countdown */
+    #puCountdown { font-family:var(--mono); font-size:clamp(50px,12vw,80px); font-weight:700; color:var(--cream); line-height:1; }
+    #puCountdown.glitch { animation:puGlitch .2s ease infinite; color:var(--pink); }
+    #puInfinity { font-size:clamp(60px,14vw,96px); color:var(--pink); opacity:0; transform:scale(.5); transition:opacity .8s ease,transform .8s cubic-bezier(.22,1,.36,1); line-height:1; }
+    #puInfinity.on { opacity:1; transform:scale(1); }
+
+    /* benefit rows */
+    .pu-benefit { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:5px auto; padding:8px 14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:4px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--grey); opacity:0; transform:translateX(-10px); transition:opacity .4s ease,transform .4s ease,border-color .4s ease,color .4s ease; }
+    .pu-benefit.on { opacity:1; transform:none; border-color:rgba(76,195,130,.2); color:var(--cream); }
+    .pu-benefit .tick { color:var(--green); opacity:0; transition:opacity .3s ease; }
+    .pu-benefit.on .tick { opacity:1; }
+
+    /* membership card */
+    #puCard { width:100%; max-width:340px; margin:0 auto; background:linear-gradient(135deg,rgba(232,80,122,.12),rgba(100,60,180,.08)); border:1px solid rgba(232,80,122,.3); border-radius:10px; padding:24px; text-align:left; position:relative; overflow:hidden; opacity:0; transform:translateY(16px) scale(.97); transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1); }
+    #puCard.on { opacity:1; transform:none; }
+    #puCard::after { content:''; position:absolute; top:-50%; left:-60%; width:40%; height:200%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent); transform:skewX(-15deg); animation:cardShine 3s ease-in-out infinite 1s; }
+    @keyframes cardShine { 0%,100%{left:-60%;} 50%{left:120%;} }
+    .card-logo { font-family:var(--mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:16px; }
+    .card-name { font-family:var(--sans); font-size:20px; font-weight:300; color:var(--cream); margin-bottom:16px; letter-spacing:.06em; }
+    .card-badge { display:inline-block; font-family:var(--mono); font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:var(--pink); border:1px solid rgba(232,80,122,.4); border-radius:2px; padding:3px 8px; margin-bottom:16px; }
+
+    /* personal note */
+    #puNote { width:100%; max-width:360px; margin:0 auto; text-align:center; }
+    .pu-note-label { font-family:var(--mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.2); margin-bottom:24px; }
+    .pu-note-line { font-family:var(--serif); font-size:16px; font-style:italic; color:var(--cream); line-height:1.8; opacity:0; transform:translateY(4px); transition:opacity .8s ease,transform .8s ease; margin-bottom:4px; font-weight:300; }
+    .pu-note-line.on { opacity:1; transform:none; }
+
+    /* interactive button */
+    .pu-btn { margin-top:24px; padding:10px 32px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:transparent; color:var(--pink); border:1px solid rgba(232,80,122,.35); border-radius:3px; cursor:pointer; transition:all .2s; opacity:0; transform:translateY(4px); transition:opacity .4s ease,transform .4s ease,background .2s; -webkit-tap-highlight-color:transparent; }
+    .pu-btn.on { opacity:1; transform:none; }
+    .pu-btn:hover { background:rgba(232,80,122,.08); }
+  </style>
 </head>
 <body>
 <canvas id="ambientCanvas"></canvas>
@@ -666,30 +740,30 @@
       <svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
         <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
       </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
-      </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.2s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="26" height="26" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
-      </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.4s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
-      </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.6s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
-      </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.8s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
-      </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 1s;">
-        <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
-        <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
-      </svg>
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
+    </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.2s;">
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="26" height="26" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
+    </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.4s;">
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
+    </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.6s;">
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
+    </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 0.8s;">
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#f472a8" opacity=".9"/>
+    </svg><svg width="10" height="14" viewBox="0 0 10 14" style="flex-shrink:0;animation:arrowBob 1.4s ease-in-out infinite 1s;">
+      <path d="M5 1 L5 10 M1 7 L5 12 L9 7" stroke="#e8507a" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+    </svg><svg width="22" height="22" viewBox="0 0 24 24" style="flex-shrink:0;">
+      <path d="M12,2 C12,2 13.5,7 18,8 C13.5,9 12,14 12,14 C12,14 10.5,9 6,8 C10.5,7 12,2 12,2Z" fill="#e8507a" opacity=".9"/>
+    </svg>
     </div>
 
     <div id="request-confirm" style="display:none;width:100%;max-width:420px;margin-top:8px;">
@@ -713,25 +787,25 @@
 
       <div class="card" style="flex:1;margin-bottom:0;">
         <div class="card-label">buddy statistics</div>
-      <div class="field"><span>shoulder compatibility</span><span class="g">98%</span></div>
-      <div class="field"><span>emotional support</span><span class="g">promising</span></div>
-      <div class="field"><span>chaos compatibility</span><span class="p">concerningly high</span></div>
-      <div class="field"><span>distance</span><span class="g">far from impossible</span></div>
-      <div class="field"><span>actual testing</span><span class="g">finally happening</span></div>
-      <div class="field"><span>status</span><span class="g">vorläufig approved</span></div>
-      <div class="field"><span>requests</span><span id="stat-requests">0</span></div>
-      <div class="field"><span>deployed</span><span id="stat-deployed" class="g">0</span></div>
-      <div class="field"><span>chaos incidents</span><span id="stat-chaos" class="p">0</span></div>
+        <div class="field"><span>shoulder compatibility</span><span class="g">98%</span></div>
+        <div class="field"><span>emotional support</span><span class="g">promising</span></div>
+        <div class="field"><span>chaos compatibility</span><span class="p">concerningly high</span></div>
+        <div class="field"><span>distance</span><span class="g">far from impossible</span></div>
+        <div class="field"><span>actual testing</span><span class="g">finally happening</span></div>
+        <div class="field"><span>status</span><span class="g">vorläufig approved</span></div>
+        <div class="field"><span>requests</span><span id="stat-requests">0</span></div>
+        <div class="field"><span>deployed</span><span id="stat-deployed" class="g">0</span></div>
+        <div class="field"><span>chaos incidents</span><span id="stat-chaos" class="p">0</span></div>
       </div>
     </div>
 
     <!-- send a note -->
     <div style="width:100%;max-width:420px;margin-top:14px;">
       <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:20px 18px;">
-      <div class="card-label" style="margin-bottom:12px;">send your buddy a note</div>
-      <textarea id="noteText" placeholder="tell me what's on your mind, schick mir ein hi, oder sag mir, wie sehr du mich magst 😘 keine sorge, ich weiß selbst, dass die letzte option unrealistisch ist. either way, buddy is patiently waiting to hear from you, traumfrau." style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:14px 16px;font-family:var(--sans);font-size:13px;font-weight:300;color:var(--cream);line-height:1.7;resize:none;outline:none;transition:border-color .2s;height:150px;"></textarea>
-      <button onclick="sendNote()" style="margin-top:10px;padding:11px 28px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:transparent;color:var(--pink);border:1px solid rgba(232,80,122,.35);border-radius:3px;cursor:pointer;transition:all .2s;width:100%;">schicken →</button>
-      <div id="noteConfirm" style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--green);margin-top:10px;text-align:center;display:none;">✓ dein buddy hat's bekommen.</div>
+        <div class="card-label" style="margin-bottom:12px;">send your buddy a note</div>
+        <textarea id="noteText" placeholder="tell me what's on your mind, schick mir ein hi, oder sag mir, wie sehr du mich magst 😘 keine sorge, ich weiß selbst, dass die letzte option unrealistisch ist. either way, buddy is patiently waiting to hear from you, traumfrau." style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:14px 16px;font-family:var(--sans);font-size:13px;font-weight:300;color:var(--cream);line-height:1.7;resize:none;outline:none;transition:border-color .2s;height:150px;"></textarea>
+        <button onclick="sendNote()" style="margin-top:10px;padding:11px 28px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:transparent;color:var(--pink);border:1px solid rgba(232,80,122,.35);border-radius:3px;cursor:pointer;transition:all .2s;width:100%;">schicken →</button>
+        <div id="noteConfirm" style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--green);margin-top:10px;text-align:center;display:none;">✓ dein buddy hat's bekommen.</div>
       </div>
     </div>
 
@@ -798,7 +872,7 @@
           <p>und bei all dem hoffe ich wirklich, dass sich auch gut um dich gekümmert wird.</p>
           <p>hoffentlich gefallen dir die blumen ja trotzdem, auch wenn sie nicht echt sind. wenigstens bleiben diese blumen für immer und du musst dich nicht einmal um sie kümmern. gar nicht so schlecht, oder?</p>
           <p>wenn du mal lust auf frische blumen hast, sag bescheid. dann stehen sie schneller vor deiner tür, als du denkst.</p>
-          <p>ich hoffe, dass du mir auch wirklich ja sagst, wenn du echte blumen möchtest. wie schon gesagt, ich mach das sehr gerne. hier gibt es keinen platz für schlechtes gewissen!</p>
+          <p>ich hoffe, dass du mir auch wirklich ja sagst, wenn du echte blumen möchtest. wie schon gesagt, ich mach das sehr gerne. hier gibt es keinen platz für schlechtes gewissen.</p>
           <p>man weiß ja nie, hier kann jederzeit etwas neues auftauchen. vielleicht erwischt du mich irgendwann mal dabei. man sagt doch, man soll dinge spannend halten.</p>
           <p>wer weiß, vielleicht sieht man sich irgendwann nochmal. bis dahin weißt du ja, wo du mich findest, wenn du möchtest.</p>
           <div id="garden">
@@ -904,6 +978,16 @@
     initEmailJS();
     showDashboard();
     drawHeartIntro();
+    /* test mode: add ?premium to URL to preview the sequence */
+    if(window.location.href.indexOf('premium')!==-1){
+      setTimeout(function(){ startPremiumUnlock(); }, 1000);
+    }
+    if(window.location.href.indexOf('exclusivity')!==-1){
+      setTimeout(function(){
+        document.getElementById('puOverlay').classList.add('show');
+        startPremiumUnlock.stageExOnly=true;
+      }, 500);
+    }
   });
 
   function drawHeartIntro(){
@@ -934,8 +1018,8 @@
       {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:3, lw:0.4, ss:2},
       {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:3, lw:0.5, ss:2.5},
       {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:3, lw:0.4, ss:2},
-      {cx:W*.2,  cy:H*.91,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
-      {cx:W*.8,  cy:H*.91,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
+      {cx:W*.2,  cy:H*.82,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
+      {cx:W*.8,  cy:H*.82,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
     ];
 
     heartDefs.forEach(function(h){
@@ -1170,9 +1254,15 @@
     if(dayNum>=30){
       document.getElementById('dash-day-text').textContent='';
       document.getElementById('dash-day-msg').textContent='';
-      document.getElementById('day-bar').style.width='100%';
       document.querySelector('.day-bar-wrap').style.display='none';
-      document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">● lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">für dich? lebenslang kostenlos. premium natürlich.</div>';
+      if(S.get('premiumUnlocked',false)){
+        /* already seen — just show permanent premium state */
+        document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">● lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">für dich? lebenslang kostenlos. premium natürlich.</div>';
+      } else {
+        /* first time hitting day 30 — show unlock sequence */
+        document.querySelector('.dash-header').innerHTML='<div class="dash-title">trial status &nbsp;<span style="color:var(--pink);">● day 30 / 30</span></div><div id="dash-final-msg" style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">final trial day</div>';
+        setTimeout(function(){ startPremiumUnlock(); }, 1200);
+      }
     } else {
       document.getElementById('dash-day-text').textContent='day '+dayNum+' / 30';
       document.getElementById('day-bar').style.width=pct+'%';
@@ -1191,13 +1281,19 @@
 
     /* daily message */
     var msgs=[
-    "cute baby. gorgeous mum. unfair combination, really.", /* TODAY */
-     "cute baby. gorgeous mum. unfair combination, really." /* TOMORROW */
-  ];
+      "cute baby. gorgeous mum. unfair combination, really.", /* TODAY */
+      "cute baby. gorgeous mum. unfair combination, really." /* TOMORROW */    ];
     var d=new Date(); var seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
-    sendEmail('👀 julisa hat die website geöffnet');
+    fetch('https://freeipapi.com/api/json')
+            .then(function(r){return r.json();})
+            .then(function(d){
+              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
+            })
+            .catch(function(){
+              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
+            });
     goScreen('dashboard');
   }
 
@@ -1325,6 +1421,408 @@
         }, 1400);
       }, 300);
     }, 500 + 3*600);
+  }
+
+
+
+  /* ════════════════════════════════
+     PREMIUM UNLOCK SEQUENCE
+  ════════════════════════════════ */
+  function startPremiumUnlock(){
+    var stage = document.getElementById('puStage');
+    var overlay = document.getElementById('puOverlay');
+
+    /* helper: clear stage */
+    function clear(){ stage.innerHTML=''; }
+
+    /* helper: create and append element */
+    function mk(tag,cls,html){
+      var e=document.createElement(tag);
+      if(cls) e.className=cls;
+      if(html) e.innerHTML=html;
+      stage.appendChild(e);
+      return e;
+    }
+
+    /* helper: show element with delay */
+    function show(el,delay){
+      setTimeout(function(){ el.classList.add('on'); },delay);
+      return el;
+    }
+
+    /* helper: create interactive button */
+    function btn(label,delay,cb){
+      var b=mk('button','pu-btn',label);
+      show(b,delay);
+      b.onclick=function(){ b.style.pointerEvents='none'; b.style.opacity='.3'; cb(); };
+      return b;
+    }
+
+    /* helper: progress bar */
+    function bar(cls,delay,duration){
+      var w=mk('div','pu-bar-wrap');
+      var b=document.createElement('div');
+      b.className='pu-bar '+(cls||'pink');
+      w.appendChild(b);
+      setTimeout(function(){ b.style.width='100%'; b.style.transition='width '+duration+'ms cubic-bezier(.4,0,.2,1)'; },delay);
+      return w;
+    }
+
+    /* ── STAGE 1: freeze moment ── */
+    function stage1(){
+      clear();
+      show(mk('div','pu-label pu','day 30 / 30'),200);
+      show(mk('div','pu-sub pu','final trial day'),500);
+      var d=mk('div','pu-divider pu'); show(d,700);
+      show(mk('div','pu-sub pu','huh. you\'ve actually made it.'),1000);
+      setTimeout(function(){
+        show(mk('div','pu-sub pu pu-pink','initiating final buddy evaluation\u2026'),1600);
+        setTimeout(function(){
+          overlay.classList.add('show');
+          stage2();
+        },1400);
+      },800);
+    }
+
+    /* dim dashboard first */
+    document.getElementById('dashboard').style.transition='opacity .8s ease';
+    document.getElementById('dashboard').style.opacity='.15';
+    setTimeout(stage1, 800);
+
+    /* ── STAGE 2: membership review ── */
+    function stage2(){
+      clear();
+      show(mk('div','pu-big pu','FINAL MEMBERSHIP<br>REVIEW'),200);
+      var d=mk('div','pu-divider pu'); show(d,600);
+
+      var fields=[
+        ['applicant','JULISA'],
+        ['current status','FREE TRIAL'],
+        ['trial duration','30 days'],
+        ['buddy compatibility','98%'],
+      ];
+      fields.forEach(function(f,i){
+        setTimeout(function(){
+          var row=mk('div','pu-field pu');
+          row.innerHTML='<span class="k">'+f[0]+'</span><span class="v pu-green">'+f[1]+'</span>';
+          show(row,50);
+        },900+i*350);
+      });
+
+      setTimeout(function(){
+        btn('proceed to evaluation \u2192',300,stage3);
+      },900+fields.length*350+500);
+    }
+
+    /* ── STAGE 3: compatibility tests ── */
+    function stage3(){
+      clear();
+      show(mk('div','pu-label pu','running compatibility tests'),0);
+
+      var tests=[
+        {name:'SHOULDER COMPATIBILITY',scanning:'scanning…',result:'compatibility detected — 98.7%',cls:'pu-green',barCls:'green'},
+        {name:'EMOTIONAL SUPPORT POTENTIAL',scanning:'analyzing…',result:'emotional support potential: exceptionally promising',cls:'pu-green',barCls:'green'},
+        {name:'CHAOS COMPATIBILITY',scanning:'calculating…',result:'WARNING: CONCERNINGLY HIGH',cls:'pu-pink',barCls:'pink'},
+        {name:'DISTANCE ASSESSMENT',scanning:'distance detected. calculating relevance…',result:'current distance: unnecessarily large',cls:'pu-pink',barCls:'pink',extra:'how about we close the distance sometime?',extra2:'distance classified as: solvable.'},
+        {name:'ATTRACTION STATUS',scanning:'checking previous records…',result:'no significant change detected.',cls:'pu-green',barCls:'green'},
+        {name:'EYES',scanning:'cross-referencing previous data…',result:'previous favourite: confirmed. current favourite: still confirmed.',cls:'pu-green',barCls:'green'},
+        {name:'CRUSH DURATION',scanning:'30 days?',result:'incorrect.',cls:'pu-red',barCls:'pink',extra:'still dangerously attracted to the same woman. well, have you seen her? pretty impossible to get over. can you blame me?',extra2:null},
+      ];
+
+      /* each test gets its own screen */
+      function runTest(i, done){
+        if(i>=tests.length){ done(); return; }
+        var test=tests[i];
+        clear();
+        show(mk('div','pu-label pu','running compatibility tests — '+(i+1)+' / '+tests.length),0);
+        show(mk('div','pu-big pu',test.name),200);
+        var d=mk('div','pu-divider pu'); show(d,400);
+        var status=mk('div','pu-sub pu',test.scanning); show(status,500);
+        stage.appendChild(bar(test.barCls,700,1600));
+        setTimeout(function(){
+          status.textContent=test.result;
+          status.className='pu-sub pu on '+test.cls;
+          if(test.extra){
+            setTimeout(function(){
+              show(mk('div','pu-sub pu pu-pink',test.extra),200);
+              if(test.extra2){
+                setTimeout(function(){
+                  show(mk('div','pu-sub pu pu-green',test.extra2),800);
+                  setTimeout(function(){ runTest(i+1,done); },4500);
+                },800);
+              } else {
+                var extraLinger = test.extra && test.extra.length > 60 ? 4500 : 4500;
+                setTimeout(function(){ runTest(i+1,done); },extraLinger);
+              }
+            },600);
+          } else {
+            var linger = test.result.length > 60 ? 3800 : 2400;
+            setTimeout(function(){ runTest(i+1,done); },linger);
+          }
+        },2400);
+      }
+
+      /* extra checks shown together */
+      function runExtras(done){
+        clear();
+        show(mk('div','pu-big pu','ADDITIONAL CHECKS'),0);
+        var extras=[
+          'you are very easy to adore, amore',
+          'ability to remain normal around you: fragwürdig',
+          'allgemeine hübschheit: excessive',
+          'deine augen: weiterhin ein ernsthaftes problem für mich',
+          'attraction: still present',
+          'attraction: showing no signs of declining'
+        ];
+        extras.forEach(function(ex,i){
+          setTimeout(function(){
+            var row=mk('div','pu-field pu');
+            row.innerHTML='<span class="k">'+ex+'</span><span class="v pu-green">✓</span>';
+            show(row,50);
+          },400+i*320);
+        });
+        /* button to continue instead of auto-advance */
+        setTimeout(function(){
+          btn('continue →',200,done);
+        },400+extras.length*320+600);
+      }
+
+      runTest(0,function(){
+        runExtras(function(){
+          clear();
+          show(mk('div','pu-big pu pu-green','ALL TESTS COMPLETE'),200);
+          btn('see what happens →',800,stage4);
+        });
+      });
+    }
+
+    /* ── STAGE 4: system problem ── */
+    function stage4(){
+      /* screen 1: reviewing */
+      clear();
+      show(mk('div','pu-label pu','FINAL DECISION PENDING'),0);
+      var d=mk('div','pu-divider pu'); show(d,200);
+      show(mk('div','pu-sub pu','reviewing trial conditions…'),500);
+      show(mk('div','pu-sub pu','reviewing membership agreement…'),1200);
+      show(mk('div','pu-sub pu','checking expiration requirements…'),1900);
+
+      /* screen 2: ERROR */
+      setTimeout(function(){
+        clear();
+        show(mk('div','pu-big pu pu-red pu-glitch','ERROR'),200);
+        var d2=mk('div','pu-divider pu'); show(d2,600);
+        show(mk('div','pu-sub pu','NO VALID REASON TO TERMINATE MEMBERSHIP FOUND.'),800);
+
+        /* screen 3: attempts */
+        setTimeout(function(){
+          clear();
+          var attempts=[
+            'attempting cancellation…',
+            'attempting trial expiration…',
+            'attempting buddy removal…',
+          ];
+          attempts.forEach(function(a,i){
+            setTimeout(function(){
+              var row=mk('div','pu-field pu');
+              row.innerHTML='<span class="k">'+a+'</span><span class="v pu-red">FAILED</span>';
+              show(row,50);
+            },300+i*700);
+          });
+          setTimeout(function(){
+            show(mk('div','pu-sub pu','interesting.'),200);
+            setTimeout(function(){
+              show(mk('div','pu-sub pu pu-pink','manual override required.'),800);
+              btn('okay, was jetzt? →',1600,stage5);
+            },600);
+          },300+attempts.length*700+400);
+        },2000);
+      },3200);
+    }
+
+    /* ── STAGE 5: denied + lifetime reveal ── */
+    function stage5(){
+      /* screen 1: denials + alternative solution */
+      clear();
+      var decisions=[
+        'AUTOMATIC RENEWAL: DENIED',
+        'TRIAL EXTENSION: DENIED',
+        'MEMBERSHIP TERMINATION: DENIED',
+      ];
+      decisions.forEach(function(d,i){
+        setTimeout(function(){ show(mk('div','pu-sub pu pu-red',d),50); },i*600);
+      });
+      setTimeout(function(){
+        show(mk('div','pu-sub pu pu-pink','alternative solution detected.'),400);
+        /* screen 2: LIFETIME PREMIUM */
+        setTimeout(function(){
+          clear();
+          show(mk('div','pu-big pu pu-pink','LIFETIME PREMIUM'),400);
+          btn('continue \u2192',1400,stage6);
+        },2000);
+      },decisions.length*600+400);
+    }
+
+    /* ── STAGE 6: countdown + infinity ── */
+    function stage6(){
+      clear();
+      show(mk('div','pu-label pu','upgrading membership'),0);
+      var cEl=mk('div','pu'); cEl.id='puCountdown'; cEl.textContent='30';
+      stage.appendChild(cEl); show(cEl,400);
+
+      /* count down */
+      var n=30;
+      var interval=setInterval(function(){
+        n--;
+        cEl.textContent=n;
+        if(n<=0){
+          clearInterval(interval);
+          cEl.classList.add('glitch');
+          setTimeout(function(){
+            cEl.style.display='none';
+            var inf=mk('div',''); inf.id='puInfinity'; inf.textContent='\u221e';
+            stage.appendChild(inf);
+            setTimeout(function(){ inf.classList.add('on'); },50);
+
+            setTimeout(function(){
+              show(mk('div','pu-label pu pu-pink','FREE TRIAL \u2192 LIFETIME PREMIUM'),200);
+              show(mk('div','pu-sub pu pu-green','LIFETIME MEMBERSHIP UNLOCKED'),600);
+              /* confetti */
+              launchConfetti();
+              btn('continue \u2192',1200,stage7);
+            },600);
+          },600);
+        }
+      },80);
+    }
+
+    /* ── STAGE 7: exclusivity unlocked ── */
+    function stage7(){
+      clear();
+      show(mk('div','pu-big pu pu-pink','EXCLUSIVITY UNLOCKED'),200);
+      var d=mk('div','pu-divider pu'); show(d,600);
+      show(mk('div','pu-sub pu','meine aufmerksamkeit? <span style="color:var(--cream);font-weight:600;">deine.</span>'),900);
+      show(mk('div','pu-sub pu','meine affection? <span style="color:var(--cream);font-weight:600;">deine.</span>'),1800);
+      setTimeout(function(){
+        show(mk('div','pu-sub pu','this whole ridiculous service? <span style="color:var(--cream);font-weight:600;">deins.</span>'),300);
+        var d2=mk('div','pu-divider pu'); show(d2,900);
+        show(mk('div','pu-sub pu pu-cream',"ich nehme niemand anderen an."),1100);
+        show(mk('div','pu-sub pu','alle anderen können sich woanders bewerben.'),2000);
+        show(mk('div','pu-sub pu pu-pink','meine augen? nur auf dich gerichtet.'),3000);
+        btn('continue →',3000,stage7b);
+      },3400);
+    }
+
+    /* ── STAGE 7b: benefits ── */
+    function stage7b(){
+      clear();
+      show(mk('div','pu-big pu','UNLOCKING PREMIUM BENEFITS'),0);
+      var benefits=[
+        'permanent favourite status',
+        'in-person mode unlocked',
+        'spontaneous meetup privileges',
+        'designated favourite pretty girl',
+        'shamelessly obvious attraction',
+        'unreasonable amounts of attention',
+        'unlimited shoulder access',
+        '“i’ll come get you” privileges',
+        'late-night buddy access',
+        'emergency shoulder deployment',
+        'compliments with no cancellation option',
+        'random nonsense, whenever required',
+        'preferential treatment',
+        'no other applicants accepted',
+      ];
+      benefits.forEach(function(b,i){
+        setTimeout(function(){
+          var row=mk('div','pu-benefit');
+          row.innerHTML='<span>'+b+'</span><span class="tick">unlocked \u2713</span>';
+          setTimeout(function(){ row.classList.add('on'); },50);
+        },300+i*400);
+      });
+      setTimeout(function(){
+        btn('continue \u2192',200,stage8);
+      },300+benefits.length*400+400);
+    }
+
+    /* ── STAGE 8: membership card ── */
+    function stage8(){
+      clear();
+      show(mk('div','pu-label pu','your membership'),0);
+
+      var card=mk('div','pu'); card.id='puCard';
+      card.innerHTML=[
+        '<div class="card-logo">shoulder-lending buddy</div>',
+        '<div class="card-badge">PREMIUM</div>',
+        '<div class="card-name">JULISA</div>',
+        '<div class="pu-field"><span class="k">MEMBER SINCE</span><span class="v">DAY 1</span></div>',
+        '<div class="pu-field"><span class="k">EXPIRATION</span><span class="v pu-green">NEVER</span></div>',
+        '<div class="pu-field"><span class="k">PRICE</span><span class="v">\u20ac0.00</span></div>',
+        '<div class="pu-field"><span class="k">STATUS</span><span class="v pu-green">PERMANENT</span></div>',
+        '<div class="pu-divider" style="margin:16px 0;"></div>',
+        '<div class="pu-sub" style="color:var(--grey);font-style:italic;font-size:10px;">premium privileges may be abused responsibly.<br>your buddy reserves the right to spoil you.</div>',
+      ].join('');
+      show(card,400);
+
+      btn('continue \u2192',1400,stage9);
+    }
+
+    /* ── STAGE 9: the twist ── */
+    function stage9(){
+      clear();
+      show(mk('div','pu-sub pu','moment…'),400);
+      show(mk('div','pu-sub pu','dachtest du, das wäre alles?'),1200);
+      show(mk('div','pu-big pu','du bist viel zu cute.'),2200);
+      show(mk('div','pu-sub pu pu-pink','ich hab da noch was für dich.'),3200);
+      setTimeout(function(){ stage10(); },4800);
+    }
+
+    /* ── STAGE 10: personal note ── */
+    function stage10(){
+      clear();
+      overlay.scrollTop=0;
+      var note=mk('div',''); note.id='puNote';
+      var lbl=document.createElement('div');
+      lbl.className='pu-note-label pu';
+      lbl.textContent='a little note from your buddy';
+      note.appendChild(lbl);
+      stage.appendChild(note);
+      show(lbl,400);
+
+      var lines=[
+        'ich hab dir seit tag 1 gesagt, ich würde für dich bleiben.',
+        'nicht, als würde ich jemals deine seite verlassen wollen.',
+        'du hast mich for life, julisa.',
+      ];
+      lines.forEach(function(l,i){
+        setTimeout(function(){
+          var el=document.createElement('div');
+          el.className='pu-note-line';
+          el.textContent=l;
+          note.appendChild(el);
+          setTimeout(function(){ el.classList.add('on'); },50);
+        },1000+i*1800);
+      });
+
+      setTimeout(function(){
+        var cb=mk('button','pu-btn','zur premium mitgliedschaft \u2192');
+        show(cb,200);
+        cb.onclick=function(){ finishUnlock(); };
+      },1000+lines.length*1800+1200);
+    }
+
+    /* ── FINISH: set permanent state ── */
+    function finishUnlock(){
+      S.set('premiumUnlocked',true);
+      overlay.style.transition='opacity .8s ease';
+      overlay.style.opacity='0';
+      document.getElementById('dashboard').style.transition='opacity .8s ease';
+      document.getElementById('dashboard').style.opacity='1';
+      setTimeout(function(){
+        overlay.classList.remove('show');
+        overlay.style.opacity='1';
+        document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">\u25cf lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">f\u00fcr dich? lebenslang kostenlos. premium nat\u00fcrlich.</div>';
+      },800);
+    }
   }
 
   function closePriceReveal(){
@@ -1627,6 +2125,11 @@
   <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
     <path d="M8 1 L8 15 M3 11 L8 17 L13 11" stroke="#e8507a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
   </svg>
+</div>
+
+<!-- Premium Unlock Overlay -->
+<div id="puOverlay">
+  <div id="puStage"></div>
 </div>
 </body>
 </html>
