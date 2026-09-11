@@ -418,7 +418,7 @@
        PREMIUM UNLOCK OVERLAY
     ════════════════════════════════ */
     #puOverlay {
-      position:fixed; inset:0; z-index:8500; background:#070507;
+      position:fixed; inset:0; z-index:8500; background:var(--black);
       display:none; flex-direction:column; align-items:center; justify-content:center;
       padding:32px 24px; text-align:center; overflow-y:auto;
     }
@@ -443,7 +443,7 @@
     .pu-bar.green { background:var(--green); }
 
     /* field row */
-    .pu-field { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:5px auto; padding:0 4px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; }
+    .pu-field { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:5px auto; padding:2px 4px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; gap:12px; }
     .pu-field .k { color:var(--grey); }
     .pu-field .v { color:var(--cream); }
 
@@ -462,9 +462,9 @@
     #puInfinity.on { opacity:1; transform:scale(1); }
 
     /* benefit rows */
-    .pu-benefit { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:5px auto; padding:8px 14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:4px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--grey); opacity:0; transform:translateX(-10px); transition:opacity .4s ease,transform .4s ease,border-color .4s ease,color .4s ease; }
+    .pu-benefit { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:320px; margin:4px auto; padding:8px 14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:4px; font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--grey); opacity:0; transform:translateY(6px); transition:opacity .4s ease,transform .4s ease,border-color .4s ease,color .4s ease; text-align:left; }
     .pu-benefit.on { opacity:1; transform:none; border-color:rgba(76,195,130,.2); color:var(--cream); }
-    .pu-benefit .tick { color:var(--green); opacity:0; transition:opacity .3s ease; }
+    .pu-benefit .tick { color:var(--green); opacity:0; transition:opacity .3s ease; flex-shrink:0; margin-left:8px; }
     .pu-benefit.on .tick { opacity:1; }
 
     /* membership card */
@@ -1525,7 +1525,7 @@
         {name:'CHAOS COMPATIBILITY',scanning:'calculating…',result:'WARNING: CONCERNINGLY HIGH',cls:'pu-pink',barCls:'pink'},
         {name:'DISTANCE ASSESSMENT',scanning:'distance detected. calculating relevance…',result:'current distance: unnecessarily large',cls:'pu-pink',barCls:'pink',extra:'how about we close the distance sometime?',extra2:'distance classified as: solvable.'},
         {name:'ATTRACTION STATUS',scanning:'checking previous records…',result:'no significant change detected.',cls:'pu-green',barCls:'green'},
-        {name:'EYES',scanning:'cross-referencing previous data…',result:'previous favourite: confirmed. current favourite: still confirmed.',cls:'pu-green',barCls:'green'},
+        {name:'DEINE AUGEN',scanning:'cross-referencing previous data…',result:'previous favourite: confirmed. current favourite: still confirmed.',cls:'pu-green',barCls:'green'},
         {name:'CRUSH DURATION',scanning:'30 days?',result:'incorrect.',cls:'pu-red',barCls:'pink',extra:'still dangerously attracted to the same woman. well, have you seen her? pretty impossible to get over. can you blame me?',extra2:null},
       ];
 
@@ -1632,7 +1632,7 @@
             show(mk('div','pu-sub pu','interesting.'),200);
             setTimeout(function(){
               show(mk('div','pu-sub pu pu-pink','manual override required.'),800);
-              btn('okay, was jetzt? →',1600,stage5);
+              btn('was jetzt? →',1600,stage5);
             },600);
           },300+attempts.length*700+400);
         },2000);
@@ -1686,9 +1686,24 @@
             setTimeout(function(){
               show(mk('div','pu-label pu pu-pink','FREE TRIAL \u2192 LIFETIME PREMIUM'),200);
               show(mk('div','pu-sub pu pu-green','LIFETIME MEMBERSHIP UNLOCKED'),600);
-              /* confetti */
-              launchConfetti();
-              btn('continue \u2192',1200,stage7);
+              /* kiss then confetti */
+              setTimeout(function(){
+                /* kiss moment — text + single emoji */
+                var kissOverlay = document.createElement('div');
+                kissOverlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(7,5,7,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;animation:kissPop .5s cubic-bezier(.22,1,.36,1) forwards;';
+                kissOverlay.innerHTML = '<div style="font-family:var(--sans);font-size:18px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);margin-bottom:18px;">big big kuss kuss an dich amore</div><div style="font-size:80px;line-height:1;">💋</div>';
+                document.body.appendChild(kissOverlay);
+                /* fade out, then confetti + lifetime premium */
+                setTimeout(function(){
+                  kissOverlay.style.transition='opacity .4s ease';
+                  kissOverlay.style.opacity='0';
+                  setTimeout(function(){
+                    kissOverlay.remove();
+                    launchConfetti();
+                  },400);
+                },1800);
+              },300);
+              btn('continue \u2192',2400,stage7);
             },600);
           },600);
         }
