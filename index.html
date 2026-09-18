@@ -1531,7 +1531,7 @@
     'i think there\'s something really special about watching you become a mum.',
     'i hope you and your little one get all the ordinary, silly, beautiful moments you deserve.',
     'i want to hear about the funny things he does when you feel like telling me.',
-    'i like looking at you.',
+    'i want to know which little things make a bad day better for you.',
     'apparently i now have two people to care about. you and your tiny sidekick.',
     'because i like your maybe even if i don\'t know if your maybe is a yes or a no.',
     'because i like the little details about you that other people probably don\'t notice.',
@@ -2029,7 +2029,7 @@
         },
         {
           num:'07', title:'WHICH OF THESE IS MOST LIKELY TO HAPPEN?',
-          options:['i\'ll actually use my buddy','i\'ll pretend i don\'t need my buddy','i\'ll show up at random','i\'ll become a little too attached to my buddy'],
+          options:['i\'ll actually use my buddy','i\'ll pretend i don\'t need my buddy','i\'ll show up at random','i\'ll become a bit attached to my buddy'],
           response:['prediction saved.','we\'ll see about that.']
         },
         {
@@ -2319,7 +2319,7 @@
     var size=Math.min(window.innerWidth-16,440);
     cvs.width=size; cvs.height=size;
     var ctx=cvs.getContext('2d');
-    var cx=size/2, cy=size/2+20, sc=size*0.024;
+    var cx=size/2, cy=size/2+size*0.06, sc=size*0.017;
     var pinkShades=['#ff4488','#ff6eb0','#ff90c0','#e8507a','#f472a8','#c084fc','#ffb0d0'];
 
     var dashReasons=(window._buddyReasons||[]).slice();
