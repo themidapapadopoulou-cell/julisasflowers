@@ -399,6 +399,7 @@
 
     #heartCanvas { opacity:1; transition:opacity 1.2s ease; background:#070507; }
     #heartCanvas.fade { opacity:0; }
+    #heartCanvas.fade { opacity:0; }
 
     #scrollHint {
       position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
@@ -1058,8 +1059,8 @@
       {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:3, lw:0.4, ss:2},
       {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:3, lw:0.5, ss:2.5},
       {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:3, lw:0.4, ss:2},
-      {cx:W*.2,  cy:H*.82,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
-      {cx:W*.8,  cy:H*.82,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
+      {cx:W*.2,  cy:H*.78,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
+      {cx:W*.8,  cy:H*.78,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
     ];
 
     heartDefs.forEach(function(h){
@@ -1530,7 +1531,7 @@
     'i think there\'s something really special about watching you become a mum.',
     'i hope you and your little one get all the ordinary, silly, beautiful moments you deserve.',
     'i want to hear about the funny things he does when you feel like telling me.',
-    'i hope one day he knows just how much his mama loves him.',
+    'i like looking at you.',
     'apparently i now have two people to care about. you and your tiny sidekick.',
     'because i like your maybe even if i don\'t know if your maybe is a yes or a no.',
     'because i like the little details about you that other people probably don\'t notice.',
@@ -2028,7 +2029,7 @@
         },
         {
           num:'07', title:'WHICH OF THESE IS MOST LIKELY TO HAPPEN?',
-          options:['i\'ll actually use my buddy','i\'ll pretend i don\'t need my buddy','i\'ll show up at random','i\'ll become attached to my buddy'],
+          options:['i\'ll actually use my buddy','i\'ll pretend i don\'t need my buddy','i\'ll show up at random','i\'ll become a little too attached to my buddy'],
           response:['prediction saved.','we\'ll see about that.']
         },
         {
@@ -2101,7 +2102,7 @@
           t+=900;
         });
         /* linger on final line — longer pause before moving on */
-        setTimeout(cb, t+1800);
+        setTimeout(cb, t+2800);
       }
 
       showQuestion();
@@ -2160,8 +2161,8 @@
         stage.appendChild(cvs);
 
         var ctx=cvs.getContext('2d');
-        var cx=size/2, cy=size/2+12;
-        var sc=size*0.019;
+        var cx=size/2, cy=size/2+20;
+        var sc=size*0.024;
 
         /* build heart points */
         var pts=[];
@@ -2315,10 +2316,10 @@
     if(!cvs||cvs.dataset.init) return;
     cvs.dataset.init='1';
 
-    var size=Math.min(window.innerWidth-20,420);
+    var size=Math.min(window.innerWidth-16,440);
     cvs.width=size; cvs.height=size;
     var ctx=cvs.getContext('2d');
-    var cx=size/2, cy=size/2+14, sc=size*0.021;
+    var cx=size/2, cy=size/2+20, sc=size*0.024;
     var pinkShades=['#ff4488','#ff6eb0','#ff90c0','#e8507a','#f472a8','#c084fc','#ffb0d0'];
 
     var dashReasons=(window._buddyReasons||[]).slice();
@@ -2348,12 +2349,18 @@
         ctx.strokeStyle=col;ctx.lineWidth=p.hit?2.5:1;
         ctx.globalAlpha=p.hit?0.9:0.55;ctx.stroke();
         /* node dot */
+        if(p.hit){
+          ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,0.15)';ctx.globalAlpha=1;ctx.fill();
+        }
         ctx.beginPath();ctx.arc(p.x,p.y,p.hit?5:4,0,Math.PI*2);
         ctx.fillStyle=p.hit?'#fff':col;ctx.globalAlpha=p.hit?1:0.9;ctx.fill();
         /* outer ring on undiscovered */
         if(!p.hit){
-          ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);
-          ctx.strokeStyle=col;ctx.lineWidth=1;ctx.globalAlpha=0.4;ctx.stroke();
+          ctx.beginPath();ctx.arc(p.x,p.y,9,0,Math.PI*2);
+          ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.globalAlpha=0.5;ctx.stroke();
+          ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);
+          ctx.strokeStyle=col;ctx.lineWidth=0.5;ctx.globalAlpha=0.2;ctx.stroke();
         }
       }
       ctx.globalAlpha=1;
@@ -2739,7 +2746,7 @@
 <canvas id="confettiCanvas"></canvas>
 
 <!-- heart intro overlay -->
-<canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#000;pointer-events:none;"></canvas>
+<canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#070507;pointer-events:none;"></canvas>
 
 <div id="scrollHint">
   <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
