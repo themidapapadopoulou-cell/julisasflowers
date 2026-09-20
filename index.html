@@ -1036,6 +1036,11 @@
   window.addEventListener('DOMContentLoaded', function(){
     initAmbient();
     initEmailJS();
+    /* force activated for ?premium test */
+    if(window.location.href.indexOf('premium')!==-1){
+      S.set('activated',true);
+      if(!S.get('activatedAt',null)) S.set('activatedAt',1787486400000);
+    }
     showDashboard();
     drawHeartIntro();
     /* test mode: add ?premium to URL to preview the sequence */
@@ -1634,6 +1639,52 @@
     document.getElementById('dashboard').style.transition='opacity .8s ease';
     document.getElementById('dashboard').style.opacity='.15';
     setTimeout(stage1, 800);
+
+    /* ── STAGE 1: counter 0→30 ── */
+    function stage1(){
+      clear();
+      overlay.classList.add('show');
+      show(mk('div','pu-label pu','free trial'),150);
+      var counter=mk('div','pu-big pu','0 / 30');
+      counter.style.fontSize='clamp(32px,8vw,52px)';
+      counter.style.transition='color .4s ease';
+      show(counter,450);
+      setTimeout(function(){
+        var total=30, n=0;
+        function tick(){
+          n++;
+          counter.textContent=n+' / 30';
+          if(n>=20) counter.style.color='rgba(232,80,122,0.6)';
+          if(n>=25) counter.style.color='var(--pink)';
+          if(n>=total){
+            counter.style.color='var(--pink)';
+            counter.style.textShadow='0 0 40px rgba(232,80,122,0.8),0 0 80px rgba(232,80,122,0.4)';
+            setTimeout(function(){ counter.style.transform='scale(1.08)'; },300);
+            setTimeout(function(){ counter.style.transform='scale(1)'; },600);
+            setTimeout(function(){ counter.style.transform='scale(1.05)'; },900);
+            setTimeout(function(){ counter.style.transform='scale(1)'; },1200);
+            setTimeout(showTrialComplete,2000);
+            return;
+          }
+          var delay=n<20?60:n<25?130:n<28?280:520;
+          setTimeout(tick,delay);
+        }
+        setTimeout(tick,400);
+      },900);
+      function showTrialComplete(){
+        clear();
+        show(mk('div','pu-big pu pu-pink','TRIAL COMPLETE'),150);
+        var d=mk('div','pu-divider pu'); show(d,650);
+        show(mk('div','pu-sub pu',"huh. you've actually made it."),900);
+        setTimeout(function(){
+          clear();
+          setTimeout(function(){
+            show(mk('div','pu-sub pu pu-pink','initiating final membership review\u2026'),100);
+            setTimeout(stage2,1500);
+          },700);
+        },4200);
+      }
+    }
 
     /* ── STAGE 2: membership review ── */
     function stage2(){
