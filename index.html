@@ -2862,7 +2862,10 @@
   window.addEventListener('scroll', function(){
     var hint = document.getElementById('scrollHint');
     if(!hint) return;
-    if(window.scrollY > 0) hint.classList.add('hidden');
+    if(window.scrollY > 0){
+      hint.classList.add('hidden');
+      setTimeout(function(){ hint.style.display='none'; },600);
+    }
   });
 </script>
 
