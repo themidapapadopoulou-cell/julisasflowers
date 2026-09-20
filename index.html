@@ -1082,13 +1082,12 @@
 
     var heartDefs=[
       {cx:cx,    cy:cy,      sc:scale,     delay:0,   speed:1, lw:1,   ss:5},
+      {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:3, lw:0.4, ss:2},
       {cx:W*.11, cy:H*.17,  sc:scale*.28, delay:500, speed:3, lw:0.5, ss:2.5},
       {cx:W*.89, cy:H*.14,  sc:scale*.22, delay:800, speed:3, lw:0.5, ss:2},
-      {cx:W*.07, cy:H*.72,  sc:scale*.2,  delay:400, speed:3, lw:0.4, ss:2},
-      {cx:W*.93, cy:H*.7,   sc:scale*.26, delay:700, speed:3, lw:0.5, ss:2.5},
-      {cx:W*.5,  cy:H*.06,  sc:scale*.18, delay:900, speed:3, lw:0.4, ss:2},
-      {cx:W*.2,  cy:H*.78,  sc:scale*.17, delay:1000,speed:3, lw:0.4, ss:2},
-      {cx:W*.76,  cy:H*.78,  sc:scale*.2,  delay:300, speed:3, lw:0.4, ss:2},
+      {cx:W*.5,  cy:H*.88,  sc:scale*.18, delay:600, speed:3, lw:0.4, ss:2},
+      {cx:W*.12, cy:H*.78,  sc:scale*.28, delay:400, speed:3, lw:0.5, ss:2.5},
+      {cx:W*.88, cy:H*.78,  sc:scale*.22, delay:700, speed:3, lw:0.5, ss:2},
     ];
 
     heartDefs.forEach(function(h){
@@ -1675,7 +1674,7 @@
         clear();
         show(mk('div','pu-big pu pu-pink','TRIAL COMPLETE'),150);
         var d=mk('div','pu-divider pu'); show(d,650);
-        show(mk('div','pu-sub pu',"huh. you've actually made it."),900);
+        show(mk('div','pu-sub pu',"you made it."),900);
         setTimeout(function(){
           clear();
           setTimeout(function(){
