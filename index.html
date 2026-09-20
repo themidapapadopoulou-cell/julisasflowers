@@ -1352,6 +1352,11 @@
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
     if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
+    if(window.location.href.indexOf('reset')!==-1){
+      localStorage.removeItem('slb_heartDiscovered');
+      localStorage.removeItem('slb_heartHits');
+      console.log('star hits reset');
+    }
     if(window.location.href.indexOf('stars')!==-1){
       S.set('activated',true);
       if(!S.get('activatedAt',null)) S.set('activatedAt',1787486400000);
@@ -2312,10 +2317,11 @@
           var s=stars[best];
           if(!s.hit){
             s.hit=true; discovered++;
+            var reasonIdx=s.num-1;
             var savedDisc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
             var savedHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-            if(savedHits.indexOf(best)<0){
-              savedHits.push(best); savedDisc++;
+            if(savedHits.indexOf(reasonIdx)<0){
+              savedHits.push(reasonIdx); savedDisc++;
               try{ localStorage.setItem('slb_heartDiscovered',savedDisc); localStorage.setItem('slb_heartHits',JSON.stringify(savedHits)); }catch(e2){}
             }
           }
@@ -2452,7 +2458,7 @@
 
     var disc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
     var hits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-    hits.forEach(function(idx){ if(stars[idx]) stars[idx].hit=true; });
+    hits.forEach(function(idx){ var st=stars.find(function(s){return s.num-1===idx;}); if(st) st.hit=true; });
 
     var animId;
     function draw(ts){
@@ -2546,7 +2552,7 @@
       if(best<0||bd>Math.max(stars[best].r*5,22)) return;
       var s=stars[best];
       if(!s.hit){
-        s.hit=true; disc++; hits.push(best);
+        s.hit=true; disc++; hits.push(s.num-1);
         try{ localStorage.setItem('slb_heartDiscovered',disc); localStorage.setItem('slb_heartHits',JSON.stringify(hits)); }catch(e2){}
       }
       var tip=document.getElementById('dashHeartTip');
@@ -2856,9 +2862,8 @@
   window.addEventListener('scroll', function(){
     var hint = document.getElementById('scrollHint');
     if(!hint) return;
-    var atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 40;
+    var atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 80);
     if(window.scrollY > 60 || atBottom) hint.classList.add('hidden');
-    else hint.classList.remove('hidden');
   });
 </script>
 
