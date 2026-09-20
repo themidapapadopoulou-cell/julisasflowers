@@ -1565,7 +1565,7 @@
     'ich glaube nicht, dass mir jemals die dinge ausgehen werden, die ich über dich wissen möchte.',
     'ich mag es, dich zum lachen zu bringen und dann so zu tun, als wäre das überhaupt nicht mein ziel gewesen.',
     'ich habe immer noch einen ziemlich offensichtlichen soft spot für dich.',
-    'irgendwie haben sich diese gefühle für dich nie aufgehört & i really tried.',
+    'irgendwie sind meine gefühle für dich nie wirklich verschwunden & i really tried.',
     'you remain very much my type. unfortunately for my dignity.',
     'du bist ziemlich genau das, was ich mir unter meiner traumfrau vorstelle. ich hoffe, dass ich irgendwann jemanden finde, bei dem es sich genauso richtig anfühlt.',
     'bei dir habe ich manchmal das gefühl, dass ich fast alles von dem sage, was ich über dich denke und fühle. ich nehme mir jedes mal vor, mich ein bisschen zurückzuhalten, und dann sage ich am ende doch wieder viel zu viel.',
@@ -2299,7 +2299,15 @@
           }
           if(best<0||bd>Math.max(stars[best].r*5,20)) return;
           var s=stars[best];
-          if(!s.hit){ s.hit=true; discovered++; }
+          if(!s.hit){
+            s.hit=true; discovered++;
+            var savedDisc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
+            var savedHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
+            if(savedHits.indexOf(best)<0){
+              savedHits.push(best); savedDisc++;
+              try{ localStorage.setItem('slb_heartDiscovered',savedDisc); localStorage.setItem('slb_heartHits',JSON.stringify(savedHits)); }catch(e2){}
+            }
+          }
           tip.style.opacity='0';
           setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },180);
 
@@ -2310,7 +2318,7 @@
             stage.appendChild(continueBtn);
             setTimeout(function(){ continueBtn.style.opacity='1'; },200);
             var note=mk('div','');
-            note.style.cssText='font-family:var(--mono);font-size:10px;color:var(--grey);text-align:center;margin-top:8px;letter-spacing:.06em;';
+            note.style.cssText='font-family:var(--mono);font-size:10px;color:var(--grey);text-align:center;margin-top:24px;letter-spacing:.06em;';
             note.textContent='es gibt 100 gründe, in meinem kopf noch mehr, aber ich musste irgendwann aufhören, sonst wäre dein ganzer bildschirm voller sterne gewesen. und keine sorge, falls du noch nicht alle entdeckt hast – wenn du auf deiner seite ein bisschen runterscrollst, findest du die sterne auch dort ';
             stage.appendChild(note);
             continueBtn.onclick=function(){ sendEmail('🔔 [PREMIUM] sterne entdeckt — geht zur personal note'); stage10(); };
