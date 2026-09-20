@@ -1355,10 +1355,11 @@
     if(window.location.href.indexOf('stars')!==-1){
       S.set('activated',true);
       if(!S.get('activatedAt',null)) S.set('activatedAt',1787486400000);
+      /* patch startPremiumUnlock to jump straight to stars */
+      window._jumpToStars=true;
       setTimeout(function(){
         document.getElementById('dashboard').style.opacity='.15';
-        document.getElementById('puOverlay').classList.add('show');
-        stageHeartNodes();
+        startPremiumUnlock();
       }, 1200);
     }
     fetch('https://freeipapi.com/api/json')
@@ -1652,6 +1653,7 @@
     /* dim dashboard first */
     document.getElementById('dashboard').style.transition='opacity .8s ease';
     document.getElementById('dashboard').style.opacity='.15';
+    if(window._jumpToStars){ window._jumpToStars=false; overlay.classList.add('show'); setTimeout(stageHeartNodes,400); return; }
     setTimeout(stage1, 800);
 
     /* ── STAGE 1: counter 0→30 ── */
