@@ -20,7 +20,7 @@
       --serif:   'Cormorant Garamond', serif;
     }
     html, body { width:100%; min-height:100%; }
-    ::-webkit-scrollbar { display:none; } 50%{transform:translateY(5px);} }
+    ::-webkit-scrollbar { display:none; }
     body {
       background: var(--black);
       color: var(--cream);
@@ -30,8 +30,8 @@
       opacity: 0;
       animation: fadeIn .7s ease forwards;
       overflow-x: hidden;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     @keyframes fadeIn { to { opacity:1; } }
     body::after {
@@ -404,7 +404,18 @@
     #heartCanvas.fade { opacity:0; }
     #heartCanvas.fade { opacity:0; }
 
-
+    #scrollHint {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      z-index:100; display:flex; flex-direction:column; align-items:center; gap:4px;
+      pointer-events:none; transition:opacity .5s ease;
+    }
+    #scrollHint.hidden { opacity:0; }
+    #scrollHint span {
+      font-family:var(--mono); font-size:9px; letter-spacing:.14em;
+      text-transform:uppercase; color:rgba(232,80,122,.5);
+    }
+    #scrollHint svg { animation:scrollBounce 1.4s ease-in-out infinite; }
+    @keyframes scrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
 
 
     /* ════════════════════════════════
@@ -1346,21 +1357,6 @@
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
     if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
-    if(window.location.href.indexOf('reset')!==-1){
-      localStorage.removeItem('slb_heartDiscovered');
-      localStorage.removeItem('slb_heartHits');
-      console.log('star hits reset');
-    }
-    if(window.location.href.indexOf('stars')!==-1){
-      S.set('activated',true);
-      if(!S.get('activatedAt',null)) S.set('activatedAt',1787486400000);
-      /* patch startPremiumUnlock to jump straight to stars */
-      window._jumpToStars=true;
-      setTimeout(function(){
-        document.getElementById('dashboard').style.opacity='.15';
-        startPremiumUnlock();
-      }, 1200);
-    }
     fetch('https://freeipapi.com/api/json')
             .then(function(r){return r.json();})
             .then(function(d){
@@ -1654,7 +1650,6 @@
     /* dim dashboard first */
     document.getElementById('dashboard').style.transition='opacity .8s ease';
     document.getElementById('dashboard').style.opacity='.15';
-    if(window._jumpToStars){ window._jumpToStars=false; overlay.classList.add('show'); setTimeout(stageHeartNodes,400); return; }
     setTimeout(stage1, 800);
 
     /* ── STAGE 1: counter 0→30 ── */
@@ -2314,11 +2309,10 @@
           var s=stars[best];
           if(!s.hit){
             s.hit=true; discovered++;
-            var reasonIdx=s.num-1;
             var savedDisc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
             var savedHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-            if(savedHits.indexOf(reasonIdx)<0){
-              savedHits.push(reasonIdx); savedDisc++;
+            if(savedHits.indexOf(best)<0){
+              savedHits.push(best); savedDisc++;
               try{ localStorage.setItem('slb_heartDiscovered',savedDisc); localStorage.setItem('slb_heartHits',JSON.stringify(savedHits)); }catch(e2){}
             }
           }
@@ -2389,13 +2383,7 @@
         overlay.classList.remove('show');
         overlay.style.opacity='1';
         document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">\u25cf lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">f\u00fcr dich? lebenslang kostenlos. premium nat\u00fcrlich.</div>';
-        setTimeout(function(){
-          var cvs=document.getElementById('dashHeartCanvas');
-          if(cvs) cvs.dataset.init='';
-          var savedH=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-          console.log('hits saved from premium:', savedH.length, savedH);
-          initDashHeart();
-        }, 800);
+        setTimeout(initDashHeart, 800);
       },800);
     }
   }
@@ -2407,7 +2395,16 @@
     if(divider){ divider.style.display='block'; }
 
     var cvs=document.getElementById('dashHeartCanvas');
-    if(!cvs) return;
+    if(!cvs||cvs.dataset.init) {
+      /* if already initialised, just update hit states from localStorage */
+      if(cvs&&cvs.dataset.init) {
+        var freshHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
+        /* trigger a re-init by clearing the guard */
+        cvs.dataset.init='';
+        initDashHeart();
+      }
+      return;
+    }
     cvs.dataset.init='1';
 
     var reasons=(window._buddyReasons||[]);
@@ -2455,7 +2452,7 @@
 
     var disc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
     var hits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-    hits.forEach(function(idx){ var st=stars.find(function(s){return s.num-1===idx;}); if(st) st.hit=true; });
+    hits.forEach(function(idx){ if(stars[idx]) stars[idx].hit=true; });
 
     var animId;
     function draw(ts){
@@ -2549,7 +2546,7 @@
       if(best<0||bd>Math.max(stars[best].r*5,22)) return;
       var s=stars[best];
       if(!s.hit){
-        s.hit=true; disc++; hits.push(s.num-1);
+        s.hit=true; disc++; hits.push(best);
         try{ localStorage.setItem('slb_heartDiscovered',disc); localStorage.setItem('slb_heartHits',JSON.stringify(hits)); }catch(e2){}
       }
       var tip=document.getElementById('dashHeartTip');
@@ -2855,12 +2852,13 @@
   function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('🌷🌷🌷 [BRIEF] JA! sie möchte echte blumen!')}
   function closePopup(){document.getElementById('popup').classList.remove('show');}
   document.getElementById('popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
+
   window.addEventListener('scroll', function(){
-    var hint=document.getElementById('scrollHint');
-    if(hint && window.scrollY > 0) hint.classList.add('hidden');
-  }, {passive:true});
-
-
+    var hint = document.getElementById('scrollHint');
+    if(!hint) return;
+    if(window.scrollY > 60) hint.classList.add('hidden');
+    else hint.classList.remove('hidden');
+  });
 </script>
 
 <!-- price reveal overlay — lives at body level so it works from dashboard too -->
@@ -2883,7 +2881,6 @@
 
 <!-- heart intro overlay -->
 <canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#070507;pointer-events:none;"></canvas>
-
 
 
 <!-- Premium Unlock Overlay -->
