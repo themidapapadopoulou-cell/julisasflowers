@@ -2863,8 +2863,9 @@
     var hint = document.getElementById('scrollHint');
     if(!hint) return;
     if(window.scrollY > 0){
-      hint.classList.add('hidden');
-      setTimeout(function(){ hint.style.display='none'; },600);
+      hint.style.transition='none';
+      hint.style.opacity='0';
+      hint.style.display='none';
     }
   });
 </script>
