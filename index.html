@@ -1574,7 +1574,7 @@
     'manche gespräche mit dir sind mir irgendwie länger im kopf geblieben, als sie es wahrscheinlich sollten.',
     'you have a way of making me feel seen.',
     'ich mag es, dass du dich bei mir wohl genug fühlst, um dich auch verletzlich zu zeigen.',
-    'ich glaube, du merkst gar nicht, wie viel du mir gegeben hast, ohne es vielleicht überhaupt zu merken.',
+    'ich glaube, du weißt gar nicht, wie viel du mir gegeben hast, ohne es vielleicht überhaupt zu merken.',
     'ich möchte, dass du jemanden hast, der sich auch über die kleinen erfolge mit dir freut.',
     'ich möchte auch an den ganz normalen tagen für dich da sein, nicht nur an den aufregenden.',
     'ich möchte nicht nur für dich da sein, wenn gerade alles gut und einfach ist.',
@@ -2375,7 +2375,13 @@
         overlay.classList.remove('show');
         overlay.style.opacity='1';
         document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">\u25cf lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">f\u00fcr dich? lebenslang kostenlos. premium nat\u00fcrlich.</div>';
-        setTimeout(initDashHeart, 800);
+        setTimeout(function(){
+          var cvs=document.getElementById('dashHeartCanvas');
+          if(cvs) cvs.dataset.init='';
+          var savedH=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
+          console.log('hits saved from premium:', savedH.length, savedH);
+          initDashHeart();
+        }, 800);
       },800);
     }
   }
@@ -2387,16 +2393,7 @@
     if(divider){ divider.style.display='block'; }
 
     var cvs=document.getElementById('dashHeartCanvas');
-    if(!cvs||cvs.dataset.init) {
-      /* if already initialised, just update hit states from localStorage */
-      if(cvs&&cvs.dataset.init) {
-        var freshHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-        /* trigger a re-init by clearing the guard */
-        cvs.dataset.init='';
-        initDashHeart();
-      }
-      return;
-    }
+    if(!cvs) return;
     cvs.dataset.init='1';
 
     var reasons=(window._buddyReasons||[]);
