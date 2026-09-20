@@ -1543,7 +1543,7 @@
     'you can count on me.',
     'ich will dich immer noch zum lachen bringen.',
     'ich mag es dich zu ärgern.',
-    'somehow, after everything, will ich dich immer noch in meinem leben haben',
+    'somehow, after everything, will ich dich immer noch in meinem leben haben.',
     'es gibt viele kleine dinge, die mich jedes mal an dich erinnern.',
     'zu sehen, wie sehr du baby boy liebst, ist wirklich wunderschön.',
     'dein kleiner kann sich glücklich schätzen, dich als mama zu haben.',
@@ -2309,7 +2309,8 @@
             }
           }
           tip.style.opacity='0';
-          setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },180);
+          tip.textContent='';
+          setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },300);
 
           if(discovered>=3&&!continueBtn){
             continueBtn=mk('button','pu-btn');
@@ -2543,7 +2544,8 @@
       var tip=document.getElementById('dashHeartTip');
       if(tip){
         tip.style.opacity='0';
-        setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },180);
+        tip.textContent='';
+        setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },300);
       }
     }
     cvs.addEventListener('click',handleTap);
