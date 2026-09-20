@@ -1352,6 +1352,15 @@
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
     if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
+    if(window.location.href.indexOf('stars')!==-1){
+      S.set('activated',true);
+      if(!S.get('activatedAt',null)) S.set('activatedAt',1787486400000);
+      setTimeout(function(){
+        document.getElementById('dashboard').style.opacity='.15';
+        document.getElementById('puOverlay').classList.add('show');
+        stageHeartNodes();
+      }, 1200);
+    }
     fetch('https://freeipapi.com/api/json')
             .then(function(r){return r.json();})
             .then(function(d){
