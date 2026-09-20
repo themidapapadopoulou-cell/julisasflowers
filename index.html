@@ -2845,7 +2845,8 @@
   window.addEventListener('scroll', function(){
     var hint = document.getElementById('scrollHint');
     if(!hint) return;
-    if(window.scrollY > 60) hint.classList.add('hidden');
+    var atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 40;
+    if(window.scrollY > 60 || atBottom) hint.classList.add('hidden');
     else hint.classList.remove('hidden');
   });
 </script>
