@@ -1313,13 +1313,14 @@
     activatedAt=1787486400000; S.set('activatedAt',activatedAt);
     var dayMs=24*60*60*1000;
     var dayNum=Math.max(1,Math.floor((Date.now()-activatedAt)/dayMs)+1);
+    if(window.location.href.indexOf('premium')!==-1) dayNum=30;
     var pct=Math.min(100,(dayNum/30)*100);
 
     if(dayNum>=30){
       document.getElementById('dash-day-text').textContent='';
       document.getElementById('dash-day-msg').textContent='';
       document.querySelector('.day-bar-wrap').style.display='none';
-      if(S.get('premiumUnlocked',false)){
+      if(S.get('premiumUnlocked',false)&&window.location.href.indexOf('premium')===-1){
         /* already seen — just show permanent premium state */
         document.querySelector('.dash-header').innerHTML='<div class="dash-title">status &nbsp;<span style="color:var(--green);">● lifetime premium</span></div><div style="font-family:var(--mono);font-size:11px;color:var(--grey);margin-top:4px;">für dich? lebenslang kostenlos. premium natürlich.</div>';
       } else {
@@ -1352,13 +1353,13 @@
 
     if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
     fetch('https://freeipapi.com/api/json')
-      .then(function(r){return r.json();})
-      .then(function(d){
-        sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
-      })
-      .catch(function(){
-        sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
-      });
+            .then(function(r){return r.json();})
+            .then(function(d){
+              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
+            })
+            .catch(function(){
+              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
+            });
     goScreen('dashboard');
   }
 
