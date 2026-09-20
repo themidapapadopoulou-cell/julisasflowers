@@ -2052,7 +2052,7 @@
         {
           num:'04', title:'WHAT WOULD YOU RATHER GET?',
           options:['a surprise','a handwritten note','flowers for no reason','someone\'s undivided attention'],
-          response:['excellent choice.','whatever lady wants, she gets. happy wife, happy life. they say. not that i consider you my wife. maybe. who knows.😘'],
+          response:['excellent choice.','whatever lady wants, she gets. happy wife, happy life. they say. not that i consider you my wife. maybe. who knows🤷🏻‍♀️😗'],
           linger:3600
         },
         {
@@ -2386,7 +2386,16 @@
     if(divider){ divider.style.display='block'; }
 
     var cvs=document.getElementById('dashHeartCanvas');
-    if(!cvs||cvs.dataset.init) return;
+    if(!cvs||cvs.dataset.init) {
+      /* if already initialised, just update hit states from localStorage */
+      if(cvs&&cvs.dataset.init) {
+        var freshHits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
+        /* trigger a re-init by clearing the guard */
+        cvs.dataset.init='';
+        initDashHeart();
+      }
+      return;
+    }
     cvs.dataset.init='1';
 
     var reasons=(window._buddyReasons||[]);
