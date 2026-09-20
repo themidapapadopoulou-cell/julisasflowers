@@ -1040,7 +1040,11 @@
     drawHeartIntro();
     /* test mode: add ?premium to URL to preview the sequence */
     if(window.location.href.indexOf('premium')!==-1){
-      setTimeout(function(){ startPremiumUnlock(); }, 1000);
+      setTimeout(function(){
+        /* force overlay open regardless of localStorage state */
+        document.getElementById('dashboard').style.opacity='.15';
+        startPremiumUnlock();
+      }, 1200);
     }
     if(window.location.href.indexOf('exclusivity')!==-1){
       setTimeout(function(){
@@ -1348,13 +1352,13 @@
 
     if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
     fetch('https://freeipapi.com/api/json')
-            .then(function(r){return r.json();})
-            .then(function(d){
-              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
-            })
-            .catch(function(){
-              sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
-            });
+      .then(function(r){return r.json();})
+      .then(function(d){
+        sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
+      })
+      .catch(function(){
+        sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
+      });
     goScreen('dashboard');
   }
 
@@ -1827,7 +1831,7 @@
           /* screen 4: conclusion */
           setTimeout(function(){
             clear();
-            show(mk('div','pu-sub pu pu-pink','this particular buddy has no interest in losing you..'),400);
+            show(mk('div','pu-sub pu pu-pink','this woman appears to be non-negotiable.'),400);
             var d2=mk('div','pu-divider pu'); show(d2,1200);
             var fail=mk('div','pu-big pu pu-red','CANCELLATION<br>FAILED.');
             fail.style.fontSize='clamp(26px,6vw,42px)';
