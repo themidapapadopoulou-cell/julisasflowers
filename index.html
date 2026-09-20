@@ -1345,8 +1345,8 @@
 
     /* daily message */
     var msgs=[
-      "ich bin stolz auf dich. auch wenn du gerade selbst nicht weißt, ob du das bist. you’re still very much dream woman material, übrigens.", /* TODAY */
-      "ich bin stolz auf dich. auch wenn du gerade selbst nicht weißt, ob du das bist. you’re still very much dream woman material, übrigens." /* TOMORROW */    ];
+      "ich bin stolz auf dich. auch wenn du gerade selbst nicht weißt, ob du das bist.", /* TODAY */
+      "ich bin stolz auf dich. auch wenn du gerade selbst nicht weißt, ob du das bist." /* TOMORROW */    ];
     var d=new Date(); var seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
