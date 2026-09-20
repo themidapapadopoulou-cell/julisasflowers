@@ -20,6 +20,15 @@
       --serif:   'Cormorant Garamond', serif;
     }
     html, body { width:100%; min-height:100%; }
+    ::-webkit-scrollbar { display:none; }
+    #scrollHint {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      z-index:100; display:flex; flex-direction:column; align-items:center; gap:4px;
+      pointer-events:none; transition:opacity .4s ease;
+    }
+    #scrollHint.hidden { opacity:0; pointer-events:none; }
+    #scrollHint svg { animation:scrollBounce 1.4s ease-in-out infinite; }
+    @keyframes scrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
     body {
       background: var(--black);
       color: var(--cream);
@@ -29,6 +38,8 @@
       opacity: 0;
       animation: fadeIn .7s ease forwards;
       overflow-x: hidden;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE */
     }
     @keyframes fadeIn { to { opacity:1; } }
     body::after {
@@ -401,18 +412,7 @@
     #heartCanvas.fade { opacity:0; }
     #heartCanvas.fade { opacity:0; }
 
-    #scrollHint {
-      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-      z-index:100; display:flex; flex-direction:column; align-items:center; gap:4px;
-      pointer-events:none; transition:opacity .5s ease;
-    }
-    #scrollHint.hidden { opacity:0; }
-    #scrollHint span {
-      font-family:var(--mono); font-size:9px; letter-spacing:.14em;
-      text-transform:uppercase; color:rgba(232,80,122,.5);
-    }
-    #scrollHint svg { animation:scrollBounce 1.4s ease-in-out infinite; }
-    @keyframes scrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
 
 
     /* ════════════════════════════════
@@ -1056,6 +1056,7 @@
   });
 
   function drawHeartIntro(){
+    document.body.style.overflow='hidden';
     var c = document.getElementById('heartCanvas');
     var ctx = c.getContext('2d');
     c.width = window.innerWidth;
@@ -1153,6 +1154,7 @@
         if(t>=1){
           ctx.clearRect(0,0,W,H);
           c.classList.add('fade');
+          document.body.style.overflow='';
           setTimeout(function(){c.style.display='none';},1200);
           return;
         }
@@ -1424,6 +1426,7 @@
     box.style.display='none';
     kiss.style.display='none'; kiss.classList.remove('pop');
     overlay.classList.add('show');
+    document.body.style.overflow='hidden';
     // straight to kiss
     setTimeout(function(){
       kiss.classList.add('pop'); kiss.style.display='flex';
@@ -1472,6 +1475,7 @@
     // show overlay
     setTimeout(function(){
       overlay.classList.add('show');
+    document.body.style.overflow='hidden';
     }, 300);
 
     // countdown 3 2 1
@@ -1665,6 +1669,7 @@
     function stage1(){
       clear();
       overlay.classList.add('show');
+    document.body.style.overflow='hidden';
       show(mk('div','pu-label pu','free trial'),150);
       var counter=mk('div','pu-big pu','0 / 30');
       counter.style.fontSize='clamp(32px,8vw,52px)';
@@ -2858,16 +2863,12 @@
   function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('🌷🌷🌷 [BRIEF] JA! sie möchte echte blumen!')}
   function closePopup(){document.getElementById('popup').classList.remove('show');}
   document.getElementById('popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
-
   window.addEventListener('scroll', function(){
-    var hint = document.getElementById('scrollHint');
-    if(!hint) return;
-    if(window.scrollY > 0){
-      hint.style.transition='none';
-      hint.style.opacity='0';
-      hint.style.display='none';
-    }
-  });
+    var hint=document.getElementById('scrollHint');
+    if(hint && window.scrollY > 0) hint.classList.add('hidden');
+  }, {passive:true});
+
+
 </script>
 
 <!-- price reveal overlay — lives at body level so it works from dashboard too -->
@@ -2891,15 +2892,12 @@
 <!-- heart intro overlay -->
 <canvas id="heartCanvas" style="position:fixed;inset:0;z-index:9999;background:#070507;pointer-events:none;"></canvas>
 
-<div id="scrollHint">
-  <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
-    <path d="M8 1 L8 15 M3 11 L8 17 L13 11" stroke="#e8507a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
-  </svg>
-</div>
+
 
 <!-- Premium Unlock Overlay -->
 <div id="puOverlay">
   <div id="puStage"></div>
 </div>
+<div id="scrollHint"><svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M8 1 L8 15 M3 11 L8 17 L13 11" stroke="rgba(232,80,122,.6)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
 </body>
 </html>
