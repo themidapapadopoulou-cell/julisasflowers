@@ -427,7 +427,7 @@
     #puStage { width:100%; max-width:420px; }
 
     /* text elements */
-    .pu { opacity:0; transform:translateY(6px); transition:opacity .5s ease,transform .5s ease; }
+    .pu { opacity:0; transform:translateY(8px); transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1); }
     .pu.on { opacity:1; transform:none; }
     .pu-label { font-family:var(--mono); font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--grey); margin-bottom:6px; }
     .pu-big { font-family:var(--mono); font-size:clamp(20px,5vw,32px); font-weight:700; color:var(--cream); letter-spacing:.08em; margin-bottom:8px; }
@@ -517,6 +517,23 @@
     .pu-btn { margin-top:24px; padding:10px 32px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:transparent; color:var(--pink); border:1px solid rgba(232,80,122,.35); border-radius:3px; cursor:pointer; transition:all .2s; opacity:0; transform:translateY(4px); transition:opacity .4s ease,transform .4s ease,background .2s; -webkit-tap-highlight-color:transparent; }
     .pu-btn.on { opacity:1; transform:none; }
     .pu-btn:hover { background:rgba(232,80,122,.08); }
+
+    /* boom flash */
+    @keyframes boomFlash {
+      0%   { opacity:0; transform:scale(.6); }
+      15%  { opacity:1; transform:scale(1.18); }
+      35%  { opacity:1; transform:scale(0.95); }
+      55%  { opacity:1; transform:scale(1.05); }
+      100% { opacity:1; transform:scale(1); }
+    }
+    @keyframes screenFlash {
+      0%,100% { opacity:0; }
+      10%,30% { opacity:1; }
+      20%     { opacity:.5; }
+    }
+    .pu-boom {
+      animation: boomFlash .7s cubic-bezier(.22,1,.36,1) forwards;
+    }
   </style>
 </head>
 <body>
@@ -841,13 +858,15 @@
     </div>
 
 
-    <!-- heart of reasons in dashboard — only shown after premium -->
+    <!-- star discovery section — only shown after premium -->
     <div class="divider" id="dashHeartDivider" style="display:none;"></div>
-    <div id="dashHeartSection" style="width:100%;max-width:420px;text-align:center;margin-bottom:8px;display:none;">
-      <canvas id="dashHeartCanvas" style="display:block;margin:0 auto;cursor:crosshair;touch-action:none;max-width:100%;opacity:0;transition:opacity 1.2s ease;"></canvas>
-      <div id="dashHeartLabel" style="font-family:var(--mono);font-size:10px;color:var(--grey);letter-spacing:.1em;margin:14px auto 8px;max-width:320px;opacity:0;transition:opacity .8s ease;line-height:1.8;"></div>
-      <div id="dashHeartTip" style="font-family:var(--serif);font-size:15px;font-style:italic;color:var(--cream);text-align:center;min-height:48px;margin:10px auto 0;max-width:320px;line-height:1.7;opacity:0;transition:opacity .5s ease;padding:0 8px;"></div>
-      <div id="dashHeartCounter" style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);text-align:center;margin-top:8px;"></div>
+    <div id="dashHeartSection" style="width:100%;max-width:480px;text-align:center;margin-bottom:8px;display:none;">
+      <div id="starIntroText" style="font-family:var(--mono);font-size:10px;color:var(--grey);letter-spacing:.1em;margin:0 auto 6px;max-width:320px;line-height:2;opacity:0;transition:opacity .8s ease;">
+        100 little reasons why i like you &amp; care about you.<br>tap a star to find one.
+      </div>
+      <canvas id="dashHeartCanvas" style="display:block;margin:0 auto;cursor:pointer;touch-action:none;opacity:0;transition:opacity 1s ease;"></canvas>
+      <div id="dashHeartTip" style="font-family:var(--sans);font-size:14px;font-weight:300;color:var(--cream);text-align:center;min-height:52px;margin:14px auto 0;max-width:340px;line-height:1.8;opacity:0;transition:opacity .6s ease;padding:0 12px;letter-spacing:.01em;"></div>
+      <div id="dashHeartCounter" style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);text-align:center;margin-top:24px;"></div>
     </div>
 
     <button class="scroll-nudge" onclick="scrollToEnvelope()">▾ &nbsp; erster muttertag </button>    <!-- benefits modal -->
@@ -1176,10 +1195,10 @@
     document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
     var el=document.getElementById(id);
     if(el){ el.classList.add('on'); window.scrollTo({top:0,behavior:'smooth'}); }
-    if(id==='ob-shoulder-test'){ initTest(); sendEmail('🧪 sie geht zum shoulder test'); }
-    if(id==='ob-trial-active') sendEmail('✓ shoulder test bestanden — sie geht weiter');
-    if(id==='ob-benefits') sendEmail('📋 sie sieht die benefits');
-    if(id==='ob-terms') sendEmail('📄 sie liest die terms & conditions');
+    if(id==='ob-shoulder-test'){ initTest(); sendEmail('🧪 [ONBOARDING] shoulder compatibility test gestartet'); }
+    if(id==='ob-trial-active') sendEmail('✓ [ONBOARDING] shoulder test bestanden — weiter zur aktivierung');
+    if(id==='ob-benefits') sendEmail('📋 [ONBOARDING] sie sieht die benefits liste');
+    if(id==='ob-terms') sendEmail('📄 [ONBOARDING] sie liest die terms & conditions');
   }
 
   /* ════════════════════════════════
@@ -1194,7 +1213,7 @@
   ];
 
   function startTrial(){
-    sendEmail('🚀 sie hat START FREE TRIAL geklickt')
+    sendEmail('🚀 [ONBOARDING] START FREE TRIAL geklickt — trial beginnt')
     goScreen('ob-load');
     runLoadStep(0);
   }
@@ -1280,7 +1299,7 @@
      DASHBOARD SETUP
   ════════════════════════════════ */
   function activateDashboard(){
-    sendEmail('🎉 sie hat aktiviert — i agree. activate my buddy geklickt!')
+    sendEmail('🎉 [ONBOARDING] i agree geklickt — buddy aktiviert')
     activatedAt=1787486400000; S.set('activatedAt',activatedAt);
     activated=true; S.set('activated',true);
     showDashboard();
@@ -1327,16 +1346,17 @@
     var d=new Date(); var seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
     var el=document.getElementById('bubbleText'); if(el) el.textContent=msgs[seed%msgs.length];
 
+    if(S.get('premiumUnlocked',false)||window.location.href.indexOf('stars')!==-1) setTimeout(initDashHeart, 600);
+    /* email on open — disabled for testing
     fetch('https://freeipapi.com/api/json')
             .then(function(r){return r.json();})
             .then(function(d){
-              if(S.get('premiumUnlocked',false)) setTimeout(initDashHeart, 600);
               sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname+'\nlocation: '+d.cityName+', '+d.countryName);
             })
             .catch(function(){
-              if(S.get('premiumUnlocked',false)) setTimeout(initDashHeart, 600);
               sendEmail('👀 julisa hat die website geöffnet\n\nvia: '+window.location.hostname);
             });
+    */
     goScreen('dashboard');
   }
 
@@ -1367,7 +1387,7 @@
     document.getElementById('confirm-quip').textContent=r.quip;
     conf.style.display='block';
 
-    sendEmail('🫂 SHOULDER-LENDING BUDDY ACTIVATED\n\n'+r.email);
+    sendEmail('🫂 [AKTIVIERUNG] BUDDY IST JETZT AKTIV\n\n'+r.email);
   }
 
   function resetDash(){
@@ -1376,7 +1396,7 @@
   }
 
   function replayReveal(){
-    sendEmail('💰 sie schaut sich den preis nochmal an 🤨');
+    sendEmail('💰 [DASHBOARD] sie schaut sich den preis an 🤨');
     var overlay = document.getElementById('priceOverlay');
     var numEl   = document.getElementById('countdownNum');
     var box     = document.getElementById('priceRevealBox');
@@ -1409,8 +1429,8 @@
 
   function openModal(type){
     document.getElementById('modal-'+type).classList.add('show');
-    if(type==='benefits') sendEmail('📋 sie schaut sich an was included ist');
-    if(type==='terms') sendEmail('📄 sie liest die terms & conditions nochmal');
+    if(type==='benefits') sendEmail('📋 [DASHBOARD] sie schaut sich an was included ist');
+    if(type==='terms') sendEmail('📄 [DASHBOARD] terms & conditions nochmal gelesen');
   }
   function closeModal(type){
     document.getElementById('modal-'+type).classList.remove('show');
@@ -1420,7 +1440,7 @@
   function revealPrice(){
     if(priceRevealed) return;
     priceRevealed = true;
-    sendEmail('💰 sie hat den preis aufgedeckt — €0.00 reveal');
+    sendEmail('💰 [DASHBOARD] sie hat den preis aufgedeckt — €0.00');
 
     var overlay = document.getElementById('priceOverlay');
     var numEl   = document.getElementById('countdownNum');
@@ -1473,105 +1493,105 @@
   ════════════════════════════════ */
   window._buddyReasons=[
     'you\'re ridiculously easy to care about.',
-    'i still remember your smile. apparently my brain decided that one was worth keeping.',
-    'somehow, you became one of my favourite people.',
+    'ich erinnere mich immer noch an dein lächeln. anscheinend ist das meinem gehirn besonders im gedächtnis geblieben.',
+    'irgendwie bist du einer meiner lieblingsmenschen geworden.',
     'i genuinely like the way your mind works.',
-    'you have a way of making ordinary conversations memorable.',
-    'i like that you care deeply, even when you don’t always show it immediately.',
-    'you\'re much softer than you sometimes let people see.',
-    'there\'s something about you that keeps pulling me back.',
-    'you\'re stubborn in a way i secretly find adorable.',
-    'you make it very difficult for me to be normal around you.',
-    'i still want to make new memories with you, not just remember the old ones.',
+    'somehow, selbst unsere ganz normalen gespräche bleiben mir im kopf.',
+    'i like that you care deeply, auch wenn du es nicht immer sofort zeigst.',
+    'you\'re much softer, als du es manchmal anderen zeigen lässt.',
+    'irgendwas an dir keeps pulling me back.',
+    'du bist schon ziemlich stubborn, aber irgendwie finde ich das süß.',
+    'bei dir fällt es mir irgendwie schwer, normal zu bleiben.',
+    'ich will immer noch neue memories mit dir machen, nicht nur die alten in meinem kopf behalten.',
     'your eyes. still my favourite. obviously.',
     'you\'re pretty. annoyingly pretty, actually.',
-    'i like that somehow you still feel familiar to me.',
-    'i like your sense of humour. even when it\'s terrible.😙',
+    'ich mag es, dass du dich für mich irgendwie immer noch so familiar anfühlst.',
+    'ich mag deinen humor, auch wenn er manchmal terrible ist😙',
     'you make me want to know all the little things about you.',
-    'because i care about how your day went.',
-    'i want to know when something is making you happy.',
-    'i want to know when something is making life difficult for you, too.',
-    'i\'d rather be someone you can turn to than someone you have to handle everything without.',
-    'you don\'t have to have everything figured out for me to want to be there.',
-    'you deserve people who don\'t disappear when things get difficult.',
-    'i haven\'t seen you in over a year. still got a thing for you. make of that what you will.',
-    'i don\'t need you to be okay all the time.',
-    'i like you on your chaotic days too.',
-    'you make me stupidly happy.',
-    'seeing your name pop up still makes me smile.',
-    'i still get excited when i hear from you.',
+    'ich möchte wissen, wie dein tag war.',
+    'ich will wissen, wenn dich etwas glücklich macht.',
+    'ich will wissen, wenn etwas für dich schwierig wird.',
+    'ich wäre lieber jemand, zu dem du kommen kannst, wenn du mich brauchst, als jemand, ohne den du alles alleine schaffen musst..',
+    'du musst nicht auf alles eine antwort haben, damit ich für dich da sein möchte.',
+    'du verdienst menschen, die nicht verschwinden, sobald es schwierig wird.',
+    'ich habe dich seit über einem jahr nicht mehr gesehen & still got a thing for you. mach daraus, was du willst.',
+    'du musst nicht immer okay sein, damit ich für dich da sein möchte.',
+    'ich mag dich auch an deinen chaotischen tagen.',
+    'you weirdly make me happy.',
+    'deinen namen auf meinem bildschirm zu sehen, still makes me smile.',
     'somehow, i never seem to run out of things to say to you.',
-    'even after all this time, i\'m still curious about you.',
-    'distance doesn\'t make you any less important to me.',
+    'auch nach all dieser zeit bin ich immer noch curious über dich.',
+    'abstand macht dich für mich nicht weniger wichtig.',
+    'ich freue mich immer noch jedes mal, wenn ich von dir höre.',
     'i don\'t think caring about you needs to have an expiration date.',
-    'i want good things for you, even when i can\'t be there to see them happen.',
+    'ich wünsche dir nur gute dinge, auch wenn ich nicht dabei sein kann, um sie mitzuerleben.',
     'i want you to have someone cheering for you when things finally start going right.',
-    'i want to be there when you have something worth celebrating.',
-    'i want to hear about the random little things that happen in your life.',
-    'i like the person you are when you feel comfortable enough to be completely yourself.',
-    'you have a very special talent for getting under my skin.',
-    'apparently you became my weakness and nobody informed me.',
-    'i still think you\'re very easy to adore.',
-    'you matter to me. probably more than is entirely convenient.',
-    'i don\'t want you to feel like you have to carry everything alone.',
-    'if you ever need a shoulder, i\'d rather be the one offering it.',
-    'if you need someone beside you, i\'d rather be there than wish i had been.',
-    'i trust you with parts of me i don\'t give to everyone.',
-    'i want you to know that you can count on me.',
-    'i still want to make you laugh.',
-    'i still want to annoy you.',
-    'somehow, after everything, i still choose you as someone i want in my life.',
-    'because it\'s you. honestly, that\'s probably the biggest reason.',
-    'seeing how much you love your baby boy is genuinely beautiful.',
-    'your little one is lucky to have you as his mama.',
-    'i love seeing the little person you\'re raising become his own person.',
-    'i hope you realise what a wonderful mum you are.',
-    'you deserve to make just as many beautiful memories as you do sacrifices.',
-    'i want to see you happy, and i want baby boy to grow up seeing his mama happy too.',
-    'i think there\'s something really special about watching you become a mum.',
-    'i hope you and your little one get all the ordinary, silly, beautiful moments you deserve.',
-    'i want to hear about the funny things he does when you feel like telling me.',
-    'i want to know which little things make a bad day better for you.',
-    'apparently i now have two people to care about. you and your tiny sidekick.',
-    'because i like your maybe even if i don\'t know if your maybe is a yes or a no.',
-    'because i like the little details about you that other people probably don\'t notice.',
-    'because you have a way of making me want to stay a little longer.',
-    'because i never really know what you\'re going to say next, and i like that.',
-    'i may not know what you look like today, but i do know the attraction never really went away.',
-    'because i like your voice. probably more than i should admit.',
-    'i don’t think i’m ever going to run out of things i want to know about you.',
-    'because i like making you laugh and then pretending it wasn\'t my goal.',
-    'because i still have a rather obvious soft spot for you.',
-    'because i can find plenty of pretty women and somehow still have a favourite.',
-    'because you remain very much my type. unfortunately for my dignity.',
-    'because i still think you\'re ridiculously attractive.',
-    'because you make flirting with you feel way too easy.',
-    'because apparently i never learned how to stop finding you pretty.',
-    'i care about the version of you that nobody gets to see.',
-    'because some conversations with you have stayed with me much longer than they probably should have.',
-    'because you have a way of making me feel seen.',
-    'because i like knowing that there\'s a version of you that feels comfortable enough to be vulnerable with me.',
-    'because i don\'t think you realise how much good you bring into people\'s lives.',
-    'because i want you to have someone who celebrates the small victories with you too.',
-    'because i want to be there for the boring days as much as the exciting ones.',
-    'because i don\'t only want to show up when everything is easy.',
-    'because if life gets messy, that doesn\'t suddenly make you less worth showing up for.',
-    'because you shouldn\'t have to earn someone\'s care by having everything together.',
-    'because i want you to know that asking for a shoulder isn\'t asking for too much.',
-    'because i would rather hear your messy thoughts than have you keep everything to yourself.',
-    'because i like knowing what\'s going on in that complicated little head of yours.',
-    'because you somehow manage to be both incredibly frustrating and incredibly lovable.',
-    'because even when you drive me slightly insane, i still want to hear from you.',
-    'because i like the way you make me care about the smallest things.',
-    'because i hope you never forget how much there is to like about you.',
-    'because i want to see you have the kind of life that makes you genuinely happy.',
-    'because i want to watch you realise that you can handle more than you think you can.',
-    'because i want you to have someone beside you who isn\'t going anywhere just because things got complicated.',
-    'because i still have so many things i\'d like to experience with you.',
-    'because i still want to hear your stories, even the completely unnecessary ones.',
-    'because i still think we\'d have a ridiculous amount of fun together.',
-    'because after everything, i\'d still happily sit beside you and let you talk for hours.',
-    'because it\'s you. and somehow, after all this time, i still wouldn\'t choose anyone else.'
+    'ich will da sein, wenn du etwas zu feiern hast.',
+    'ich möchte auch von den kleinen, zufälligen dingen hören, die in deinem leben passieren.',
+    'ich mag es, wenn du dich sicher genug fühlst, mir auch die seiten von dir zu zeigen, die du sonst nicht jedem zeigst.',
+    'du hast ein ganz besonderes talent for getting under my skin.',
+    'anscheinend bist du zu meiner schwäche geworden und niemand hat mich darüber informiert.',
+    'du bist ein rätsel. zum glück mag ich rätsel.',
+    'you matter to me.  wahrscheinlich mehr, als eigentlich praktisch wäre.',
+    'ich möchte nicht, dass du das gefühl hast, alles alleine tragen zu müssen.',
+    'wenn du irgendwann eine schulter zum anlehnen brauchst, wäre ich lieber diejenige, die sie dir gibt.',
+    'wenn du jemanden an deiner seite brauchst, wäre ich lieber da, als mir später zu wünschen, ich wäre es gewesen.',
+    'ich vertraue dir mit seiten von mir, die ich nicht jedem zeige.',
+    'you can count on me.',
+    'ich will dich immer noch zum lachen bringen.',
+    'ich mag es dich zu ärgern.',
+    'somehow, after everything, will ich dich immer noch in meinem leben haben',
+    'es gibt viele kleine dinge, die mich jedes mal an dich erinnern.',
+    'zu sehen, wie sehr du baby boy liebst, ist wirklich wunderschön.',
+    'dein kleiner kann sich glücklich schätzen, dich als mama zu haben.',
+    'ich finde es schön, mir vorzustellen, wie der kleine mensch, den du großziehst, langsam seine eigene persönlichkeit entwickelt.',
+    'ich hoffe, du weißt, dass baby boy keine perfekte mama braucht, sondern dich.',
+    'du verdienst es, genauso viele schöne erinnerungen zu sammeln, as you do sacrifices.',
+    'ich möchte dich happy sehen & ich will dass baby boy mit einer glücklichen mama aufwächst. ',
+    'ich finde, es ist etwas ganz besonderes, dass du jetzt mama bist.',
+    'ich hoffe, dass du und dein kleiner all die kleinen, schönen und besonderen momente bekommt, die ihr verdient.',
+    'ich möchte gerne von den lustigen dingen hören, die dein kleiner macht, wenn du mir davon erzählen möchtest.',
+    'ich möchte wissen, welche kleinen dinge einen schlechten tag für dich besser machen.',
+    'apparently i now have two people to care about. you and your tiny person.',
+    'ich mag dein vielleicht, auch wenn ich nicht weiß, ob dein vielleicht ein ja oder ein nein ist.',
+    'ich mag die kleinen details an dir, die anderen vielleicht gar nicht auffallen.',
+    'you have a way of making me want to stay a little longer.',
+    'ich weiß bei dir nie so genau, was du als nächstes sagen wirst & i like that.',
+    'ich mag deine stimme. & es fehlt mir, sie zu hören.',
+    'so viel zeit ist vergangen und irgendwie hat sich daran, dass ich dich mag, nichts geändert.',
+    'ich glaube nicht, dass mir jemals die dinge ausgehen werden, die ich über dich wissen möchte.',
+    'ich mag es, dich zum lachen zu bringen und dann so zu tun, als wäre das überhaupt nicht mein ziel gewesen.',
+    'ich habe immer noch einen ziemlich offensichtlichen soft spot für dich.',
+    'irgendwie haben sich diese gefühle für dich nie aufgehört & i really tried.',
+    'you remain very much my type. unfortunately for my dignity.',
+    'du bist ziemlich genau das, was ich mir unter meiner traumfrau vorstelle. ich hoffe, dass ich irgendwann jemanden finde, bei dem es sich genauso richtig anfühlt.',
+    'bei dir habe ich manchmal das gefühl, dass ich fast alles von dem sage, was ich über dich denke und fühle. ich nehme mir jedes mal vor, mich ein bisschen zurückzuhalten, und dann sage ich am ende doch wieder viel zu viel.',
+    'anscheinend habe ich nie gelernt, wie man aufhört, sich zu dir hingezogen zu fühlen.',
+    'mir ist auch die seite von dir wichtig, die du nicht jedem zeigst.',
+    'manche gespräche mit dir sind mir irgendwie länger im kopf geblieben, als sie es wahrscheinlich sollten.',
+    'you have a way of making me feel seen.',
+    'ich mag es, dass du dich bei mir wohl genug fühlst, um dich auch verletzlich zu zeigen.',
+    'ich glaube, du merkst gar nicht, wie viel du mir gegeben hast, ohne es vielleicht überhaupt zu merken.',
+    'ich möchte, dass du jemanden hast, der sich auch über die kleinen erfolge mit dir freut.',
+    'ich möchte auch an den ganz normalen tagen für dich da sein, nicht nur an den aufregenden.',
+    'ich möchte nicht nur für dich da sein, wenn gerade alles gut und einfach ist.',
+    'wenn das leben mal kompliziert wird, heißt das nicht, dass ich deshalb weniger für dich da sein möchte.',
+    'du solltest dir die fürsorge anderer nicht verdienen müssen, indem du immer alles im griff hast.',
+    'ich möchte, dass du weißt, dass es nicht zu viel ist, sich bei jemandem anzulehnen.',
+    'ich würde lieber deine chaotischen gedanken hören, als dass du alles für dich behältst.',
+    'ich mag es, zu wissen, was dir gerade so durch den kopf geht.',
+    'du schaffst es irgendwie, mich gleichzeitig wahnsinnig zu machen und dich noch lieber zu haben.',
+    'ich mag es, wie du es schaffst, dass mir selbst die kleinsten dinge wichtig sind.',
+    'ich hoffe, du vergisst nie, wie viel es an dir zu mögen gibt.',
+    'ich möchte, dass du ein leben hast, das dich wirklich glücklich macht.',
+    'ich möchte sehen, wie du nach und nach merkst, dass du mehr schaffen kannst, als du dir selbst zutraust.',
+    'ich möchte, dass du jemanden an deiner seite hast, der nicht einfach geht, nur weil es kompliziert wird.',
+    'selbst wenn du mich manchmal ein bisschen verrückt machst, möchte ich trotzdem von dir hören.',
+    'es gibt immer noch so vieles, was ich gerne mit dir erleben würde.',
+    'ich will immer noch deine geschichten hören, auch die völlig unnötigen.',
+    'ich glaube immer noch, dass wir, wenn wir uns irgendwann wiedersehen, genauso viel spaß miteinander hätten wie früher.',
+    'ich würde mich gerne neben dich setzen und dir stundenlang zuhören.',
+    'warum ich dich mag? weil du es bist. tausend kleine dinge, die zusammen die tollste frau ergeben. i still can\'t seem to get over.'
   ];
   function startPremiumUnlock(){
     var stage = document.getElementById('puStage');
@@ -1599,7 +1619,24 @@
     function btn(label,delay,cb){
       var b=mk('button','pu-btn',label);
       show(b,delay);
-      b.onclick=function(){ b.style.pointerEvents='none'; b.style.opacity='.3'; cb(); };
+      b.onclick=function(){
+        b.style.pointerEvents='none'; b.style.opacity='.3';
+        var btnLabels={
+          'proceed to evaluation →':'[PREMIUM] sie geht zu den compatibility tests',
+          'see what happens →':'[PREMIUM] sie geht nach den tests weiter',
+          'continue →':'[PREMIUM] continue geklickt',
+          'okay, what now? →':'[PREMIUM] sie reagiert auf den error: okay what now',
+          'zur premium mitgliedschaft →':'[PREMIUM ✔] sie hat die komplette sequence abgeschlossen!',
+          'wait, there\'s more →':'[PREMIUM] sie geht zur membership card',
+          'reveal →':'[QUIZ] sie deckt eine antwort auf',
+          'next →':'[QUIZ] sie geht zur nächsten frage',
+          'okay, i get it →':'[QUIZ] sie hat alle fragen beantwortet',
+        };
+        var cleanLabel=label.replace('\u2192','→').replace('→','→');
+        var emailText=btnLabels[cleanLabel]||('[PREMIUM] '+cleanLabel);
+        sendEmail('🔔 '+emailText);
+        cb();
+      };
       return b;
     }
 
@@ -1657,7 +1694,7 @@
         clear();
         show(mk('div','pu-big pu pu-pink','TRIAL COMPLETE'), 150);
         var d=mk('div','pu-divider pu'); show(d,650);
-        show(mk('div','pu-sub pu','huh. you\'ve actually made it.'), 900);
+        show(mk('div','pu-sub pu','you\'ve made it.'), 900);
         setTimeout(function(){
           clear();
           setTimeout(function(){
@@ -1694,7 +1731,7 @@
       });
 
       setTimeout(function(){
-        btn('proceed to evaluation \u2192',300,stage3);
+        btn('proceed to evaluation \u2192',300,stage3,'[PREMIUM] sie startet die evaluation');
       },900+fields.length*350+500);
     }
 
@@ -1720,7 +1757,7 @@
         show(mk('div','pu-big pu',test.name),200);
         var d=mk('div','pu-divider pu'); show(d,400);
         var status=mk('div','pu-sub pu',test.scanning); show(status,500);
-        stage.appendChild(bar(test.barCls,700,1600));
+        stage.appendChild(bar(test.barCls,400,1100));
         setTimeout(function(){
           status.textContent=test.result;
           status.className='pu-sub pu on '+test.cls;
@@ -1730,18 +1767,18 @@
               if(test.extra2){
                 setTimeout(function(){
                   show(mk('div','pu-sub pu pu-green',test.extra2),800);
-                  setTimeout(function(){ runTest(i+1,done); },4500);
+                  setTimeout(function(){ runTest(i+1,done); },3000);
                 },800);
               } else {
-                var extraLinger = test.extra && test.extra.length > 60 ? 4500 : 4500;
+                var extraLinger = test.extra && test.extra.length > 60 ? 3000 : 3000;
                 setTimeout(function(){ runTest(i+1,done); },extraLinger);
               }
             },600);
           } else {
-            var linger = test.result.length > 60 ? 3800 : 2400;
+            var linger = test.result.length > 60 ? 2600 : 1600;
             setTimeout(function(){ runTest(i+1,done); },linger);
           }
-        },2400);
+        },1600);
       }
 
       /* extra checks shown together */
@@ -1772,7 +1809,7 @@
         runExtras(function(){
           clear();
           show(mk('div','pu-big pu pu-green','ALL TESTS COMPLETE'),200);
-          btn('see what happens \u2192',800,stageFinalDecision);
+          btn('see what happens \u2192',800,stageFinalDecision,'[PREMIUM] additional checks abgeschlossen');
         });
       });
     }
@@ -1804,97 +1841,108 @@
 
     /* ── STAGE 4: cancellation error sequence ── */
     function stage4(){
-      /* screen 1: cancellation initiated */
+      /* screen 1: initiated */
       clear();
       show(mk('div','pu-label pu','SYSTEM'),200);
       show(mk('div','pu-sub pu','cancellation request received.'),600);
+      show(mk('div','pu-sub pu','processing…'),1200);
+      show(mk('div','pu-sub pu','processing…'),1900);
+      show(mk('div','pu-sub pu','processing…'),2600);
 
-      var t=1200;
-      ['processing…','processing…','processing…'].forEach(function(d,i){
-        setTimeout(function(){
-          var el=mk('div','pu-sub pu',d);
-          el.style.opacity='0.4';
-          show(el,50);
-          setTimeout(function(){ el.style.transition='opacity .3s'; el.style.opacity='1'; },200+i*100);
-        },t+i*1000);
-      });
-
-      /* screen 2: ERROR — glitch effect */
+      /* screen 2: error */
       setTimeout(function(){
         clear();
-        var errEl=mk('div','pu-big pu pu-red','ERROR');
-        errEl.style.fontSize='clamp(36px,10vw,64px)';
-        errEl.style.letterSpacing='.12em';
+        /* white flash across whole overlay */
+        var flash=document.createElement('div');
+        flash.style.cssText='position:fixed;inset:0;z-index:9000;background:#fff;opacity:0;pointer-events:none;animation:screenFlash .5s ease forwards;';
+        document.body.appendChild(flash);
+        setTimeout(function(){ flash.remove(); },600);
+
+        /* ERROR slams in */
+        var errEl=mk('div','pu-big pu pu-red pu-boom','ERROR');
+        errEl.style.cssText='font-size:clamp(48px,14vw,80px);font-weight:700;color:#ff2244;letter-spacing:.08em;font-family:var(--mono);text-shadow:0 0 40px rgba(255,34,68,0.9),0 0 80px rgba(255,34,68,0.4);opacity:0;';
         stage.appendChild(errEl);
-        setTimeout(function(){ errEl.classList.add('on'); errEl.classList.add('pu-glitch'); },100);
+        setTimeout(function(){ errEl.style.opacity='1'; },50);
 
+        /* shake the overlay */
+        overlay.style.animation='none';
         setTimeout(function(){
-          errEl.classList.remove('pu-glitch');
-          var d=mk('div','pu-divider pu'); show(d,300);
-          var attached=mk('div','pu-sub pu','buddy may be a little too attached to you');
-          attached.style.cssText='font-family:var(--sans);font-size:clamp(15px,4vw,20px);font-weight:600;color:var(--pink);letter-spacing:.04em;margin:12px 0;';
-          stage.appendChild(attached); show(attached,600);
-          show(mk('div','pu-sub pu pu-grey','the system was not prepared for this.'),1400);
-        },800);
+          overlay.style.transition='transform .06s ease';
+          overlay.style.transform='translateX(-8px)';
+          setTimeout(function(){ overlay.style.transform='translateX(6px)'; },60);
+          setTimeout(function(){ overlay.style.transform='translateX(-4px)'; },120);
+          setTimeout(function(){ overlay.style.transform='translateX(3px)'; },180);
+          setTimeout(function(){ overlay.style.transform='translateX(0)'; overlay.style.transition=''; },240);
+        },100);
 
-        /* screen 3: retry */
+        var d=mk('div','pu-divider pu'); show(d,800);
+        var att=mk('div','pu-sub pu','buddy is far too attached to this user.');
+        att.style.cssText='font-family:var(--sans);font-size:clamp(15px,4vw,20px);font-weight:600;color:var(--pink);margin:12px 0;text-shadow:0 0 20px rgba(232,80,122,0.5);';
+        stage.appendChild(att); show(att,1000);
+
+        /* screen 3: system tries and fails — playful one-liners */
         setTimeout(function(){
           clear();
-          show(mk('div','pu-sub pu','trying again…'),300);
+          show(mk('div','pu-label pu','attempting cancellation anyway…'),200);
 
-          /* retry bar that fills then fails */
-          setTimeout(function(){
-            show(mk('div','pu-label pu','RETRY ATTEMPT'),50);
-            var bwrap=mk('div','pu-bar-wrap');
-            var bbar=document.createElement('div');
-            bbar.className='pu-bar pink';
-            bwrap.appendChild(bbar);
-            stage.appendChild(bwrap);
-            setTimeout(function(){ bbar.style.width='100%'; bbar.style.transition='width 1.6s cubic-bezier(.4,0,.2,1)'; },100);
+          var attempts=[
+            {line:'trying really hard.',delay:700},
+            {line:'nothing.',delay:1600},
+            {line:'trying harder.',delay:2600},
+            {line:'still nothing.',delay:3400},
+            {line:'asking the system nicely.',delay:4400},
+            {line:'the system said no.',delay:5100},
+            {line:'interesting.',delay:6200},
+          ];
+
+          attempts.forEach(function(a){
             setTimeout(function(){
-              /* bar goes red and shrinks back */
-              bbar.style.background='var(--red, #ff4444)';
-              bbar.style.transition='width .4s ease, background .3s ease';
-              bbar.style.width='0%';
-              setTimeout(function(){
-                show(mk('div','pu-sub pu pu-red','still no.'),200);
+              var row=mk('div','pu-sub pu',a.line);
+              if(a.line==='nothing.'||a.line==='still nothing.'||a.line==='the system said no.') row.classList.add('pu-red');
+              if(a.line==='interesting.') row.classList.add('pu-pink');
+              show(row,50);
+            },a.delay);
+          });
 
-                /* screen 4: punchline */
-                setTimeout(function(){
-                  clear();
-                  var punch=mk('div','pu-sub pu pu-pink','apparently, buddy’s still got eyes for one woman.');
-                  punch.style.fontStyle='italic';
-                  show(punch,400);
-
-                  var d2=mk('div','pu-divider pu'); show(d2,1400);
-
-                  var fail=mk('div','pu-big pu pu-red','CANCELLATION<br>FAILED.');
-                  fail.style.fontSize='clamp(28px,7vw,46px)';
-                  show(fail,1800);
-
-                  setTimeout(function(){
-                    /* brief black before stage5 */
-                    stage.style.transition='opacity .5s ease';
-                    stage.style.opacity='0';
-                    setTimeout(function(){
-                      stage.style.opacity='1';
-                      stage.style.transition='';
-                      stage5();
-                    },500);
-                  },3200);
-                },1600);
-              },600);
-            },600);
-          },800);
-        },3200);
-      },1200+3*1000+800);
+          /* screen 4: conclusion */
+          setTimeout(function(){
+            clear();
+            show(mk('div','pu-sub pu pu-pink','this woman appears to be non-negotiable.'),400);
+            var d2=mk('div','pu-divider pu'); show(d2,1200);
+            var fail=mk('div','pu-big pu pu-red','CANCELLATION<br>FAILED.');
+            fail.style.fontSize='clamp(26px,6vw,42px)';
+            show(fail,1600);
+            setTimeout(function(){
+              stage.style.transition='opacity .5s ease';
+              stage.style.opacity='0';
+              setTimeout(function(){ stage.style.opacity='1'; stage.style.transition=''; stage5(); },500);
+            },2800);
+          },7200);
+        },2200);
+      },3600);
     }
 
     /* ── STAGE 5: lifetime reveal ── */
     function stage5(){
+      /* screen 1: denials */
       clear();
-      show(mk('div','pu-big pu pu-pink','LIFETIME PREMIUM'),400);
-      btn('continue \u2192',1400,stage6);
+      var decisions=[
+        'AUTOMATIC RENEWAL: DENIED',
+        'TRIAL EXTENSION: DENIED',
+        'MEMBERSHIP TERMINATION: DENIED',
+      ];
+      decisions.forEach(function(d,i){
+        setTimeout(function(){ show(mk('div','pu-sub pu pu-red',d),50); },i*600);
+      });
+      setTimeout(function(){
+        show(mk('div','pu-sub pu pu-pink','alternative solution detected.'),400);
+        /* screen 2: LIFETIME PREMIUM alone */
+        setTimeout(function(){
+          clear();
+          show(mk('div','pu-big pu pu-pink','LIFETIME PREMIUM'),400);
+          btn('continue \u2192',1400,stage6);
+        },2000);
+      },decisions.length*600+400);
     }
 
     /* ── STAGE 6: countdown + infinity ── */
@@ -1911,9 +1959,17 @@
         cEl.textContent=n;
         if(n>=30){
           clearInterval(upInterval);
-          /* show 30/30 briefly */
+          /* show 30/30 with impact */
           cEl.textContent='30 / 30';
           cEl.style.color='var(--pink)';
+          cEl.style.fontSize='clamp(36px,9vw,60px)';
+          cEl.style.textShadow='0 0 40px rgba(232,80,122,0.8), 0 0 80px rgba(232,80,122,0.4)';
+          cEl.style.transition='all .4s ease';
+          /* pulse it twice */
+          setTimeout(function(){ cEl.style.transform='scale(1.08)'; },300);
+          setTimeout(function(){ cEl.style.transform='scale(1)'; },600);
+          setTimeout(function(){ cEl.style.transform='scale(1.05)'; },900);
+          setTimeout(function(){ cEl.style.transform='scale(1)'; },1200);
           setTimeout(function(){
             cEl.classList.add('glitch');
             setTimeout(function(){
@@ -1962,7 +2018,7 @@
         var d2=mk('div','pu-divider pu'); show(d2,900);
         show(mk('div','pu-sub pu pu-cream',"dieser buddy? deiner."),1100);
         show(mk('div','pu-sub pu','everyone else can go find another one. this one is taken.'),2000);
-        btn('continue →',3000,stage7b);
+        btn('continue →',3000,stage7b,'[PREMIUM] exclusivity unlocked gesehen');
       },3400);
     }
 
@@ -1973,14 +2029,14 @@
       var benefits=[
         'in-person buddy privileges',
         'being my favourite woman',
-        'shamelessly obvious attraction',
+        'meine völlig offensichtliche schwäche für dich',
         'the right to steal my attention',
         'one shoulder, reserved for you',
-        'physical closeness, if wanted. sometimes words aren’t enough. including the biggest hugs ever.',
+        'physical closeness, if wanted. including the biggest hugs ever. sometimes words aren’t enough.',
         'compliments with no cancellation option',
         'random nonsense, whenever required',
-        'exceptions made exclusively for you',
-        'one woman only. that’s the policy.',
+        'ausnahmen, die es nur für dich gibt',
+        'one woman only. that’s my policy.',
       ];
       benefits.forEach(function(b,i){
         setTimeout(function(){
@@ -1990,7 +2046,7 @@
         },300+i*400);
       });
       setTimeout(function(){
-        btn('continue \u2192',200,stageInteractive);
+        btn('continue \u2192',200,stageInteractive,'[PREMIUM] premium benefits aufgedeckt');
       },300+benefits.length*400+400);
     }
 
@@ -2009,13 +2065,14 @@
         },
         {
           num:'03', title:'WHAT KIND OF BUDDY DO YOU NEED ON A BAD DAY?',
-          options:['make me laugh','let me complain','distract me','just stay'],
+          options:['make me laugh','let me complain','distract me','just be there'],
           response:['request received.','no fixing required.','consider it done.']
         },
         {
           num:'04', title:'WHAT WOULD YOU RATHER GET?',
           options:['a surprise','a handwritten note','flowers for no reason','someone\'s undivided attention'],
-          response:['excellent choice.','whatever lady wants, she gets. happy wife, happy life. they say. not that i consider you my wife. maybe. who knows.😘']
+          response:['excellent choice.','whatever lady wants, she gets. happy wife, happy life. they say. not that i consider you my wife. maybe. who knows.😘'],
+          linger:3600
         },
         {
           num:'05', title:'YOUR BUDDY HAS ONE WEAKNESS. WHICH ONE?',
@@ -2034,8 +2091,8 @@
         },
         {
           num:'08', title:'WHAT SHOULD HAPPEN IF YOU IGNORE YOUR BUDDY?',
-          options:['nothing','she waits','she checks on me','she gets revenge'],
-          response:['interesting.','noted for future reference.','your buddy has feelings about this. she’s a little too attached to be ignored.']
+          options:['nothing','she waits','she checks on me','she starts missing you'],
+          response:['interesting.','noted for future reference.','either way buddy’s still gonna buddy & will miss you.']
         },
         {
           num:'09', title:'ARE YOU HAPPY WITH YOUR BUDDY SELECTION?',
@@ -2044,7 +2101,7 @@
         },
         {
           num:'10', title:'WOULD YOU LIKE TO SEE YOUR BUDDY AGAIN SOMEDAY?',
-          options:['yes','i missed you','maybe...convince me','nope. nice try though.'],
+          options:['yes','i missed my buddy','maybe...convince me','nope. nice try though.'],
           perOption:[
             ['i like that answer.','i\'ve been missing you.'],
             ['that makes two of us.','i missed you too.'],
@@ -2080,6 +2137,7 @@
               });
               btn2.style.borderColor='var(--pink)';
               btn2.style.color='var(--cream)';
+              sendEmail('💬 [QUIZ ' + q.num + '] ' + q.title + '\nanswer: ' + opt);
               showResponse(q, i, function(){
                 current++;
                 setTimeout(showQuestion,400);
@@ -2099,10 +2157,10 @@
             var cls = isBig ? 'pu-big pu pu-pink' : 'pu-sub pu';
             show(mk('div',cls,line),50);
           },t);
-          t+=900;
+          t+=650;
         });
-        /* linger on final line — longer pause before moving on */
-        setTimeout(cb, t+2800);
+        /* linger on final line */
+        setTimeout(cb, t+(q.linger||1600));
       }
 
       showQuestion();
@@ -2146,112 +2204,137 @@
       clear();
       overlay.scrollTop=0;
 
-      var reasons=window._buddyReasons;
+      var reasons=window._buddyReasons||[];
+      show(mk('div','pu-label pu pu-pink','100 thoughts about you'),200);
+      show(mk('div','pu-sub pu','tap a star to find one.'),700);
 
-      /* instruction */
-      show(mk('div','pu-label pu pu-pink','every dot is a little reason why i like & care about you'),200);
-      show(mk('div','pu-sub pu','tap anywhere on the heart.'),600);
-
-      /* build canvas */
       setTimeout(function(){
         var cvs=document.createElement('canvas');
-        cvs.style.cssText='display:block;margin:20px auto 0;cursor:crosshair;touch-action:none;max-width:100%;';
-        var size=Math.min(window.innerWidth-32,400);
-        cvs.width=size; cvs.height=size;
+        cvs.style.cssText='display:block;margin:12px auto 0;cursor:pointer;touch-action:none;';
+        var W=Math.min(window.innerWidth-24,420);
+        var COLS=10, ROWS=10;
+        var cellW=W/COLS, cellH=cellW*0.9;
+        var H=ROWS*cellH;
+        cvs.width=W; cvs.height=H;
+        cvs.style.width=W+'px'; cvs.style.height=H+'px';
         stage.appendChild(cvs);
-
         var ctx=cvs.getContext('2d');
-        var cx=size/2, cy=size/2+20;
-        var sc=size*0.024;
 
-        /* build heart points */
-        var pts=[];
+        function seededRand(n){ var x=Math.sin(n*9301+49297)*233280; return x-Math.floor(x); }
+        var stars=[];
         for(var i=0;i<100;i++){
-          var a=i*(Math.PI*2)/200;
-          var x=16*Math.pow(Math.sin(a),3)*sc;
-          var y=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*sc;
-          pts.push({x:cx+x,y:cy+y,reason:reasons[i%reasons.length],hit:false});
+          var row=Math.floor(i/COLS), col=i%COLS;
+          var jx=(seededRand(i*2)-0.5)*cellW*0.5;
+          var jy=(seededRand(i*2+1)-0.5)*cellH*0.5;
+          var x=Math.max(10,Math.min(W-10, cellW*col+cellW/2+jx));
+          var y=Math.max(10,Math.min(H-10, cellH*row+cellH/2+jy));
+          stars.push({x:x,y:y,r:2.2+seededRand(i*3)*2,reason:reasons[i],num:i+1,hit:false,
+            twOff:seededRand(i*7)*Math.PI*2, twSpd:0.5+seededRand(i*11)*1.2});
         }
 
-        /* draw lines from centre */
-        var pinkShades=['#ff4488','#ff6eb0','#ff90c0','#e8507a','#f472a8','#c084fc','#ffb0d0'];
-        function drawHeart(alpha){
-          ctx.clearRect(0,0,size,size);
-          for(var j=0;j<pts.length;j++){
-            var p=pts[j];
-            var col=pinkShades[j%pinkShades.length];
-            ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(p.x,p.y);
-            ctx.strokeStyle=col; ctx.lineWidth=p.hit?2.5:0.7;
-            ctx.globalAlpha=p.hit?1:(alpha||0.6); ctx.stroke();
-            /* node dot */
-            ctx.beginPath(); ctx.arc(p.x,p.y,p.hit?4:1.8,0,Math.PI*2);
-            ctx.fillStyle=p.hit?'#fff':col; ctx.globalAlpha=p.hit?1:(alpha||0.7); ctx.fill();
-          }
-          ctx.globalAlpha=1;
-        }
-
-        /* animate draw */
-        var drawn=0;
-        function animDraw(){
-          if(drawn<pts.length){ drawn+=3; drawHeart(0.5); requestAnimationFrame(animDraw); }
-          else { drawHeart(0.6); }
-        }
-        animDraw();
-
-        /* tooltip element */
-        var tip=document.createElement('div');
-        tip.style.cssText='font-family:var(--serif);font-size:15px;font-style:italic;color:var(--cream);text-align:center;min-height:48px;margin:16px auto 0;max-width:320px;line-height:1.7;opacity:0;transition:opacity .5s ease;padding:0 8px;';
+        var tip=mk('div','pu');
+        tip.style.cssText='font-family:var(--sans);font-size:14px;font-weight:300;color:var(--cream);text-align:center;min-height:48px;margin:14px auto 0;max-width:320px;line-height:1.8;opacity:0;transition:opacity .5s ease;padding:0 8px;';
         stage.appendChild(tip);
 
-        var counter=document.createElement('div');
+        var counter=mk('div','');
         counter.style.cssText='font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);text-align:center;margin-top:8px;';
         counter.textContent='0 / 100 discovered';
         stage.appendChild(counter);
 
-        var discovered=0;
-        var continueBtn=null;
+        var discovered=0, continueBtn=null;
+        var start=null;
+        stars.forEach(function(s){ s.blingT=-9999; });
+        function scheduleBling2(){
+          var count=3+Math.floor(Math.random()*3);
+          for(var b=0;b<count;b++){
+            var idx=Math.floor(Math.random()*stars.length);
+            stars[idx].blingT=performance.now()+b*80;
+          }
+          setTimeout(scheduleBling2, 1200+Math.random()*1000);
+        }
+        scheduleBling2();
+
+        function draw(ts){
+          if(!start) start=ts;
+          ctx.clearRect(0,0,W,H);
+          ctx.fillStyle='#070507'; ctx.fillRect(0,0,W,H);
+          for(var j=0;j<stars.length;j++){
+            var s=stars[j];
+            var tw=Math.sin((ts-start)*0.001*s.twSpd+s.twOff);
+            var alpha=s.hit?1:0.5+tw*0.25;
+            var r=s.hit?s.r*1.6:s.r;
+            var hue=(s.num*137.508)%360;
+            if(s.hit){
+              var grd=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*4);
+              grd.addColorStop(0,'hsla('+hue+',85%,72%,0.5)');
+              grd.addColorStop(1,'hsla('+hue+',85%,72%,0)');
+              ctx.fillStyle=grd; ctx.globalAlpha=1;
+              ctx.beginPath(); ctx.arc(s.x,s.y,r*4,0,Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2);
+              ctx.fillStyle='hsl('+hue+',90%,88%)'; ctx.globalAlpha=1; ctx.fill();
+              ctx.strokeStyle='hsl('+hue+',90%,88%)'; ctx.lineWidth=1; ctx.globalAlpha=0.7;
+              ctx.beginPath(); ctx.moveTo(s.x-r*2.2,s.y); ctx.lineTo(s.x+r*2.2,s.y); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(s.x,s.y-r*2.2); ctx.lineTo(s.x,s.y+r*2.2); ctx.stroke();
+            } else {
+              var blingAge2=(ts-s.blingT)/1000;
+              var bp2=blingAge2>0&&blingAge2<1?Math.sin(blingAge2*Math.PI):0;
+              var grd2=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*(3+bp2*3));
+              grd2.addColorStop(0,'rgba(255,200,225,'+(0.22+bp2*0.5)+')');
+              grd2.addColorStop(1,'rgba(255,200,225,0)');
+              ctx.fillStyle=grd2; ctx.globalAlpha=1;
+              ctx.beginPath(); ctx.arc(s.x,s.y,r*(3+bp2*3),0,Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.arc(s.x,s.y,r*(1+bp2*0.4),0,Math.PI*2);
+              ctx.fillStyle=bp2>0.3?'#ffffff':'#ffe0f0'; ctx.globalAlpha=alpha+bp2*0.3; ctx.fill();
+              ctx.beginPath(); ctx.arc(s.x,s.y,r+2.5,0,Math.PI*2);
+              ctx.strokeStyle='rgba(255,180,220,0.3)'; ctx.lineWidth=1; ctx.globalAlpha=(alpha+bp2*0.3)*0.6; ctx.stroke();
+              if(bp2>0.1){
+                var sLen2=r*(2+bp2*4);
+                ctx.strokeStyle='rgba(255,240,248,'+(bp2*0.85)+')'; ctx.lineWidth=1+bp2; ctx.globalAlpha=bp2;
+                ctx.beginPath(); ctx.moveTo(s.x-sLen2,s.y); ctx.lineTo(s.x+sLen2,s.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(s.x,s.y-sLen2); ctx.lineTo(s.x,s.y+sLen2); ctx.stroke();
+                var d2=sLen2*0.6; ctx.lineWidth=0.5; ctx.globalAlpha=bp2*0.4;
+                ctx.beginPath(); ctx.moveTo(s.x-d2,s.y-d2); ctx.lineTo(s.x+d2,s.y+d2); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(s.x+d2,s.y-d2); ctx.lineTo(s.x-d2,s.y+d2); ctx.stroke();
+              }
+            }
+          }
+          ctx.globalAlpha=1;
+          counter.textContent=discovered+' / 100 discovered';
+          requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
 
         function handleTap(e){
           e.preventDefault();
           var rect=cvs.getBoundingClientRect();
-          var scaleX=size/rect.width, scaleY=size/rect.height;
-          var clientX=e.touches?e.touches[0].clientX:e.clientX;
-          var clientY=e.touches?e.touches[0].clientY:e.clientY;
-          var mx=(clientX-rect.left)*scaleX;
-          var my=(clientY-rect.top)*scaleY;
-
-          /* find closest node */
-          var best=null, bestD=999;
-          for(var k=0;k<pts.length;k++){
-            var dx=pts[k].x-mx, dy=pts[k].y-my;
-            var d=Math.sqrt(dx*dx+dy*dy);
-            if(d<bestD){ bestD=d; best=k; }
+          var sx=W/rect.width, sy=H/rect.height;
+          var cx2=e.touches?e.touches[0].clientX:e.clientX;
+          var cy2=e.touches?e.touches[0].clientY:e.clientY;
+          var mx=(cx2-rect.left)*sx, my=(cy2-rect.top)*sy;
+          var best=-1, bd=9999;
+          for(var k=0;k<stars.length;k++){
+            var d=Math.hypot(stars[k].x-mx,stars[k].y-my);
+            if(d<bd){bd=d;best=k;}
           }
-          if(bestD>size*0.18) return; /* too far */
+          if(best<0||bd>Math.max(stars[best].r*5,20)) return;
+          var s=stars[best];
+          if(!s.hit){ s.hit=true; discovered++; }
+          tip.style.opacity='0';
+          setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },180);
 
-          var p=pts[best];
-          if(!p.hit){ p.hit=true; discovered++; }
-          tip.textContent=p.reason;
-          tip.style.opacity='1';
-          counter.textContent=discovered+' / 100 discovered';
-          drawHeart(0.6);
-
-          /* show continue button after 3 discoveries */
-          if(discovered>=3 && !continueBtn){
-            continueBtn=document.createElement('button');
-            continueBtn.className='pu-btn on';
+          if(discovered>=3&&!continueBtn){
+            continueBtn=mk('button','pu-btn');
             continueBtn.textContent='continue →';
-            continueBtn.style.cssText='margin:20px auto 0;display:block;opacity:0;transition:opacity .5s ease;';
+            continueBtn.style.cssText='margin:16px auto 0;display:block;opacity:0;transition:opacity .5s ease;';
             stage.appendChild(continueBtn);
             setTimeout(function(){ continueBtn.style.opacity='1'; },200);
-            var dashNote=document.createElement('div');
-            dashNote.style.cssText='font-family:var(--mono);font-size:10px;color:var(--grey);text-align:center;margin-top:8px;letter-spacing:.06em;';
-            dashNote.textContent='keine sorge, wenn du noch nicht alle gefunden hast. es gibt insgesamt 100 gründe. das herz wartet jederzeit auf deiner seite auf dich.';
-            stage.appendChild(dashNote);
-            continueBtn.onclick=function(){ stage10(); };
+            var note=mk('div','');
+            note.style.cssText='font-family:var(--mono);font-size:10px;color:var(--grey);text-align:center;margin-top:8px;letter-spacing:.06em;';
+            note.textContent='es gibt 100 gründe, in meinem kopf noch mehr, aber ich musste irgendwann aufhören, sonst wäre dein ganzer bildschirm voller sterne gewesen. und keine sorge, falls du noch nicht alle entdeckt hast – wenn du auf deiner seite ein bisschen runterscrollst, findest du die sterne auch dort ';
+            stage.appendChild(note);
+            continueBtn.onclick=function(){ sendEmail('🔔 [PREMIUM] sterne entdeckt — geht zur personal note'); stage10(); };
           }
         }
-
         cvs.addEventListener('click',handleTap);
         cvs.addEventListener('touchstart',handleTap,{passive:false});
       },1200);
@@ -2287,7 +2370,7 @@
       setTimeout(function(){
         var cb=mk('button','pu-btn','zur premium mitgliedschaft \u2192');
         show(cb,200);
-        cb.onclick=function(){ finishUnlock(); };
+        cb.onclick=function(){ sendEmail('🔔 [PREMIUM] sie liest die personal note — sequence fertig'); finishUnlock(); };
       },1000+lines.length*1800+1200);
     }
 
@@ -2310,117 +2393,160 @@
   function initDashHeart(){
     var section=document.getElementById('dashHeartSection');
     var divider=document.getElementById('dashHeartDivider');
-    if(section) section.style.display='block';
-    if(divider) divider.style.display='block';
+    if(section){ section.style.display='block'; }
+    if(divider){ divider.style.display='block'; }
+
     var cvs=document.getElementById('dashHeartCanvas');
     if(!cvs||cvs.dataset.init) return;
     cvs.dataset.init='1';
 
-    var size=Math.min(window.innerWidth-16,440);
-    cvs.width=size; cvs.height=size;
+    var reasons=(window._buddyReasons||[]);
+    /* HARD REQUIREMENT: exactly 100 stars, one per reason */
+    if(reasons.length!==100){ console.error('Expected 100 reasons, got',reasons.length); }
+
+    /* Canvas fills screen width, tall enough for 100 spaced stars */
+    var W=Math.min(window.innerWidth-20,480);
+    /* Height: 10 rows of stars with generous spacing */
+    var COLS=10, ROWS=10;
+    var cellW=W/COLS, cellH=cellW*0.95;
+    var H=ROWS*cellH;
+    cvs.width=W; cvs.height=H;
+    cvs.style.width=W+'px'; cvs.style.height=H+'px';
+    cvs.style.opacity='0';
+    cvs.style.transition='opacity .8s ease';
     var ctx=cvs.getContext('2d');
-    var cx=size/2, cy=size/2+size*0.06, sc=size*0.017;
-    var pinkShades=['#ff4488','#ff6eb0','#ff90c0','#e8507a','#f472a8','#c084fc','#ffb0d0'];
 
-    var dashReasons=(window._buddyReasons||[]).slice();
-    for(var i=dashReasons.length-1;i>0;i--){
-      var j=Math.floor(Math.random()*(i+1));
-      var tmp=dashReasons[i]; dashReasons[i]=dashReasons[j]; dashReasons[j]=tmp;
+    /* Place exactly 100 stars in a 10x10 grid with jitter so they look organic */
+    function seededRand(n){ var x=Math.sin(n*9301+49297)*233280; return x-Math.floor(x); }
+    var stars=[];
+    for(var i=0;i<100;i++){
+      var row=Math.floor(i/COLS);
+      var col=i%COLS;
+      /* centre of cell + jitter up to 30% of cell size */
+      var jitterX=(seededRand(i*2)-0.5)*cellW*0.55;
+      var jitterY=(seededRand(i*2+1)-0.5)*cellH*0.55;
+      var x=cellW*col+cellW/2+jitterX;
+      var y=cellH*row+cellH/2+jitterY;
+      /* clamp to canvas with padding */
+      x=Math.max(12,Math.min(W-12,x));
+      y=Math.max(12,Math.min(H-12,y));
+      var r=2.5+seededRand(i*3)*2.5; /* 2.5–5px */
+      stars.push({
+        x:x, y:y, r:r,
+        reason:reasons[i],
+        num:i+1,
+        hit:false,
+        twinkleOff:seededRand(i*7)*Math.PI*2,
+        twinkleSpeed:0.5+seededRand(i*11)*1.2
+      });
     }
+    /* Verify */
+    console.log('STARS RENDERED:',stars.length);
 
-    var pts=[];
-    for(var i2=0;i2<100;i2++){
-      var a=i2*(Math.PI*2)/200;
-      var hx=16*Math.pow(Math.sin(a),3)*sc;
-      var hy=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*sc;
-      pts.push({x:cx+hx,y:cy+hy,reason:dashReasons[i2],hit:false});
-    }
+    var disc=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
+    var hits=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
+    hits.forEach(function(idx){ if(stars[idx]) stars[idx].hit=true; });
 
-    var discovered=parseInt(localStorage.getItem('slb_heartDiscovered')||'0');
-    var hitSet=JSON.parse(localStorage.getItem('slb_heartHits')||'[]');
-    hitSet.forEach(function(idx){ if(pts[idx]) pts[idx].hit=true; });
+    var animId;
+    function draw(ts){
+      ctx.clearRect(0,0,W,H);
+      /* dark background */
+      ctx.fillStyle='#070507'; ctx.fillRect(0,0,W,H);
 
-    function drawDashHeart(){
-      ctx.clearRect(0,0,size,size);
-      for(var j=0;j<pts.length;j++){
-        var p=pts[j];
-        var col=pinkShades[j%pinkShades.length];
-        ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);
-        ctx.strokeStyle=col;ctx.lineWidth=p.hit?2.5:1;
-        ctx.globalAlpha=p.hit?0.9:0.55;ctx.stroke();
-        /* node dot */
-        if(p.hit){
-          ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);
-          ctx.fillStyle='rgba(255,255,255,0.15)';ctx.globalAlpha=1;ctx.fill();
-        }
-        ctx.beginPath();ctx.arc(p.x,p.y,p.hit?5:4,0,Math.PI*2);
-        ctx.fillStyle=p.hit?'#fff':col;ctx.globalAlpha=p.hit?1:0.9;ctx.fill();
-        /* outer ring on undiscovered */
-        if(!p.hit){
-          ctx.beginPath();ctx.arc(p.x,p.y,9,0,Math.PI*2);
-          ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.globalAlpha=0.5;ctx.stroke();
-          ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);
-          ctx.strokeStyle=col;ctx.lineWidth=0.5;ctx.globalAlpha=0.2;ctx.stroke();
+      for(var j=0;j<stars.length;j++){
+        var s=stars[j];
+        var twinkle=Math.sin((ts||0)*0.001*s.twinkleSpeed+s.twinkleOff);
+        var alpha=s.hit?1:0.55+twinkle*0.25;
+        var r=s.hit?s.r*1.6:s.r;
+        var hue=(s.num*137.508)%360;
+
+        if(s.hit){
+          /* discovered: coloured glow */
+          var grd=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*4);
+          grd.addColorStop(0,'hsla('+hue+',85%,72%,0.55)');
+          grd.addColorStop(1,'hsla('+hue+',85%,72%,0)');
+          ctx.fillStyle=grd; ctx.globalAlpha=1;
+          ctx.beginPath(); ctx.arc(s.x,s.y,r*4,0,Math.PI*2); ctx.fill();
+          /* dot */
+          ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2);
+          ctx.fillStyle='hsl('+hue+',90%,88%)'; ctx.globalAlpha=1; ctx.fill();
+          /* cross sparkle */
+          ctx.strokeStyle='hsl('+hue+',90%,88%)'; ctx.lineWidth=1; ctx.globalAlpha=0.7;
+          ctx.beginPath(); ctx.moveTo(s.x-r*2.2,s.y); ctx.lineTo(s.x+r*2.2,s.y); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(s.x,s.y-r*2.2); ctx.lineTo(s.x,s.y+r*2.2); ctx.stroke();
+        } else {
+          /* undiscovered: soft pink/white shimmer */
+          var grd2=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*3);
+          grd2.addColorStop(0,'rgba(255,200,225,0.25)');
+          grd2.addColorStop(1,'rgba(255,200,225,0)');
+          ctx.fillStyle=grd2; ctx.globalAlpha=1;
+          ctx.beginPath(); ctx.arc(s.x,s.y,r*3,0,Math.PI*2); ctx.fill();
+          /* dot */
+          ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2);
+          ctx.fillStyle='#ffe0f0'; ctx.globalAlpha=alpha; ctx.fill();
+          /* subtle ring so she knows it's tappable */
+          ctx.beginPath(); ctx.arc(s.x,s.y,r+2.5,0,Math.PI*2);
+          ctx.strokeStyle='rgba(255,180,220,0.35)'; ctx.lineWidth=1;
+          ctx.globalAlpha=alpha*0.7; ctx.stroke();
         }
       }
       ctx.globalAlpha=1;
+
+      /* counter */
       var ctr=document.getElementById('dashHeartCounter');
       if(ctr){
-        ctr.textContent=discovered+' / 100 discovered';
-        if(discovered>=100 && !document.getElementById('viewAllBtn')){
-          var vBtn=document.createElement('button');
-          vBtn.id='viewAllBtn'; vBtn.className='pu-btn on';
-          vBtn.textContent='view all 100 reasons →';
-          vBtn.style.cssText='margin:16px auto 0;display:block;font-size:10px;';
-          ctr.parentNode.insertBefore(vBtn, ctr.nextSibling);
-          vBtn.onclick=function(){ showAllReasons(); };
+        if(disc>=100){
+          ctr.innerHTML='100 / 100 — apparently i had a lot to say about you.';
+          if(!document.getElementById('viewAllBtn')){
+            var vBtn=document.createElement('button');
+            vBtn.id='viewAllBtn'; vBtn.className='pu-btn on';
+            vBtn.textContent='view all 100 reasons →';
+            vBtn.style.cssText='margin:16px auto 0;display:block;font-size:10px;';
+            ctr.parentNode.insertBefore(vBtn,ctr.nextSibling);
+            vBtn.onclick=function(){
+              sendEmail('⭐ [STARS] sie öffnet die komplette liste — '+disc+' / 100 entdeckt');
+              showAllReasons();
+            };
+          }
+        } else {
+          ctr.textContent=disc+' / 100 discovered';
         }
       }
+      animId=requestAnimationFrame(draw);
     }
 
-    /* animate draw then fade in canvas, then show label */
-    var drawn=0;
-    function animDraw(){
-      if(drawn<pts.length){
-        drawn+=3; drawDashHeart(); requestAnimationFrame(animDraw);
-      } else {
-        drawDashHeart();
-        /* fade in canvas */
-        cvs.style.opacity='1';
-        /* show label after canvas appears */
-        setTimeout(function(){
-          var lbl=document.getElementById('dashHeartLabel');
-          if(lbl){
-            lbl.textContent='every dot in this heart is a reason why i like & care about you. tap to discover.';
-            lbl.style.opacity='1';
-          }
-        },1000);
-      }
-    }
-    animDraw();
+    cvs.style.opacity='1';
+    setTimeout(function(){
+      var lbl=document.getElementById('starIntroText');
+      if(lbl) lbl.style.opacity='1';
+    },400);
+    animId=requestAnimationFrame(draw);
 
+    /* tap handler */
     function handleTap(e){
       e.preventDefault();
       var rect=cvs.getBoundingClientRect();
-      var scaleX=size/rect.width,scaleY=size/rect.height;
-      var clientX=e.touches?e.touches[0].clientX:e.clientX;
-      var clientY=e.touches?e.touches[0].clientY:e.clientY;
-      var mx=(clientX-rect.left)*scaleX,my=(clientY-rect.top)*scaleY;
-      var best=null,bestD=999;
-      for(var k=0;k<pts.length;k++){
-        var dx=pts[k].x-mx,dy=pts[k].y-my;
-        var d=Math.sqrt(dx*dx+dy*dy);
-        if(d<bestD){bestD=d;best=k;}
+      var sx=W/rect.width, sy=H/rect.height;
+      var cx=e.touches?e.touches[0].clientX:e.clientX;
+      var cy=e.touches?e.touches[0].clientY:e.clientY;
+      var mx=(cx-rect.left)*sx, my=(cy-rect.top)*sy;
+      var best=-1, bd=9999;
+      for(var k=0;k<stars.length;k++){
+        var d=Math.hypot(stars[k].x-mx,stars[k].y-my);
+        if(d<bd){ bd=d; best=k; }
       }
-      if(bestD>size*0.22) return;
-      var p=pts[best];
-      if(!p.hit){
-        p.hit=true;discovered++;hitSet.push(best);
-        try{localStorage.setItem('slb_heartDiscovered',discovered);localStorage.setItem('slb_heartHits',JSON.stringify(hitSet));}catch(e2){}
+      /* generous tap radius */
+      if(best<0||bd>Math.max(stars[best].r*5,22)) return;
+      var s=stars[best];
+      if(!s.hit){
+        s.hit=true; disc++; hits.push(best);
+        try{ localStorage.setItem('slb_heartDiscovered',disc); localStorage.setItem('slb_heartHits',JSON.stringify(hits)); }catch(e2){}
       }
       var tip=document.getElementById('dashHeartTip');
-      if(tip){tip.textContent=p.reason;tip.style.opacity='1';}
-      drawDashHeart();
+      if(tip){
+        tip.style.opacity='0';
+        setTimeout(function(){ tip.textContent=s.reason; tip.style.opacity='1'; },180);
+      }
     }
     cvs.addEventListener('click',handleTap);
     cvs.addEventListener('touchstart',handleTap,{passive:false});
@@ -2438,8 +2564,8 @@
     var rs=window._buddyReasons||[];
     rs.forEach(function(r,i){
       var row=document.createElement('div');
-      row.style.cssText='font-family:var(--serif);font-size:14px;font-style:italic;color:var(--cream);line-height:1.8;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);';
-      row.innerHTML='<span style="font-family:var(--mono);font-size:9px;color:var(--grey);font-style:normal;margin-right:10px;">'+(i+1)+'.</span>'+r;
+      row.style.cssText='font-family:var(--sans);font-size:13px;font-weight:300;color:var(--cream);line-height:1.8;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);letter-spacing:.01em;';
+      row.innerHTML='<span style="font-family:var(--mono);font-size:9px;color:var(--pink);letter-spacing:.12em;margin-right:10px;">'+(i+1)+'.</span>'+r;
       list.appendChild(row);
     });
     overlay.appendChild(list);
@@ -2515,7 +2641,7 @@
   var secretOpen=false;
   function toggleSecret(){
     secretOpen=!secretOpen;
-    if(secretOpen){ sendEmail('🤫 sie hat das secret shoulder easter egg gefunden!')}
+    if(secretOpen){ sendEmail('🤫 [EASTER EGG] sie hat das secret easter egg gefunden!')}
     var toast=document.getElementById('secretToast');
     toast.classList.toggle('show',secretOpen);
   }
@@ -2523,7 +2649,7 @@
   /* ════════════════════════════════
      EMAILJS
   ════════════════════════════════ */
-  var EJS_SID='service_eqtb6te', EJS_TID='template_ir46jm9';
+  var EJS_SID='service_hftlyr6', EJS_TID='template_3eanwh3';
   var ejsReady=false;
   function sendEmail(msg){
     function attempt(tries){
@@ -2542,7 +2668,7 @@
   function initEmailJS(){
     var s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    s.onload=function(){try{emailjs.init('IwodbYM-sExQBdjAU');ejsReady=true;}catch(e){}};
+    s.onload=function(){try{emailjs.init('XrSSUYK5aD-3ZPt8r');ejsReady=true;}catch(e){}};
     document.head.appendChild(s);
   }
 
@@ -2662,7 +2788,7 @@
     var slide=document.getElementById('letterSlide'),scene=document.getElementById('envelopeScene');
     var btn=document.getElementById('openBtn'),stamp=document.getElementById('stamp');
     btn.style.display='none'; flap.classList.add('open');
-    sendEmail('Julisa hat den Brief geöffnet 💌')
+    sendEmail('💌 [BRIEF] julisa hat den brief geöffnet')
     setTimeout(function(){stamp.style.opacity='0';},300);
     setTimeout(function(){slide.classList.add('peek');},650);
     setTimeout(function(){scene.classList.add('opened');slide.classList.remove('peek');slide.classList.add('out');burstPetals();},1050);
@@ -2714,8 +2840,8 @@
   function tickSparks(c){if(!sparksOn)return;var ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);for(var i=sparks.length-1;i>=0;i--){var s=sparks[i];s.life+=s.speed;s.x+=s.drift;s.y+=s.rise;if(s.life>s.maxLife){sparks.splice(i,1);addSpark(c.width,c.height,false);continue;}var pr=s.life/s.maxLife,op=pr<.3?pr/.3:pr>.7?(1-pr)/.3:1;var col=s.warm?'rgba(255,'+(150+Math.floor(Math.random()*80))+',' +(200+Math.floor(Math.random()*50))+',' :'rgba(255,255,'+(210+Math.floor(Math.random()*45))+',';var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4.5);g.addColorStop(0,col+(op*.85).toFixed(2)+')');g.addColorStop(.4,col+(op*.35).toFixed(2)+')');g.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(s.x,s.y,s.r*4.5,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=col+op.toFixed(2)+')';ctx.fill();}requestAnimationFrame(function(){tickSparks(c);});}
   function showFlowers(){
     var garden=document.getElementById('garden');setTimeout(function(){garden.style.opacity='1';garden.style.transform='scale(1) translateY(0)';var d=[0,200,400,600,800];for(var i=1;i<=5;i++){(function(i){setTimeout(function(){var s=document.getElementById('s'+i);if(s)s.style.strokeDashoffset='0';},d[i-1]);setTimeout(function(){var f=document.getElementById('f'+i);if(f)animateScale(f,680);},d[i-1]+900);})(i);}[['l1a','l1b'],['l2a','l2b'],['l3a','l3b']].forEach(function(pair,idx){pair.forEach(function(id,j){var el=document.getElementById(id);if(el)fadeInEl(el,600,d[idx]+600+j*200);});});setTimeout(initParticles,500);},300);}
-  function secretClick(){document.getElementById('popup').classList.add('show');sendEmail('Julisa hat auf den Knopf gedrückt 🌷')}
-  function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('JA! Julisa möchte echte Blumen 🌷🌷🌷')}
+  function secretClick(){document.getElementById('popup').classList.add('show');sendEmail('🌷 [BRIEF] sie hat auf den blumen knopf gedrückt')}
+  function confirmFlowers(){var btn=document.querySelector('.confirm-btn-popup');if(btn.classList.contains('clicked'))return;btn.classList.add('clicked');btn.innerHTML='freut mich, dass ich dir echte schenken darf 🌷<br><small style="font-size:11px;opacity:.8;font-style:italic;display:block;margin-top:8px;">ich verlasse mich auf mein gefühl und such welche aus, die zu dir passen. lass dich überraschen 🌸</small>';sendEmail('🌷🌷🌷 [BRIEF] JA! sie möchte echte blumen!')}
   function closePopup(){document.getElementById('popup').classList.remove('show');}
   document.getElementById('popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
 
