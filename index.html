@@ -1630,6 +1630,16 @@
       return b;
     }
 
+    /* helper: progress bar */
+    function bar(cls,delay,duration){
+      var w=mk('div','pu-bar-wrap');
+      var b=document.createElement('div');
+      b.className='pu-bar '+(cls||'pink');
+      w.appendChild(b);
+      setTimeout(function(){ b.style.width='100%'; b.style.transition='width '+duration+'ms cubic-bezier(.4,0,.2,1)'; },delay);
+      return w;
+    }
+
     /* dim dashboard first */
     document.getElementById('dashboard').style.transition='opacity .8s ease';
     document.getElementById('dashboard').style.opacity='.15';
