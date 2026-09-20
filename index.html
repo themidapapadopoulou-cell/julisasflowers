@@ -2862,8 +2862,7 @@
   window.addEventListener('scroll', function(){
     var hint = document.getElementById('scrollHint');
     if(!hint) return;
-    var atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 80);
-    if(window.scrollY > 60 || atBottom) hint.classList.add('hidden');
+    if(window.scrollY > 0) hint.classList.add('hidden');
   });
 </script>
 
