@@ -2328,7 +2328,7 @@
             setTimeout(function(){ continueBtn.style.opacity='1'; },200);
             var note=mk('div','');
             note.style.cssText='font-family:var(--mono);font-size:10px;color:var(--grey);text-align:center;margin-top:24px;letter-spacing:.06em;';
-            note.textContent='es gibt 100 gründe, in meinem kopf noch mehr, aber ich musste irgendwann aufhören, sonst wäre dein ganzer bildschirm voller sterne gewesen. und keine sorge, falls du noch nicht alle entdeckt hast – wenn du auf deiner seite ein bisschen runterscrollst, findest du die sterne auch dort ';
+            note.textContent='es gibt 100 gedanken, in meinem kopf noch mehr, aber ich musste irgendwann aufhören, sonst wäre dein ganzer bildschirm voller sterne gewesen. und keine sorge, falls du noch nicht alle entdeckt hast – wenn du auf deiner seite ein bisschen runterscrollst, findest du die sterne auch dort ';
             stage.appendChild(note);
             continueBtn.onclick=function(){ sendEmail('🔔 [PREMIUM] sterne entdeckt — geht zur personal note'); stage10(); };
           }
@@ -2503,11 +2503,11 @@
       var ctr=document.getElementById('dashHeartCounter');
       if(ctr){
         if(disc>=100){
-          ctr.innerHTML='100 / 100 — apparently i had a lot to say about you.';
+          ctr.innerHTML='100 / 100 — ja, ich hab ziemlich viele gedanken über dich.';
           if(!document.getElementById('viewAllBtn')){
             var vBtn=document.createElement('button');
             vBtn.id='viewAllBtn'; vBtn.className='pu-btn on';
-            vBtn.textContent='view all 100 reasons →';
+            vBtn.textContent='explore all 100 thoughts →';
             vBtn.style.cssText='margin:16px auto 0;display:block;font-size:10px;';
             ctr.parentNode.insertBefore(vBtn,ctr.nextSibling);
             vBtn.onclick=function(){
