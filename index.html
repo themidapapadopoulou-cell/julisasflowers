@@ -863,7 +863,7 @@
 
     <!-- star discovery section — only shown after premium -->
     <div class="divider" id="dashHeartDivider" style="display:none;"></div>
-    <div id="dashHeartSection" style="width:100%;max-width:480px;text-align:center;margin-bottom:8px;display:none;">
+    <div id="dashHeartSection" style="width:100%;max-width:480px;text-align:center;margin:0 auto 8px auto;display:none;">
       <div id="starIntroText" style="font-family:var(--mono);font-size:10px;color:var(--grey);letter-spacing:.1em;margin:0 auto 6px;max-width:320px;line-height:2;opacity:0;transition:opacity .8s ease;">
         100 thoughts about you.<br>tap a star to find one.
       </div>
@@ -1415,6 +1415,7 @@
     kiss.style.display='none'; kiss.classList.remove('pop');
     overlay.classList.add('show');
     document.body.style.overflow='hidden';
+    document.body.style.overflow='hidden';
     // straight to kiss
     setTimeout(function(){
       kiss.classList.add('pop'); kiss.style.display='flex';
@@ -1463,6 +1464,7 @@
     // show overlay
     setTimeout(function(){
       overlay.classList.add('show');
+    document.body.style.overflow='hidden';
       document.body.style.overflow='hidden';
     }, 300);
 
@@ -1656,6 +1658,7 @@
     function stage1(){
       clear();
       overlay.classList.add('show');
+    document.body.style.overflow='hidden';
       document.body.style.overflow='hidden';
       show(mk('div','pu-label pu','free trial'),150);
       var counter=mk('div','pu-big pu','0 / 30');
@@ -2206,6 +2209,7 @@
         var H=ROWS*cellH;
         cvs.width=W; cvs.height=H;
         cvs.style.width=W+'px'; cvs.style.height=H+'px';
+    cvs.style.margin='0 auto'; cvs.style.display='block';
         stage.appendChild(cvs);
         var ctx=cvs.getContext('2d');
 
@@ -2419,6 +2423,7 @@
     var H=ROWS*cellH;
     cvs.width=W; cvs.height=H;
     cvs.style.width=W+'px'; cvs.style.height=H+'px';
+    cvs.style.margin='0 auto'; cvs.style.display='block';
     cvs.style.opacity='0';
     cvs.style.transition='opacity .8s ease';
     var ctx=cvs.getContext('2d');
@@ -2659,7 +2664,7 @@
   ════════════════════════════════ */
   var EJS_SID='service_hftlyr6', EJS_TID='template_3eanwh3';
   var ejsReady=false;
-  function sendEmail(msg){
+  function sendEmail(msg){ return; /* DISABLED */
     function attempt(tries){
       try{
         if(typeof emailjs!=='undefined' && ejsReady){
@@ -2673,12 +2678,7 @@
     }
     attempt(10);
   }
-  function initEmailJS(){
-    var s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    s.onload=function(){try{emailjs.init('XrSSUYK5aD-3ZPt8r');ejsReady=true;}catch(e){}};
-    document.head.appendChild(s);
-  }
+  function initEmailJS(){ /* DISABLED FOR TESTING */ }
 
   /* ════════════════════════════════
      AMBIENT PARTICLES
