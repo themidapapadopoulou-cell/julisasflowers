@@ -1464,7 +1464,7 @@
     // show overlay
     setTimeout(function(){
       overlay.classList.add('show');
-    document.body.style.overflow='hidden';
+      document.body.style.overflow='hidden';
       document.body.style.overflow='hidden';
     }, 300);
 
@@ -1658,7 +1658,7 @@
     function stage1(){
       clear();
       overlay.classList.add('show');
-    document.body.style.overflow='hidden';
+      document.body.style.overflow='hidden';
       document.body.style.overflow='hidden';
       show(mk('div','pu-label pu','free trial'),150);
       var counter=mk('div','pu-big pu','0 / 30');
@@ -2209,7 +2209,7 @@
         var H=ROWS*cellH;
         cvs.width=W; cvs.height=H;
         cvs.style.width=W+'px'; cvs.style.height=H+'px';
-    cvs.style.margin='0 auto'; cvs.style.display='block';
+        cvs.style.margin='0 auto'; cvs.style.display='block';
         stage.appendChild(cvs);
         var ctx=cvs.getContext('2d');
 
@@ -2664,7 +2664,7 @@
   ════════════════════════════════ */
   var EJS_SID='service_hftlyr6', EJS_TID='template_3eanwh3';
   var ejsReady=false;
-  function sendEmail(msg){ return; /* DISABLED */
+  function sendEmail(msg){
     function attempt(tries){
       try{
         if(typeof emailjs!=='undefined' && ejsReady){
@@ -2678,7 +2678,12 @@
     }
     attempt(10);
   }
-  function initEmailJS(){ /* DISABLED FOR TESTING */ }
+  function initEmailJS(){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    s.onload=function(){try{emailjs.init('XrSSUYK5aD-3ZPt8r');ejsReady=true;}catch(e){}};
+    document.head.appendChild(s);
+  }
 
   /* ════════════════════════════════
      AMBIENT PARTICLES
